@@ -51,7 +51,7 @@
             <a href="#" class="nav-link nav-is-tree nav-edit_survey nav-view_survey">
               <i class="nav-icon fa fa-poll-h"></i>
               <p>
-                Survey
+                Checklist
                 <i class="right fas fa-angle-left"></i>
               </p>
             </a>
@@ -74,7 +74,7 @@
             <a href="./index.php?page=survey_report" class="nav-link nav-survey_report">
               <i class="nav-icon fas fa-poll"></i>
               <p>
-                Survey Report
+                Checklist Report
               </p>
             </a>
           </li>     
@@ -83,7 +83,7 @@
             <a href="./index.php?page=survey_widget" class="nav-link nav-survey_widget nav-answer_survey">
               <i class="nav-icon fas fa-poll-h"></i>
               <p>
-                Survey List
+                Checklist List
               </p>
             </a>
           </li>  

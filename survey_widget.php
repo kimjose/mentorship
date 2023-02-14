@@ -8,7 +8,7 @@ while($row=$answers->fetch_assoc()){
 ?>
 <div class="col-lg-12">
 	<div class="d-flex w-100 justify-content-center align-items-center mb-2">
-		<label for="" class="control-label">Find Survey</label>
+		<label for="" class="control-label">Find Checklist</label>
 		<div class="input-group input-group-sm col-sm-5">
           <input type="text" class="form-control" id="filter" placeholder="Enter keyword...">
           <span class="input-group-append">
@@ -39,7 +39,7 @@ while($row=$answers->fetch_assoc()){
                	<hr class="border-primary">
                	<div class="d-flex justify-content-center w-100 text-center">
                		<?php if(!isset($ans[$row['id']])): ?>
-               			<a href="index.php?page=answer_survey&id=<?php echo $row['id'] ?>" class="btn btn-sm bg-gradient-primary"><i class="fa fa-pen-square"></i> Take Survey</a>
+               			<a href="index.php?page=answer_survey&id=<?php echo $row['id'] ?>" class="btn btn-sm bg-gradient-primary"><i class="fa fa-pen-square"></i> TA Visit</a>
                		<?php else: ?>
                			<p class="text-primary border-top border-primary">Done</p>
                		<?php endif; ?>

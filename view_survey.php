@@ -13,7 +13,7 @@ $answers = $conn->query("SELECT distinct(user_id) from answers where survey_id =
 		<div class="col-md-4">
 			<div class="card card-outline card-primary">
 				<div class="card-header">
-					<h3 class="card-title">Survey Details</h3>
+					<h3 class="card-title">Checklist Details</h3>
 				</div>
 				<div class="card-body p-0 py-2">
 					<div class="container-fluid">
@@ -32,7 +32,7 @@ $answers = $conn->query("SELECT distinct(user_id) from answers where survey_id =
 		<div class="col-md-8">
 			<div class="card card-outline card-success">
 				<div class="card-header">
-					<h3 class="card-title"><b>Survey Questionaire</b></h3>
+					<h3 class="card-title"><b>Checklist Questionaire</b></h3>
 					<div class="card-tools">
 						<button class="btn btn-block btn-sm btn-default btn-flat border-success new_question" type="button"><i class="fa fa-plus"></i> Add New Question</button>
 					</div>

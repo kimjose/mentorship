@@ -4,7 +4,7 @@ $answers = $conn->query("SELECT distinct(survey_id) from answers where user_id =
 ?>
 <div class="col-lg-12">
 	<div class="d-flex w-100 justify-content-center align-items-center mb-2">
-		<label for="" class="control-label">Find Survey</label>
+		<label for="" class="control-label">Find Checklist</label>
 		<div class="input-group input-group-sm col-sm-5">
           <input type="text" class="form-control" id="filter" placeholder="Enter keyword...">
           <span class="input-group-append">

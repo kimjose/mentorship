@@ -106,10 +106,10 @@
 
   <!-- Main Footer -->
   <footer class="main-footer">
-    <strong>Copyright &copy; 2020 <a href="https://www.sourcecodester.com/">sourcecodester.com</a>.</strong>
+    <strong>Copyright &copy; 2023 <a href="https://psms.mgickenya.org:81/event-management/">CIHEB CONNECT</a>.</strong>
     All rights reserved.
     <div class="float-right d-none d-sm-inline-block">
-      <b>Online Survey System</b>
+      <b>eSupport Supervision</b>
     </div>
   </footer>
 </div>

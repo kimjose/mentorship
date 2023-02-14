@@ -37,7 +37,7 @@ while($row=$answers->fetch_assoc()){
 		<div class="col-md-12">
 			<div class="card card-outline card-success">
 				<div class="card-header">
-					<h3 class="card-title"><b>Survey Report</b></h3>
+					<h3 class="card-title"><b>Checklist Report</b></h3>
 				</div>
 				<div class="card-body ui-sortable">
 					<?php 

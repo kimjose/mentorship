@@ -35,7 +35,7 @@ while($row=$answers->fetch_assoc()){
 		<div class="col-md-4">
 			<div class="card card-outline card-primary">
 				<div class="card-header">
-					<h3 class="card-title"><b>Survey Details</b></h3>
+					<h3 class="card-title"><b>Checklist Details</b></h3>
 					
 				</div>
 				<div class="card-body p-0 py-2">
@@ -56,7 +56,7 @@ while($row=$answers->fetch_assoc()){
 		<div class="col-md-8">
 			<div class="card card-outline card-success">
 				<div class="card-header">
-					<h3 class="card-title"><b>Survey Report</b></h3>
+					<h3 class="card-title"><b>Checklist Report</b></h3>
 					<div class="card-tools">
 						<button class="btn btn-flat btn-sm bg-gradient-success" type="button" id="print"><i class="fa fa-print"></i> Print</button>
 					</div>

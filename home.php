@@ -22,7 +22,7 @@
               <span class="info-box-icon bg-primary elevation-1"><i class="fas fa-poll-h"></i></span>
 
               <div class="info-box-content">
-                <span class="info-box-text">Total Survey</span>
+                <span class="info-box-text">Total Checklist</span>
                  <span class="info-box-number">
                   <?php echo $conn->query("SELECT * FROM survey_set")->num_rows; ?>
                 </span>
@@ -48,7 +48,7 @@
               <span class="info-box-icon bg-primary elevation-1"><i class="fas fa-poll-h"></i></span>
 
               <div class="info-box-content">
-                <span class="info-box-text">Total Surveys Taken</span>
+                <span class="info-box-text">Total Checklist Done</span>
                 <span class="info-box-number">
                   <?php echo $conn->query("SELECT distinct(survey_id) FROM answers  where user_id = {$_SESSION['login_id']}")->num_rows; ?>
                 </span>

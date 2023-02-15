@@ -6,7 +6,7 @@ Class Action {
 
 	public function __construct() {
 		ob_start();
-   	include 'db_connect.php';
+   	include 'web/db_connect.php';
     
     $this->db = $conn;
 	}

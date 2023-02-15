@@ -24,6 +24,7 @@
         "vlucas/phpdotenv": "5.5.x-dev",
         "box/spout": "v3.3.0",
         "setasign/fpdf": "^1.8",
+        "phpmailer/phpmailer": "dev-master",
         "ext-json": "*",
         "ext-dom": "*",
         "ext-zip": "*",

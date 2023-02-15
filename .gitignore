@@ -1,3 +1,11 @@
 /vendor/
 composer.lock
-
+.idea
+.vscode
+/.htaccess
+.env
+logs/
+public/*.xml
+composer.lock
+public/uploads/*.*
+public/uploads/

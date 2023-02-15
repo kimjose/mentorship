@@ -264,7 +264,7 @@ foreach($qry as $k => $v){
 		start_load()
 		// $('#msg').html('')
 		$.ajax({
-			url:'ajax.php?action=save_question',
+			url:'ajax?action=save_question',
 			data: new FormData($(this)[0]),
 		    cache: false,
 		    contentType: false,

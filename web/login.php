@@ -14,7 +14,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit'])) {
 		$user = \Umb\Mentorship\Models\User::where('email', $email)->first();
 		if ($user == null) throw new \Exception("Invalid credentials. Try again.");
 		if (md5($password) == $user->password) {
-			echo "Here is here.";
+			// echo "Here is here.";
 			$user->last_login = date("Y:m:d h:i:s", time());
 			$user->save();
 			session_start();
@@ -92,11 +92,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit'])) {
 						<form id="login-form" action="login" method="POST">
 							<div class="form-group">
 								<label for="email" class="control-label text-dark">Email</label>
-								<input type="text" id="email" name="email" class="form-control form-control-sm" value="<?php echo $email ?? '' ?>">
+								<input type="text" id="email" name="email" class="form-control form-control-sm" value="<?php echo $email ?? '' ?>" required>
 							</div>
 							<div class="form-group">
 								<label for="password" class="control-label text-dark">Password</label>
-								<input type="password" id="password" name="password" class="form-control form-control-sm">
+								<input type="password" id="password" name="password" class="form-control form-control-sm" required>
 							</div>
 							<center><input class="btn-sm btn-block btn-wave col-md-4 btn-primary" name="submit" type="submit" value="Submit"></center>
 						</form>

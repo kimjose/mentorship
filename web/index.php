@@ -4,10 +4,10 @@
 <?php
 include 'header.php';
 include_once __DIR__ . "/auth.php";
-echo "Bingo...";
-echo json_encode($_SESSION);
-echo json_encode($currUser);
-return;
+// echo "Bingo...";
+// echo json_encode($_SESSION);
+// echo json_encode($currUser);
+// return;
 ?>
 
 <body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">

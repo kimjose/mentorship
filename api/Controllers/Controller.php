@@ -1,5 +1,5 @@
 <?php
-namespace Umb\Mentorship\Models;
+namespace Umb\Mentorship\Controllers;
 
 use Umb\Mentorship\Controllers\Utils\Utility;
 use Umb\Mentoship\Models\User;

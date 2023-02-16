@@ -1,5 +1,5 @@
 <?php
-
+namespace Umb\Mentorship\Models;
 use Illuminate\Database\Eloquent\Model;
 
 class Question extends Model{

@@ -2,7 +2,8 @@
 namespace Umb\Mentorship\Controllers;
 
 use Umb\Mentorship\Controllers\Utils\Utility;
-use Umb\Mentoship\Models\User;
+use Umb\Mentorship\Models\Notification;
+use Umb\Mentorship\Models\User;
 
 class Controller{
     protected User $user;

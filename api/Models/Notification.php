@@ -1,7 +1,7 @@
 <?php
 namespace Umb\Mentorship\Models;
 
-use Umb\Mentoship\Models\User;
+use Umb\Mentorship\Models\User;
 
 class Notification extends \Illuminate\Database\Eloquent\Model
 {

@@ -2,12 +2,32 @@
 
 namespace Umb\Mentorship\Controllers;
 
+use Umb\Mentorship\Models\Section;
+use Umb\Mentorship\Models\Question;
+use Umb\Mentorship\Models\Checklist;
+use Umb\Mentorship\Controllers\Controller;
 use Umb\Mentorship\Controllers\Utils\Utility;
-use Umb\Mentoship\Models\Checklist;
-use Umb\Mentoship\Models\Section;
 
 class QuestionsBulider extends Controller
 {
+
+    public function getChecklists(){
+        try{
+            $checklists = Checklist::all();
+            foreach($checklists as $checklist){
+                $sections = $checklist->getSections();
+                foreach($sections as $section){
+                    $questions = $section->getQuestions();
+                    $section->questions = $questions;
+                }
+                $checklist->sections = $sections;
+            }
+            return $checklists;
+        } catch(\Throwable $th){
+            Utility::logError($th->getCode(), $th->getMessage());
+            return [];
+        }
+    }
 
     public function createChecklist($data)
     {
@@ -69,13 +89,30 @@ class QuestionsBulider extends Controller
         }
     }
 
-    public function createQuestion($data)
+    public function addQuestion($data)
     {
         try {
             $attributes = ["question", "type", 'options', "order", "frequency", "section_id"];
             $missing = Utility::checkMissingAttributes($data, $attributes);
             throw_if(sizeof($missing) > 0, new \Exception("Missing parameters passed : " . json_encode($missing)));
             $data['created_by'] = $this->user->id;
+            Question::create($data);
+            self::response(SUCCESS_RESPONSE_CODE, "Question added successfully");
+        } catch (\Throwable $th) {
+            Utility::logError($th->getCode(), $th->getMessage());
+            $this->response(PRECONDITION_FAILED_ERROR_CODE, $th->getMessage());
+        }
+    }
+
+    public function updateQuestion($id, $data)
+    {
+        try {
+            $attributes = ["question", "type", 'options', "order", "frequency", "section_id"];
+            $missing = Utility::checkMissingAttributes($data, $attributes);
+            throw_if(sizeof($missing) > 0, new \Exception("Missing parameters passed : " . json_encode($missing)));
+            $question = Question::findOrFail($id);
+            $question->update($data);
+            self::response(SUCCESS_RESPONSE_CODE, "Question updated successfully.");
         } catch (\Throwable $th) {
             Utility::logError($th->getCode(), $th->getMessage());
             $this->response(PRECONDITION_FAILED_ERROR_CODE, $th->getMessage());

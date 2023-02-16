@@ -1,3 +1,3 @@
 <?php 
 
-$conn= new mysqli('localhost','admin','Qwerty!123','ess')or die("Could not connect to mysql".mysqli_error($con));
+$conn= new mysqli('localhost:3307','root','test','ess')or die("Could not connect to mysql".mysqli_error($con));

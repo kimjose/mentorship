@@ -12,7 +12,7 @@ if(isset($_GET['id'])){
 <div class="col-lg-12">
 	<div class="card">
 		<div class="card-body">
-			<form action="" id="manage_survey">
+			<form action="" id="formChecklist">
 				<input type="hidden" name="id" value="<?php echo isset($id) ? $id : '' ?>">
 				<div class="row">
 					<div class="col-md-6 border-right">
@@ -49,3 +49,14 @@ if(isset($_GET['id'])){
 		</div>
 	</div>
 </div>
+
+<script>
+	const formChecklist = document.getElementById('formChecklist')
+	const id = "<? $id ?>"
+
+	function saveChecklist(){
+		let formData = new FormData(formChecklist)
+
+	}
+
+</script>

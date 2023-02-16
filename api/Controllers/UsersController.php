@@ -1,5 +1,5 @@
 <?php
-namespace Umb\Mentorship\Models;
+namespace Umb\Mentorship\Controllers;
 
 class UsersController extends Controller{
 

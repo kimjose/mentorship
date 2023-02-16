@@ -8,7 +8,7 @@
       <div class="dropdown-menu" style="">
         <a class="dropdown-item manage_account" href="javascript:void(0)" data-id="<?php echo $currUser->id ?>">Manage Account</a>
         <div class="dropdown-divider"></div>
-        <a class="dropdown-item" href="ajax.php?action=logout">Logout</a>
+        <a class="dropdown-item" href="ajax?action=logout">Logout</a>
       </div>
     </div>
     <div class="sidebar">
@@ -34,13 +34,13 @@
             </a>
             <ul class="nav nav-treeview">
               <li class="nav-item">
-                <a href="./index.php?page=new_user" class="nav-link nav-new_user tree-item">
+                <a href="./index?page=new_user" class="nav-link nav-new_user tree-item">
                   <i class="fas fa-angle-right nav-icon"></i>
                   <p>Add New</p>
                 </a>
               </li>
               <li class="nav-item">
-                <a href="./index.php?page=user_list" class="nav-link nav-user_list tree-item">
+                <a href="./index?page=user_list" class="nav-link nav-user_list tree-item">
                   <i class="fas fa-angle-right nav-icon"></i>
                   <p>List</p>
                 </a>
@@ -57,13 +57,13 @@
             </a>
             <ul class="nav nav-treeview">
               <li class="nav-item">
-                <a href="./index.php?page=new_survey" class="nav-link nav-new_survey tree-item">
+                <a href="./index?page=checklists-edit" class="nav-link nav-checklists-edit tree-item">
                   <i class="fas fa-angle-right nav-icon"></i>
                   <p>Add New</p>
                 </a>
               </li>
               <li class="nav-item">
-                <a href="./index.php?page=survey_list" class="nav-link nav-survey_list tree-item">
+                <a href="./index?page=checklists" class="nav-link nav-checklists tree-item">
                   <i class="fas fa-angle-right nav-icon"></i>
                   <p>List</p>
                 </a>
@@ -71,7 +71,7 @@
             </ul>
           </li>
           <li class="nav-item">
-            <a href="./index.php?page=survey_report" class="nav-link nav-survey_report">
+            <a href="./index?page=survey_report" class="nav-link nav-survey_report">
               <i class="nav-icon fas fa-poll"></i>
               <p>
                 Checklist Report
@@ -80,7 +80,7 @@
           </li>     
         <?php else: ?>
           <li class="nav-item">
-            <a href="./index.php?page=survey_widget" class="nav-link nav-survey_widget nav-answer_survey">
+            <a href="./index?page=survey_widget" class="nav-link nav-survey_widget nav-answer_survey">
               <i class="nav-icon fas fa-poll-h"></i>
               <p>
                 Checklist List
@@ -108,7 +108,7 @@
 
   		}
       $('.manage_account').click(function(){
-        uni_modal('Manage Account','manage_user.php?id='+$(this).attr('data-id'))
+        uni_modal('Manage Account','manage_user?id='+$(this).attr('data-id'))
       })
   	})
   </script>

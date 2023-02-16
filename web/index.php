@@ -40,8 +40,19 @@ include_once __DIR__ . "/auth.php";
       <section class="content">
         <div class="container-fluid">
           <?php
-          $page = isset($_GET['page']) ? $_GET['page'] : 'home';
-          include $page . '.php';
+
+          $page = $_GET['page'] ?? 'home';
+          $page = str_replace('-', '/', $page);
+          if (!file_exists($page . ".php") && !is_dir($page)) {
+            include '../404.html';
+          } else {
+            if (is_dir($page))
+              include $page . '/index.php';
+            else
+              include($page . '.php');
+          }
+
+
           ?>
         </div><!--/. container-fluid -->
       </section>

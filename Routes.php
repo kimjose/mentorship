@@ -1,7 +1,7 @@
 <?php
 
 use Bramus\Router\Router;
-use Umb\Mentorship\Controllers\QuestionsBulider;
+use Umb\Mentorship\Controllers\QuestionsBuilder;
 
 require_once __DIR__ . "/vendor/autoload.php";
 
@@ -14,32 +14,32 @@ $router->set404(function () {
     echo $notFound;
 });
 $router->post("/api/checklist", function(){
-    $builder = new QuestionsBulider();
+    $builder = new QuestionsBuilder();
     $data = json_decode(file_get_contents('php://input'), true);
     $builder->createChecklist($data);
 });
 $router->post("/api/checklist/{id}", function($id){
-    $builder = new QuestionsBulider();
+    $builder = new QuestionsBuilder();
     $data = json_decode(file_get_contents('php://input'), true);
     $builder->updateChecklist($id, $data);
 });
 $router->post("/api/section", function(){
-    $builder = new QuestionsBulider();
+    $builder = new QuestionsBuilder();
     $data = json_decode(file_get_contents('php://input'), true);
     $builder->addSection($data);
 });
 $router->post("/api/section/{id}", function($id){
-    $builder = new QuestionsBulider();
+    $builder = new QuestionsBuilder();
     $data = json_decode(file_get_contents('php://input'), true);
     $builder->updateSection($id, $data);
 });
 $router->post("/api/question", function(){
-    $builder = new QuestionsBulider();
+    $builder = new QuestionsBuilder();
     $data = json_decode(file_get_contents('php://input'), true);
     $builder->addQuestion($data);
 });
 $router->post("/api/question/{id}", function($id){
-    $builder = new QuestionsBulider();
+    $builder = new QuestionsBuilder();
     $data = json_decode(file_get_contents('php://input'), true);
     $builder->updateQuestion($id, $data);
 });

@@ -8,22 +8,28 @@ use Umb\Mentorship\Models\Checklist;
 use Umb\Mentorship\Controllers\Controller;
 use Umb\Mentorship\Controllers\Utils\Utility;
 
-class QuestionsBulider extends Controller
+class QuestionsBuilder extends Controller
 {
 
-    public function getChecklists(){
-        try{
+    /**
+     * 
+     * @return []
+     */
+    public function getChecklists()
+    {
+        try {
             $checklists = Checklist::all();
-            foreach($checklists as $checklist){
+            foreach ($checklists as $checklist) {
                 $sections = $checklist->getSections();
-                foreach($sections as $section){
+                foreach ($sections as $section) {
                     $questions = $section->getQuestions();
                     $section->questions = $questions;
                 }
                 $checklist->sections = $sections;
             }
             return $checklists;
-        } catch(\Throwable $th){
+        } catch (\Throwable $th) {
+            echo $th->getMessage();
             Utility::logError($th->getCode(), $th->getMessage());
             return [];
         }

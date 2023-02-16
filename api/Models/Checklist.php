@@ -12,7 +12,7 @@ class Checklist extends Model{
      * 
      * @return Section[]
      */
-    public function getSections(): array{
+    public function getSections(){
         return Section::where("checklist_id", $this->id)->get();
     }
 

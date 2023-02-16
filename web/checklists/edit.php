@@ -1,18 +1,18 @@
 <?php
 
-use Umb\Mentoship\Models\CheckList;
+use Umb\Mentorship\Models\CheckList;
 
 $id = "";
-if(isset($_GET['id'])){
-    $id = $_GET['id'];
-    $checklist = Checklist::find($id);
-    if($checklist == null ) $id = '';
+if (isset($_GET['id'])) {
+	$id = $_GET['id'];
+	$checklist = Checklist::find($id);
+	if ($checklist == null) $id = '';
 }
 ?>
 <div class="col-lg-12">
 	<div class="card">
 		<div class="card-body">
-			<form action="" id="formChecklist">
+			<form action="" id="formChecklist" onsubmit="event.preventDefault()">
 				<input type="hidden" name="id" value="<?php echo isset($id) ? $id : '' ?>">
 				<div class="row">
 					<div class="col-md-6 border-right">
@@ -29,11 +29,12 @@ if(isset($_GET['id'])){
 							<input type="date" name="end_date" class="form-control form-control-sm" required value="<?php echo isset($end_date) ? $end_date : '' ?>">
 						</div>
 					</div>
-                        <div class="form-group">
+
+					<div class="col-md-6">
+						<div class="form-group">
 							<label for="" class="control-label">Abbreviation</label>
 							<input type="text" name="abbr" class="form-control form-control-sm" required value="<?php echo $id != '' ? $checklist->abbr : '' ?>">
 						</div>
-					<div class="col-md-6">
 						<div class="form-group">
 							<label class="control-label">Description</label>
 							<textarea name="description" id="" cols="30" rows="4" class="form-control" required><?php echo $id != '' ? $checklist->description : '' ?></textarea>
@@ -42,7 +43,7 @@ if(isset($_GET['id'])){
 				</div>
 				<hr>
 				<div class="col-lg-12 text-right justify-content-center d-flex">
-					<button class="btn btn-primary mr-2">Save</button>
+					<button id="btnSaveChecklist" class="btn btn-primary mr-2" onclick="saveChecklist()">Save</button>
 					<button class="btn btn-secondary" type="button" onclick="location.href = 'index?page=checklist'">Cancel</button>
 				</div>
 			</form>
@@ -52,11 +53,38 @@ if(isset($_GET['id'])){
 
 <script>
 	const formChecklist = document.getElementById('formChecklist')
-	const id = "<? $id ?>"
+	const btnSaveChecklist = document.getElementById('btnSaveChecklist')
+	const id = "<?php echo $id ?>"
 
-	function saveChecklist(){
+	function saveChecklist() {
 		let formData = new FormData(formChecklist)
+		let checklist = {};
+		for (let [key, value] of formData.entries()) {
+			checklist[key] = value
+		}
+
+		fetch(id == '' ? `../api/checklist` : `../api/checklist/${id}`, {
+				method: "POST",
+				body: JSON.stringify(checklist),
+				headers: {
+					"content-type": "application/x-www-form-urlencoded"
+				}
+			})
+			.then(response => {
+				return response.json()
+			})
+			.then(response => {
+				btnSaveEventType.removeAttribute('disabled')
+				if (response.code === 200) {
+					window.location.replace("index?page=checklist")
+				} else throw new Error(response.message)
+				// hideModal(dialogId)
+			})
+			.catch(error => {
+				if (btnSaveEventType.hasAttribute('disabled')) btnSaveEventType.removeAttribute('disabled')
+				console.log(error.message);
+				toastr.error(error.message)
+			})
 
 	}
-
 </script>

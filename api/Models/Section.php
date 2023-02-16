@@ -12,7 +12,7 @@ class Section extends Model{
      * 
      * @return Question[]
      */
-    public function getQuestions(): array{
+    public function getQuestions(){
         return Question::where("section_id", $this->id)->get();
     }
 

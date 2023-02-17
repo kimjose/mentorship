@@ -18,7 +18,7 @@ Class Action {
 	function login(){
 		extract($_POST);
 		//echo "SELECT *,concat(lastname,', ',firstname,' ',middlename) as name FROM users where email = '".$email."' and password = '".md5($password)."' ";
-			$qry = $this->db->query("SELECT *,concat(lastname,', ',firstname,' ',middlename) as name FROM users where email = '".$email."' and password = '".md5($password)."' ");
+			$qry = $this->db->query("SELECT *,concat(last_name,', ',first_name,' ',middle_name) as name FROM users where email = '".$email."' and password = '".md5($password)."' ");
 		if($qry->num_rows > 0){
 			foreach ($qry->fetch_array() as $key => $value) {
 				if($key != 'password' && !is_numeric($key))

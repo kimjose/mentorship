@@ -50,7 +50,7 @@
         <div class="info-box-content">
           <span class="info-box-text">Total Checklist Done</span>
           <span class="info-box-number">
-            <?php echo $conn->query("SELECT distinct(survey_id) FROM answers  where user_id = {$_SESSION['login_id']}")->num_rows; ?>
+            <?php echo $conn->query("SELECT distinct(survey_id) FROM answers  where user_id = {$currUser->id}")->num_rows; ?>
           </span>
         </div>
         <!-- /.info-box-content -->

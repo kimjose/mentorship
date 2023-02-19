@@ -1,6 +1,6 @@
 <?php include 'db_connect.php' ?>
 <?php 
-$answers = $conn->query("SELECT distinct(survey_id) from answers where user_id ={$_SESSION['login_id']}");
+$answers = $conn->query("SELECT distinct(survey_id) from answers where user_id ={$currUser->id}");
 ?>
 <div class="col-lg-12">
 	<div class="d-flex w-100 justify-content-center align-items-center mb-2">

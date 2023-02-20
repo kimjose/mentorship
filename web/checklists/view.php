@@ -1,5 +1,6 @@
 <?php
 
+use Umb\Mentorship\Models\Section;
 use Umb\Mentorship\Models\Checklist;
 
 $id = $_GET['id'] ?? '';
@@ -7,6 +8,8 @@ if ($id != '') {
 	$checklist = Checklist::find($id);
 	if ($checklist == null) $id = '';
 }
+$sections = Section::where('checklist_id', $id)->get();
+
 if ($id == '') :
 ?>
 	<script>
@@ -44,14 +47,42 @@ endif;
 
 <section>
 	<div class="head">
-		<h4>Sections</h4>
-		<button class="btn btn-primary btn-icon-split ml-auto float-right" data-toggle="modal" data-target="#modalSection">
-			<span class="icon text-white-50"><i class="fa fa-plus"></i> </span>
-			<span class="text"> Add Section</span>
-		</button>
+
+		<div class="row m-4">
+			<h3>Sections</h3>
+			<button class="btn btn-primary btn-icon-split ml-auto float-right" data-toggle="modal" data-target="#modalSection">
+				<span class="icon text-white-50"><i class="fa fa-plus"></i> </span>
+				<span class="text"> Add Section</span>
+			</button>
+		</div>
+
 	</div>
 
 	<div class="body">
+
+		<div class="card shadow mb-4">
+			<a href="#collapseCard" class="d-block card-header py-3" data-toggle="collapse" role="button" aria-expanded="true" aria-controls="collapseCard">
+				<h6 class="m-0 font-weight-bold text-primary text-center">Section One</h6>
+			</a>
+			<div class="collapse hide" id="collapseCard">
+				<div class="card-body">
+					<div class="row p-2">
+						<h4>Questions</h4>
+						<button class="btn btn-primary btn-icon-split ml-auto float-right" data-toggle="modal" data-target="#modalSection">
+							<span class="icon text-white-50"><i class="fa fa-plus"></i> </span>
+							<span class="text"> Add Question</span>
+						</button>
+					</div>
+					<hr>
+					<div class="row justify-content-center">
+						<div class="col-auto">
+
+						</div>
+					</div>
+					<hr>
+				</div>
+			</div>
+		</div>
 
 	</div>
 </section>

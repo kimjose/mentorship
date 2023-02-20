@@ -7,3 +7,8 @@
 2023-02-16 15:50:18       Code 401      Message User not authenticated,..      ClientAddr ::1
 2023-02-16 16:14:46       Code 401      Message User not authenticated,..      ClientAddr ::1
 2023-02-16 16:14:46       Code 401      Message User not authenticated,..      ClientAddr ::1
+2023-02-16 16:42:55       Code 401      Message Session expired      ClientAddr ::1
+2023-02-16 16:52:19       Code 42S02      Message SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ess.checklists' doesn't exist (SQL: select * from `checklists`)      ClientAddr ::1
+2023-02-16 16:52:45       Code 42S02      Message SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ess.checklists' doesn't exist (SQL: select * from `checklists`)      ClientAddr ::1
+2023-02-16 16:57:09       Code 42S02      Message SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ess.checklists' doesn't exist (SQL: select * from `checklists`)      ClientAddr ::1
+2023-02-16 16:57:43       Code 42S02      Message SQLSTATE[42S02]: Base table or view not found: 1146 Table 'ess.checklists' doesn't exist (SQL: select * from `checklists`)      ClientAddr ::1

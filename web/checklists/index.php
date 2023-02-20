@@ -53,10 +53,10 @@ $checklists = $builder->getChecklists();
 		                      <a class="dropdown-item delete_survey" href="javascript:void(0)" data-id="<?php echo $row['id'] ?>">Delete</a>
 		                    </div> -->
                                 <div class="btn-group">
-                                    <a href="./index?page=checklists-edit&id=<?php echo $row['id'] ?>" class="btn btn-primary btn-flat">
+                                    <a href="./index?page=checklists-edit&id=<?php echo $checklist->id ?>" class="btn btn-primary btn-flat">
                                         <i class="fas fa-edit"></i>
                                     </a>
-                                    <a href="./index?page=checklists-view&id=<?php echo $row['id'] ?>" class="btn btn-info btn-flat">
+                                    <a href="./index?page=checklists-view&id=<?php echo $checklist->id ?>" class="btn btn-info btn-flat">
                                         <i class="fas fa-eye"></i>
                                     </a>
                                     <button type="button" class="btn btn-danger btn-flat delete_survey" data-id="<?php echo $checklist->id ?>">

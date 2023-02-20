@@ -76,7 +76,7 @@ if (isset($_GET['id'])) {
 			.then(response => {
 				btnSaveEventType.removeAttribute('disabled')
 				if (response.code === 200) {
-					window.location.replace("index?page=checklist")
+					window.location.replace("index?page=checklists")
 				} else throw new Error(response.message)
 				// hideModal(dialogId)
 			})

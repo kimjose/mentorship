@@ -38,6 +38,13 @@
     let sectionId = ''
     let formSection = document.getElementById('formSection')
     let btnSaveSection = document.getElementById('btnSaveSection')
+
+    $("#modalSection").on("hide.bs.modal", () => {
+        sectionId = ''
+        formSection.reset()
+    });
+
+
     const saveSection = () => {
         let formData = new FormData(formSection);
         let section = {};
@@ -75,5 +82,12 @@
                 console.log(error.message);
                 toastr.error(error.message)
             })
+    }
+
+
+    function editSection(id, title, abbr) {
+        sectionId = id
+        formSection.querySelector('#inputTitle').value = title
+        formSection.querySelector('#inputAbbr').value = abbr
     }
 </script>

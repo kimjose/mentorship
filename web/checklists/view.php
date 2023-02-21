@@ -71,7 +71,7 @@ endif;
 
 						<div class="row p-2">
 							<h4>Questions</h4>
-							<button class="btn btn-primary btn-icon-split ml-auto float-right" data-toggle="modal" data-target="#modalSection">
+							<button class="btn btn-primary btn-icon-split ml-auto float-right" onclick='newQuestion(<?php echo $section->id ?>)'>
 								<span class="icon text-white-50"><i class="fa fa-plus"></i> </span>
 								<span class="text"> Add Question</span>
 							</button>
@@ -104,5 +104,16 @@ endif;
 
 <script>
 
+	function editQuestion(){
+
+	}
+
+	function newQuestion(sectionId){
+		uni_modal("New Question",`checklists/dialog_add_question.php?section_id=${sectionId}`,"large")
+	}
+
+	function editQuestion(sectionId, id){
+		uni_modal("New Question",`manage_question.php?section_id=${sectionId}&id=${id}`,"large")
+	}
 
 </script>

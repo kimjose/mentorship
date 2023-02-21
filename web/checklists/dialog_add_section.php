@@ -13,7 +13,7 @@
                 <div class="modal-body">
                     <div class="form-group">
                         <label for="inputTitle">Title</label>
-                        <input type="text" class="form-control" id="inputTitle" placeholder="Enter venue name" name="title" required>
+                        <input type="text" class="form-control" id="inputTitle" placeholder="Enter Section Title" name="title" required>
                     </div>
 
                     <div class="form-group">

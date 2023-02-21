@@ -4,6 +4,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class Question extends Model{
 
-    protected $fillable = ["question", "type", 'options', "order", "frequency", "section_id", "created_by"];
+    protected $fillable = ["question", "type", 'frm_option', "order", "frequency", "section_id", "created_by"];
 
 }

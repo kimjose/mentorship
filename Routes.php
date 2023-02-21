@@ -35,8 +35,7 @@ $router->post("/api/section/{id}", function($id){
 });
 $router->post("/api/question", function(){
     $builder = new QuestionsBuilder();
-    $data = json_decode(file_get_contents('php://input'), true);
-    $builder->addQuestion($data);
+    $builder->addQuestion($_POST);
 });
 $router->post("/api/question/{id}", function($id){
     $builder = new QuestionsBuilder();

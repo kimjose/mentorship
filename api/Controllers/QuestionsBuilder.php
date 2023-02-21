@@ -98,11 +98,35 @@ class QuestionsBuilder extends Controller
     public function addQuestion($data)
     {
         try {
-            $attributes = ["question", "type", 'options', "order", "frequency", "section_id"];
-            $missing = Utility::checkMissingAttributes($data, $attributes);
-            throw_if(sizeof($missing) > 0, new \Exception("Missing parameters passed : " . json_encode($missing)));
-            $data['created_by'] = $this->user->id;
-            Question::create($data);
+            $question = $data['question'];
+            $type = $data['type'];
+            $labels = $data['label'];
+            $frmOption = '';
+            echo 'Labels are,....' . json_encode($labels);
+            if ($type != 'textfield_s') {
+                $arr = array();
+                foreach ($labels as $k => $v) {
+                    $i = 0;
+                    while ($i == 0) {
+                        $k = substr(str_shuffle(str_repeat($x = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ', ceil(5 / strlen($x)))), 1, 5);
+                        if (!isset($arr[$k]))
+                            $i = 1;
+                    }
+                    $arr[$k] = $v;
+                }
+                
+                $frmOption = json_encode($arr);
+            }
+            $q = Question::create([
+                "question" => $question, "type" => $type, 'frm_option' => $frmOption, "section_id" => $data['section_id'], "created_by" => $this->user->id
+            ]);
+            // $attributes = ["question", "type", 'options', "order", "frequency", "section_id"];
+            // $missing = Utility::checkMissingAttributes($data, $attributes);
+            // throw_if(sizeof($missing) > 0, new \Exception("Missing parameters passed : " . json_encode($missing)));
+            // $data['created_by'] = $this->user->id;
+            // Question::create($data);
+            if($q == null) throw new \Exception("Error Processing Request", 1);
+            
             self::response(SUCCESS_RESPONSE_CODE, "Question added successfully");
         } catch (\Throwable $th) {
             Utility::logError($th->getCode(), $th->getMessage());

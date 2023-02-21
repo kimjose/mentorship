@@ -38,7 +38,7 @@
   <div class="col-12">
     <div class="card">
       <div class="card-body">
-        Welcome <?php echo $currUser->firstname . ' ' . $currUser->lastname ?>!
+        Welcome <?php echo $currUser->first_name . ' ' . $currUser->last_name ?>!
       </div>
     </div>
   </div>

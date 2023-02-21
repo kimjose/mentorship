@@ -1,6 +1,6 @@
 <?php include 'db_connect.php' ?>
 <?php 
-$answers = $conn->query("SELECT distinct(survey_id) from answers where user_id ={$_SESSION['login_id']}");
+$answers = $conn->query("SELECT distinct(survey_id) from answers where user_id ={$currUser->id}");
 $ans = array();
 while($row=$answers->fetch_assoc()){
 	$ans[$row['survey_id']] = 1;

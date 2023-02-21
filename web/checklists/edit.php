@@ -74,14 +74,14 @@ if (isset($_GET['id'])) {
 				return response.json()
 			})
 			.then(response => {
-				btnSaveEventType.removeAttribute('disabled')
+				btnSaveChecklist.removeAttribute('disabled')
 				if (response.code === 200) {
 					window.location.replace("index?page=checklists")
 				} else throw new Error(response.message)
 				// hideModal(dialogId)
 			})
 			.catch(error => {
-				if (btnSaveEventType.hasAttribute('disabled')) btnSaveEventType.removeAttribute('disabled')
+				if (btnSaveChecklist.hasAttribute('disabled')) btnSaveChecklist.removeAttribute('disabled')
 				console.log(error.message);
 				toastr.error(error.message)
 			})

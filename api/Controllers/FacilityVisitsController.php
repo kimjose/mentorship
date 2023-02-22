@@ -24,7 +24,7 @@ class FacilityVisitsController extends Controller
             $attributes = ['facility_id', 'visit_date'];
             $missing = Utility::checkMissingAttributes($data, $attributes);
             throw_if(sizeof($missing) > 0, new \Exception("Missing parameters passed : " . json_encode($missing)));
-            $existing = FacilityVisit::where('facility_id', $data['facility_id'])->where('visit_date', $data['facility_id'])->first();
+            $existing = FacilityVisit::where('facility_id', $data['facility_id'])->where('visit_date', $data['visit_date'])->first();
             if ($existing) throw new \Exception("A similar visit already exists", 1);
             $data['created_by'] = $this->user->id;
             FacilityVisit::create($data);
@@ -41,7 +41,7 @@ class FacilityVisitsController extends Controller
             $attributes = ['facility_id', 'visit_date'];
             $missing = Utility::checkMissingAttributes($data, $attributes);
             throw_if(sizeof($missing) > 0, new \Exception("Missing parameters passed : " . json_encode($missing)));
-            $existing = FacilityVisit::where('facility_id', $data['facility_id'])->where('visit_date', $data['facility_id'])->where('id', '!=', $id)->first();
+            $existing = FacilityVisit::where('facility_id', $data['facility_id'])->where('visit_date', $data['visit_date'])->where('id', '!=', $id)->first();
             if ($existing) throw new \Exception("A similar visit already exists", 1);
             $visit = FacilityVisit::findOrFail($id);
             $visit->update($data);

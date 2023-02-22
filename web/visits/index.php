@@ -87,7 +87,7 @@ $inActiveBadge = "<span class='badge badge-warning rounded-pill'>In Active</span
                     <div class="form-group">
                         <label for="selectFacility">Facility</label>
                         <select name="county_code" id="selectFacility" class="form-control select2">
-                            <option value="" hidden selected>Select Facility</option>
+                            <option value="" hidden disabled selected>Select Facility</option>
                             <?php
 
                             $facilities = \Umb\Mentorship\Models\Facility::all();
@@ -130,6 +130,7 @@ $inActiveBadge = "<span class='badge badge-warning rounded-pill'>In Active</span
         $("#modalVisit").on("hide.bs.modal", () => {
             editedId = ''
             document.querySelector("#formVisit").reset()
+            $(selectFacility).select2()
         });
     }
 

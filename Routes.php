@@ -1,6 +1,7 @@
 <?php
 
 use Bramus\Router\Router;
+use Umb\Mentorship\Controllers\FacilitiesController;
 use Umb\Mentorship\Controllers\QuestionsBuilder;
 
 require_once __DIR__ . "/vendor/autoload.php";
@@ -44,5 +45,15 @@ $router->post("/api/question/{id}", function($id){
 });
 
 
+$router->post('/api/facility', function () {
+    $data = json_decode(file_get_contents('php://input'), true);
+    $controller = new FacilitiesController();
+    $controller->addFacility($data);
+});
+$router->post('/api/facility/{id}', function ($id) {
+    $data = json_decode(file_get_contents('php://input'), true);
+    $controller = new FacilitiesController();
+    $controller->updateFacility($id, $data);
+});
 // Thunderbirds are go!
 $router->run();

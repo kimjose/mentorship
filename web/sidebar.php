@@ -77,7 +77,15 @@
                 Checklist Report
               </p>
             </a>
-          </li>     
+          </li> 
+          <li class="nav-item">
+            <a href="./index?page=facilities" class="nav-link nav-facilities">
+              <i class="nav-icon fa fa-building"></i>
+              <p>
+                Facilities
+              </p>
+            </a>
+          </li>      
         <?php else: ?>
           <li class="nav-item">
             <a href="./index?page=survey_widget" class="nav-link nav-survey_widget nav-answer_survey">

@@ -84,14 +84,14 @@ endif;
 						<div class="justify-content-center">
 							<?php
 							foreach ($section->questions as $question) :
-								echo $question->question
+								
 							?>
 								<div class="callout callout-info">
 									<div class="row">
 										<div class="col-md-12">
 											<span class="dropleft float-right">
 												<a class="fa fa-ellipsis-v text-dark" href="javascript:void(0)" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></a>
-												<div class="dropdown-menu" style="">
+												<div class="dropdown-menu" >
 													<a class="dropdown-item edit_question text-dark" href="javascript:void(0)" data-id="<?php echo $question->id ?>">Edit</a>
 													<div class="dropdown-divider"></div>
 													<a class="dropdown-item delete_question text-dark" href="javascript:void(0)" data-id="<?php echo $question->id ?>">Delete</a>

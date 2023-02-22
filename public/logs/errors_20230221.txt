@@ -8,3 +8,16 @@
 2023-02-21 08:22:57       Code 42S22      Message SQLSTATE[42S22]: Column not found: 1054 Unknown column 'section_id' in 'where clause' (SQL: select * from `questions` where `section_id` = 2)      ClientAddr ::1
 2023-02-21 08:23:05       Code 42S22      Message SQLSTATE[42S22]: Column not found: 1054 Unknown column 'section_id' in 'where clause' (SQL: select * from `questions` where `section_id` = 2)      ClientAddr ::1
 2023-02-21 08:32:41       Code 42S22      Message SQLSTATE[42S22]: Column not found: 1054 Unknown column 'section_id' in 'where clause' (SQL: select * from `questions` where `section_id` = 2)      ClientAddr ::1
+2023-02-21 11:03:10       Code 401      Message Session expired      ClientAddr ::1
+2023-02-21 11:03:10       Code 401      Message User not authenticated,..      ClientAddr ::1
+2023-02-21 11:03:14       Code 401      Message User not authenticated,..      ClientAddr ::1
+2023-02-21 11:03:14       Code 401      Message User not authenticated,..      ClientAddr ::1
+2023-02-21 11:03:15       Code 401      Message User not authenticated,..      ClientAddr ::1
+2023-02-21 11:03:15       Code 401      Message User not authenticated,..      ClientAddr ::1
+2023-02-21 11:10:38       Code 401      Message User not authenticated,..      ClientAddr ::1
+2023-02-21 11:10:38       Code 401      Message User not authenticated,..      ClientAddr ::1
+2023-02-21 11:10:38       Code 401      Message User not authenticated,..      ClientAddr ::1
+2023-02-21 11:11:05       Code 42S22      Message SQLSTATE[42S22]: Column not found: 1054 Unknown column 'section_id' in 'where clause' (SQL: select * from `questions` where `section_id` = 2)      ClientAddr ::1
+2023-02-21 11:11:16       Code 42S22      Message SQLSTATE[42S22]: Column not found: 1054 Unknown column 'section_id' in 'where clause' (SQL: select * from `questions` where `section_id` = 2)      ClientAddr ::1
+2023-02-21 16:36:47       Code 401      Message Session expired      ClientAddr ::1
+2023-02-21 16:37:34       Code 42S22      Message SQLSTATE[42S22]: Column not found: 1054 Unknown column 'section_id' in 'where clause' (SQL: select * from `questions` where `section_id` = 2)      ClientAddr ::1

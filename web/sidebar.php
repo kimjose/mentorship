@@ -85,6 +85,14 @@
                 Facilities
               </p>
             </a>
+          </li>
+          <li class="nav-item">
+            <a href="./index?page=visits" class="nav-link nav-visits">
+              <i class="nav-icon fa fa-clipboard"></i>
+              <p>
+                Facility Visits
+              </p>
+            </a>
           </li>      
         <?php else: ?>
           <li class="nav-item">

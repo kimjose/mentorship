@@ -4,6 +4,7 @@ namespace Umb\Mentorship\Controllers;
 
 use Umb\Mentorship\Controllers\Utils\Utility;
 use Umb\Mentorship\Models\FacilityVisit;
+use Umb\Mentorship\Models\VisitSection;
 
 class FacilityVisitsController extends Controller
 {
@@ -51,4 +52,30 @@ class FacilityVisitsController extends Controller
             $this->response(PRECONDITION_FAILED_ERROR_CODE, $th->getMessage());
         }
     }
+
+    public function openVisitSection($data){
+        try {
+            $attributes = ['visit_id', 'section_id'];
+            $missing = Utility::checkMissingAttributes($data, $attributes);
+            throw_if(sizeof($missing) > 0, new \Exception("Missing parameters passed : " . json_encode($missing)));
+            $visitId = $data['visit_id'];
+            $sectionId = $data['section_id'];
+            $userId = $this->user->id;
+            // $openedByOther = VisitSection::where(function($q) use($userId, $sectionId, $visitId){
+            //     $q->where('visit_id', $visitId);
+            //     $q->where('section_id', $sectionId);
+            //     $q->where('user_id', '!=', $userId);
+            // })->get();
+            $openedByOther = VisitSection::where('visit_id', $visitId)->where('section_id', $sectionId)->first();
+            if($openedByOther == null){
+                $data['user_id'] = $userId;
+                VisitSection::create($data);
+            } elseif($openedByOther->user_id != $userId) throw new \Exception("This section has been opened by another user", 1);
+            $this->response(SUCCESS_RESPONSE_CODE, 'Go one;.... 🤸');
+        } catch (\Throwable $th) {
+            Utility::logError($th->getCode(), $th->getMessage());
+            $this->response(PRECONDITION_FAILED_ERROR_CODE, $th->getMessage());
+        }
+    }
+
 }

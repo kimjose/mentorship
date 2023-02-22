@@ -87,7 +87,7 @@
             </a>
           </li>
           <li class="nav-item">
-            <a href="./index?page=visits" class="nav-link nav-visits">
+            <a href="./index?page=visits" class="nav-link nav-visits nav-visits-open">
               <i class="nav-icon fa fa-clipboard"></i>
               <p>
                 Facility Visits

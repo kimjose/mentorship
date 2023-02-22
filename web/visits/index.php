@@ -55,6 +55,9 @@ $inActiveBadge = "<span class='badge badge-warning rounded-pill'>In Active</span
                                     <button class="btn btn-primary btn-flat" data-tooltip="tooltip" title="Edit Visit" onclick='editVisit(<?php echo json_encode($visit); ?>)' data-toggle="modal" data-target="#modalVisit">
                                         <i class="fas fa-edit"></i>
                                     </button>
+                                    <a href="index?page=visits-open&id=<?php echo $visit->id ?>" class="btn btn-secondary btn-flat" data-tooltip="tooltip" title="Open Visit">
+                                        <i class="fas fa-fw fa-sign-in-alt"></i>
+                                    </a>
                                     <button type="button" class="btn btn-danger btn-flat delete_visit" data-tooltip="tooltip" title="Delete Visit" data-id="<?php echo $visit->id ?>" onclick='deleteVisit(<?php echo json_encode($visit); ?>)'>
                                         <i class="fas fa-trash"></i>
                                     </button>

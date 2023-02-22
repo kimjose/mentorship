@@ -5,6 +5,7 @@ use Umb\Mentorship\Controllers\Controller;
 use Umb\Mentorship\Controllers\QuestionsBuilder;
 use Umb\Mentorship\Controllers\FacilitiesController;
 use Umb\Mentorship\Controllers\FacilityVisitsController;
+use Umb\Mentorship\Models\VisitSection;
 
 require_once __DIR__ . "/vendor/autoload.php";
 
@@ -61,16 +62,33 @@ $router->get('/api/visits', function(){
     $controller = new FacilityVisitsController();
     Controller::response(SUCCESS_RESPONSE_CODE, '', $controller->getVisits());
 });
-$router->POST('/api/visit', function(){
+$router->post('/api/visit', function(){
     $data = json_decode(file_get_contents('php://input'), true);
     $controller = new FacilityVisitsController();
     $controller->createVisit($data);
 });
 
-$router->POST('/api/visit/{id}', function($id){
+$router->post('/api/visit/{id}', function($id){
     $data = json_decode(file_get_contents('php://input'), true);
     $controller = new FacilityVisitsController();
     $controller->updateVisit($id, $data);
 });
+$router->post('/api/visit_section', function(){
+    try {
+        VisitSection::create([
+            'visit_id'=> 3, 'section_id' => 1, 'user_id' => 1
+        ]);
+    } catch (\Throwable $th) {
+        echo $th->getMessage();
+    }
+});
+$router->get('/api/visit_sections', function(){
+    try {
+        Controller::response(SUCCESS_RESPONSE_CODE, 'Voala', VisitSection::find([3, 1]));
+    } catch (\Throwable $th) {
+        echo $th->getMessage();
+    }
+});
+
 // Thunderbirds are go!
 $router->run();

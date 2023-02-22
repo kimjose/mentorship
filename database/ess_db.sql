@@ -26,7 +26,7 @@ CREATE TABLE `answers` (
   `id` int NOT NULL AUTO_INCREMENT,
   `survey_id` int NOT NULL,
   `user_id` int NOT NULL,
-  `answer` text NOT NULL,
+  `answer` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `question_id` int NOT NULL,
   `date_created` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
@@ -52,20 +52,16 @@ DROP TABLE IF EXISTS `checklists`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `checklists` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `title` varchar(199) NOT NULL,
-  `abbr` varchar(10) NOT NULL COMMENT 'Abbreviation...',
-  `description` varchar(250) NOT NULL DEFAULT '',
+  `title` varchar(199) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `abbr` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'Abbreviation...',
+  `description` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '',
   `created_by` int NOT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `fk_checklist_created_by` (`created_by`),
   CONSTRAINT `fk_checklist_created_by` FOREIGN KEY (`created_by`) REFERENCES `users` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
-<<<<<<< HEAD
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-=======
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
->>>>>>> 21c579d53b433b14959097e3533ae5583f07f5c1
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -159,11 +155,7 @@ CREATE TABLE `facility_visits` (
   KEY `fk_visit_creator` (`created_by`),
   CONSTRAINT `fk_visit_creator` FOREIGN KEY (`created_by`) REFERENCES `users` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
   CONSTRAINT `fk_visit_facility` FOREIGN KEY (`facility_id`) REFERENCES `facilities` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
-<<<<<<< HEAD
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-=======
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
->>>>>>> 21c579d53b433b14959097e3533ae5583f07f5c1
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -215,9 +207,9 @@ DROP TABLE IF EXISTS `questions`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `questions` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `question` text NOT NULL,
-  `frm_option` text NOT NULL,
-  `type` varchar(50) NOT NULL,
+  `question` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `frm_option` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `type` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `order_by` int NOT NULL DEFAULT '0',
   `section_id` int NOT NULL,
   `date_created` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -251,8 +243,8 @@ DROP TABLE IF EXISTS `sections`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `sections` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `title` varchar(199) NOT NULL,
-  `abbr` varchar(10) NOT NULL COMMENT 'Abbreviation...',
+  `title` varchar(199) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `abbr` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'Abbreviation...',
   `checklist_id` int NOT NULL,
   `created_by` int NOT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
@@ -360,4 +352,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-02-22 17:12:04
+-- Dump completed on 2023-02-22 17:19:19

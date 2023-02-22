@@ -66,7 +66,7 @@ $notOpenedBadge = "<span class='badge badge-warning rounded-pill'>Not Opened</sp
                                     </td>
                                     <td class="text-center">
                                         <div class="btn-group">
-                                            <button class="btn btn-primary btn-flat"  data-tooltip="tooltip" title="Edit Section" onclick='openSection(<?php echo json_encode($visit); ?>)'>
+                                            <button class="btn btn-primary btn-flat"  data-tooltip="tooltip" title="Edit Section" onclick='openSection("<?php echo $section->id; ?>")'>
                                                 <i class="fas fa-edit"></i>
                                             </button>
                                         </div>
@@ -84,7 +84,12 @@ $notOpenedBadge = "<span class='badge badge-warning rounded-pill'>Not Opened</sp
 
 
 <script>
-    function openSection() {
+    const visitId = '<?php echo $id ?>'
 
+    function openSection(sectionId) {
+        fetch('../api/open_visit_section', {
+            method: 'POST',
+            body:
+        })
     }
 </script>

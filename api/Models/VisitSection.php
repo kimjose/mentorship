@@ -9,6 +9,6 @@ class VisitSection extends Model{
 
     public $primaryKey = ['visit_id', 'section_id'];
 
-    public $increments = false;
+    public $incrementing = false;
 
 }

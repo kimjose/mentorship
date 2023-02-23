@@ -5,6 +5,8 @@ namespace Umb\Mentorship\Controllers;
 use Umb\Mentorship\Controllers\Utils\Utility;
 use Umb\Mentorship\Models\FacilityVisit;
 use Umb\Mentorship\Models\VisitSection;
+use Illuminate\Database\Capsule\Manager as DB;
+use Umb\Mentorship\Models\Response;
 
 class FacilityVisitsController extends Controller
 {
@@ -71,8 +73,37 @@ class FacilityVisitsController extends Controller
                 $data['user_id'] = $userId;
                 VisitSection::create($data);
             } elseif($openedByOther->user_id != $userId) throw new \Exception("This section has been opened by another user", 1);
-            $this->response(SUCCESS_RESPONSE_CODE, 'Go one;.... 🤸');
+            $this->response(SUCCESS_RESPONSE_CODE, 'Go on;.... 🤸');
         } catch (\Throwable $th) {
+            Utility::logError($th->getCode(), $th->getMessage());
+            $this->response(PRECONDITION_FAILED_ERROR_CODE, $th->getMessage());
+        }
+    }
+
+    public function submitResponse($data){
+        try {
+            extract($data);
+            DB::beginTransaction();
+            foreach($qid as $k => $v){
+                $prevResponse = Response::where('visit_id', $visit_id)->where('question_id', $qid[$k])->first();
+                if($prevResponse){
+                    $prevResponse->update(['answer' => '[' . implode("],[", $answer[$k]). "] "]);
+                } else{
+                    $response = [
+                        "visit_id" => $visit_id, "question_id" => $qid[$k], "created_by" => $this->user->id
+                    ];
+                    if($type[$k] == 'check_opt'){
+                        $response["answer"] = '[' . implode("],[", $answer[$k]). "] ";
+                    }else{
+                        $response['answer'] = $answer[$k];
+                    }
+                    Response::create($response);
+                }
+			}
+            DB::commit();
+            $this->response(SUCCESS_RESPONSE_CODE, 'Response submitted successfully.');
+        } catch (\Throwable $th) {
+            DB::rollBack();
             Utility::logError($th->getCode(), $th->getMessage());
             $this->response(PRECONDITION_FAILED_ERROR_CODE, $th->getMessage());
         }

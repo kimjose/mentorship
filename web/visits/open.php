@@ -87,9 +87,25 @@ $notOpenedBadge = "<span class='badge badge-warning rounded-pill'>Not Opened</sp
     const visitId = '<?php echo $id ?>'
 
     function openSection(sectionId) {
+        let data = {
+            section_id: sectionId, visit_id: visitId
+        }
         fetch('../api/open_visit_section', {
             method: 'POST',
-            body:
+            body: JSON.stringify(data)
+        })
+        .then(response => {
+            return response.json()
+        })
+        .then(response => {
+            if(response.code === 200){
+                window.location.replace(`index?page=visits-_section&visit=${visitId}&section=${sectionId}`)
+            } else{
+                throw new Error(response.message)
+            }
+        })
+        .catch(err => {
+            toastr.error(err.message)
         })
     }
 </script>

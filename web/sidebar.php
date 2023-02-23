@@ -5,7 +5,7 @@
         <span class="brand-text font-weight-light"><?php echo ucwords($currUser->first_name.' '.$currUser->last_name) ?></span>
 
       </a>
-      <div class="dropdown-menu" style="">
+      <div class="dropdown-menu">
         <a class="dropdown-item manage_account" href="javascript:void(0)" data-id="<?php echo $currUser->id ?>">Manage Account</a>
         <div class="dropdown-divider"></div>
         <a class="dropdown-item" href="ajax?action=logout">Logout</a>

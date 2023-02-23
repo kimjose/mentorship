@@ -115,4 +115,16 @@ class FacilityVisitsController extends Controller
             $this->response(PRECONDITION_FAILED_ERROR_CODE, $th->getMessage());
         }
     }
+
+    public function createActionPoint($data){
+        try {
+            $attributes = ['visit_id', 'section_id'];
+            $missing = Utility::checkMissingAttributes($data, $attributes);
+            throw_if(sizeof($missing) > 0, new \Exception("Missing parameters passed : " . json_encode($missing)));
+        } catch (\Throwable $th) {
+            Utility::logError($th->getCode(), $th->getMessage());
+            $this->response(PRECONDITION_FAILED_ERROR_CODE, $th->getMessage());
+        }
+    }
+
 }

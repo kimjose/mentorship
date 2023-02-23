@@ -87,13 +87,13 @@ class FacilityVisitsController extends Controller
             foreach($qid as $k => $v){
                 $prevResponse = Response::where('visit_id', $visit_id)->where('question_id', $qid[$k])->first();
                 if($prevResponse){
-                    $prevResponse->update(['answer' => '[' . implode("],[", $answer[$k]). "] "]);
+                    $prevResponse->update(['answer' => implode(", ", $answer[$k])]);
                 } else{
                     $response = [
                         "visit_id" => $visit_id, "question_id" => $qid[$k], "created_by" => $this->user->id
                     ];
                     if($type[$k] == 'check_opt'){
-                        $response["answer"] = '[' . implode("],[", $answer[$k]). "] ";
+                        $response["answer"] = implode(",", $answer[$k]);
                     }else{
                         $response['answer'] = $answer[$k];
                     }

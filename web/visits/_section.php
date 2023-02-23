@@ -2,6 +2,7 @@
 
 use Umb\Mentorship\Models\Section;
 use Umb\Mentorship\Models\Question;
+use Umb\Mentorship\Models\Response;
 use Umb\Mentorship\Models\VisitSection;
 
 if (!isset($_GET['visit']) || !isset($_GET['section'])) :
@@ -33,20 +34,26 @@ $questions = Question::where('section_id', $sectionId)->get();
             <input type="hidden" name="visit_id" value="<?php echo $visitId ?>">
             <input type="hidden" name="section_id" value="<?php echo $sectionId ?>">
             <?php foreach ($questions as $question) :
+                $response = Response::where('question_id', $question->id)->where('visit_id', $visitId)->first();
             ?>
                 <div class="callout callout-info">
-						<input type="hidden" name="qid[<?php echo $question->id ?>]" value="<?php echo $question->id ?>">	
-						<input type="hidden" name="type[<?php echo $question->id ?>]" value="<?php echo $question->type ?>">	
+                    <input type="hidden" name="qid[<?php echo $question->id ?>]" value="<?php echo $question->id ?>">
+                    <input type="hidden" name="type[<?php echo $question->id ?>]" value="<?php echo $question->type ?>">
                     <h5><?php echo $question->question ?></h5>
                     <?php
                     if ($question->type == 'textfield_s') : ?>
                         <div class="form-group">
-                            <textarea name="answer[<?php echo $question->id ?>]" id="" cols="30" rows="4" class="form-control" placeholder="Write Something Here..."></textarea>
+                            <textarea name="answer[<?php echo $question->id ?>]" id="" cols="30" rows="4" class="form-control" placeholder="Write Something Here..."> <?php echo $response == null ? '' : $response->answer ?></textarea>
                         </div>
                         <?php elseif ($question->type == 'radio_opt') :
                         foreach (json_decode($question->frm_option) as $k => $v) : ?>
                             <div class="icheck-primary">
-                                <input type="radio" id="option_<?php echo $k ?>" name="answer[<?php echo $question->id ?>]" value="<?php echo $k ?>" checked="">
+                                <input type="radio" id="option_<?php echo $k ?>" name="answer[<?php echo $question->id ?>]" value="<?php echo $k ?>" <?php
+                                                                                                                                                            if ($response != null) {
+                                                                                                                                                                $ans = explode(',', $response->answer);
+                                                                                                                                                                if (in_array($k, $ans)) echo 'checked';
+                                                                                                                                                            }
+                                                                                                                                                            ?> >
                                 <label for="option_<?php echo $k ?>"><?php echo $v ?></label>
                             </div>
                         <?php endforeach;
@@ -54,7 +61,12 @@ $questions = Question::where('section_id', $sectionId)->get();
                         foreach (json_decode($question->frm_option) as $k => $v) :
                         ?>
                             <div class="icheck-primary">
-                                <input type="checkbox" id="option_<?php echo $k ?>" name="answer[<?php echo $question->id ?>][]" value="<?php echo $k ?>">
+                                <input type="checkbox" id="option_<?php echo $k ?>" name="answer[<?php echo $question->id ?>][]" value="<?php echo $k ?>" <?php
+                                                                                                                                                            if ($response != null) {
+                                                                                                                                                                $ans = explode(',', $response->answer);
+                                                                                                                                                                if (in_array($k, $ans)) echo 'checked';
+                                                                                                                                                            }
+                                                                                                                                                            ?>>
                                 <label for="option_<?php echo $k ?>"><?php echo $v ?></label>
                             </div>
                     <?php endforeach;

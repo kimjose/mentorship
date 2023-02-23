@@ -55,7 +55,8 @@ class FacilityVisitsController extends Controller
         }
     }
 
-    public function openVisitSection($data){
+    public function openVisitSection($data)
+    {
         try {
             $attributes = ['visit_id', 'section_id'];
             $missing = Utility::checkMissingAttributes($data, $attributes);
@@ -69,10 +70,10 @@ class FacilityVisitsController extends Controller
             //     $q->where('user_id', '!=', $userId);
             // })->get();
             $openedByOther = VisitSection::where('visit_id', $visitId)->where('section_id', $sectionId)->first();
-            if($openedByOther == null){
+            if ($openedByOther == null) {
                 $data['user_id'] = $userId;
                 VisitSection::create($data);
-            } elseif($openedByOther->user_id != $userId) throw new \Exception("This section has been opened by another user", 1);
+            } elseif ($openedByOther->user_id != $userId) throw new \Exception("This section has been opened by another user", 1);
             $this->response(SUCCESS_RESPONSE_CODE, 'Go on;.... 🤸');
         } catch (\Throwable $th) {
             Utility::logError($th->getCode(), $th->getMessage());
@@ -80,26 +81,32 @@ class FacilityVisitsController extends Controller
         }
     }
 
-    public function submitResponse($data){
+    public function submitResponse($data)
+    {
         try {
             extract($data);
             DB::beginTransaction();
-            foreach($qid as $k => $v){
+            foreach ($qid as $k => $v) {
                 $prevResponse = Response::where('visit_id', $visit_id)->where('question_id', $qid[$k])->first();
-                if($prevResponse){
-                    $prevResponse->update(['answer' => implode(", ", $answer[$k])]);
-                } else{
+
+                if ($prevResponse) {
+                    if ($type[$k] == 'check_opt') {
+                        $prevResponse->update(['answer' => implode(",", $answer[$k])]);
+                    } else {
+                        $prevResponse->update(['answer' => trim($answer[$k])]);
+                    }
+                } else {
                     $response = [
                         "visit_id" => $visit_id, "question_id" => $qid[$k], "created_by" => $this->user->id
                     ];
-                    if($type[$k] == 'check_opt'){
+                    if ($type[$k] == 'check_opt') {
                         $response["answer"] = implode(",", $answer[$k]);
-                    }else{
-                        $response['answer'] = $answer[$k];
+                    } else {
+                        $response['answer'] = trim($answer[$k]);
                     }
                     Response::create($response);
                 }
-			}
+            }
             DB::commit();
             $this->response(SUCCESS_RESPONSE_CODE, 'Response submitted successfully.');
         } catch (\Throwable $th) {
@@ -108,5 +115,4 @@ class FacilityVisitsController extends Controller
             $this->response(PRECONDITION_FAILED_ERROR_CODE, $th->getMessage());
         }
     }
-
 }

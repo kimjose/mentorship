@@ -265,7 +265,7 @@ $id = $_GET['id'];
                 question[key] = value
             }
             start_load()
-            
+
 
             $.ajax({
                 url: '../api/question',
@@ -276,12 +276,17 @@ $id = $_GET['id'];
                 method: 'POST',
                 type: 'POST',
                 success: function(resp) {
-                    if (resp == 1) {
+                    if (resp.code == 200) {
                         alert_toast('Data successfully saved.', "success");
                         setTimeout(function() {
                             location.reload()
                         }, 1500)
+                    } else {
+                        toastr.error(resp.message)
                     }
+                },
+                error: function(request, status, error) {
+                    alert(request.responseText);
                 }
             })
         })

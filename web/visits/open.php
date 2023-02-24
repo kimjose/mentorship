@@ -1,5 +1,6 @@
 <?php
 
+use Umb\Mentorship\Models\ActionPoint;
 use Umb\Mentorship\Models\Checklist;
 use Umb\Mentorship\Models\FacilityVisit;
 use Umb\Mentorship\Models\Section;
@@ -39,7 +40,7 @@ $notOpenedBadge = "<span class='badge badge-warning rounded-pill'>Not Opened</sp
     <div class="card-body">
         <div class="tab-content" id="tabContentVisit">
             <div class="tab-pane fade show active" id="tabContentSections" role="tabpanel" aria-labelledby="custom-tabs-four-home-tab">
-
+                <h3>Checklists</h3>
 
                 <?php foreach ($checklists as $checklist) :
                     $sections = Section::where('checklist_id', $checklist->id)->get();
@@ -97,11 +98,38 @@ $notOpenedBadge = "<span class='badge badge-warning rounded-pill'>Not Opened</sp
                     </div>
                 <?php endforeach; ?>
 
-
+                
             </div>
+            <!-- Tab Action points -->
             <div class="tab-pane fade show" id="tabContentActionPoints" role="tabpanel" aria-labelledby="custom-tabs-four-home-tab">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <th>Question</th>
+                            <th>Action Point</th>
+                            <th>Description</th>
+                            <th>Assigned To</th>
+                            <th>Created By</th>
+                        </thead>
 
+                        <tbody>
+                            <?php
+                                $aps = ActionPoint::where('visit_id', $visit->id)->get();
+                                foreach($aps as $ap):
+                            ?>
+                            <tr>
+                                <td><?php echo $ap->question()->question ?></td>
+                                <td><?php echo $ap->title ?></td>
+                                <td><?php echo $ap->description ?></td>
+                                <td></td>
+                                <td><?php echo $ap->creator()->first_name . ' ' . $ap->creator()->last_name ?></td>
+                            </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
             </div>
+            <!-- Tab Action points end -->
         </div>
     </div>
 </div>

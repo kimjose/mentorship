@@ -108,6 +108,7 @@ class FacilityVisitsController extends Controller
                     Response::create($response);
                 }
             }
+            DB::statement("update visit_sections set submitted = 1 where visit_id={$visit_id} and section_id = {$section_id}");
             DB::commit();
             $this->response(SUCCESS_RESPONSE_CODE, 'Response submitted successfully.');
         } catch (\Throwable $th) {

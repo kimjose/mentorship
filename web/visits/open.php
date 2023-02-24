@@ -24,6 +24,7 @@ $checklists = Checklist::all();
 
 $openedBadge = "<span class='badge badge-primary rounded-pill'>Opened</span>";
 $notOpenedBadge = "<span class='badge badge-warning rounded-pill'>Not Opened</span>";
+$submittedBadge = "<span class='badge badge-success rounded-pill'>Submitted</span>";
 ?>
 <div class="card">
     <div class="card-header card-secondary card-outline card-outline-tabs">
@@ -74,7 +75,7 @@ $notOpenedBadge = "<span class='badge badge-warning rounded-pill'>Not Opened</sp
                                                         if ($openedSection == null) {
                                                             echo $notOpenedBadge;
                                                         } else {
-                                                            echo $openedBadge . "<br>";
+                                                            echo ($openedSection->submitted ? $submittedBadge : $openedBadge) . "<br>";
                                                             $opener = User::findOrFail($openedSection->user_id);
                                                             echo $opener->first_name . " " . $opener->last_name;
                                                         }
@@ -84,6 +85,9 @@ $notOpenedBadge = "<span class='badge badge-warning rounded-pill'>Not Opened</sp
                                                         <div class="btn-group">
                                                             <button class="btn btn-primary btn-flat" data-tooltip="tooltip" title="Edit Section" onclick='openSection("<?php echo $section->id; ?>")'>
                                                                 <i class="fas fa-edit"></i>
+                                                            </button>
+                                                            <button class="btn btn-secondary btn-flat" data-tooltip="tooltip" title="View Response" onclick='viewResponse(<?php echo $section->id; ?>)'>
+                                                                <i class="fas fa-eye"></i>
                                                             </button>
                                                         </div>
                                                     </td>
@@ -98,7 +102,7 @@ $notOpenedBadge = "<span class='badge badge-warning rounded-pill'>Not Opened</sp
                     </div>
                 <?php endforeach; ?>
 
-                
+
             </div>
             <!-- Tab Action points -->
             <div class="tab-pane fade show" id="tabContentActionPoints" role="tabpanel" aria-labelledby="custom-tabs-four-home-tab">
@@ -114,16 +118,16 @@ $notOpenedBadge = "<span class='badge badge-warning rounded-pill'>Not Opened</sp
 
                         <tbody>
                             <?php
-                                $aps = ActionPoint::where('visit_id', $visit->id)->get();
-                                foreach($aps as $ap):
+                            $aps = ActionPoint::where('visit_id', $visit->id)->get();
+                            foreach ($aps as $ap) :
                             ?>
-                            <tr>
-                                <td><?php echo $ap->question()->question ?></td>
-                                <td><?php echo $ap->title ?></td>
-                                <td><?php echo $ap->description ?></td>
-                                <td></td>
-                                <td><?php echo $ap->creator()->first_name . ' ' . $ap->creator()->last_name ?></td>
-                            </tr>
+                                <tr>
+                                    <td><?php echo $ap->question()->question ?></td>
+                                    <td><?php echo $ap->title ?></td>
+                                    <td><?php echo $ap->description ?></td>
+                                    <td></td>
+                                    <td><?php echo $ap->creator()->first_name . ' ' . $ap->creator()->last_name ?></td>
+                                </tr>
                             <?php endforeach; ?>
                         </tbody>
                     </table>
@@ -134,9 +138,44 @@ $notOpenedBadge = "<span class='badge badge-warning rounded-pill'>Not Opened</sp
     </div>
 </div>
 
+<!-- Response Dialog -->
+<div class="modal fade" id="modalViewResponses" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">View Response</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-striped" id="tableResponsive">
+                    <thead>
+                        <th>Question</th>
+                        <th>Response</th>
+                    </thead>
+                    <tbody>
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Section Dialog end-->
+
 
 <script>
     const visitId = '<?php echo $id ?>'
+    const tableResponsive = document.getElementById('tableResponsive')
+
+    $(function() {
+
+    })
+
+    function viewResponse(sectionId) {
+        uni_modal("View Response", `visits/dialog_view_response.php?section_id=${sectionId}&visit_id=${visitId}`, "large")
+    }
 
     function openSection(sectionId) {
         let data = {

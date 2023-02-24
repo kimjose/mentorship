@@ -105,6 +105,11 @@ include_once __DIR__ . "/auth.php";
       <div class="modal fade" id="viewer_modal" role='dialog'>
         <div class="modal-dialog modal-md" role="document">
           <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title"></h5>
+            </div>
+            <div class="modal-body">
+            </div>
             <button type="button" class="btn-close" data-dismiss="modal"><span class="fa fa-times"></span></button>
             <img src="" alt="">
           </div>

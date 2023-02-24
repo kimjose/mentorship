@@ -30,7 +30,7 @@ $questions = Question::where('section_id', $sectionId)->get();
         <h3 class="card-title"> <?php echo $section->title ?> </h3>
     </div>
     <div class="card-body">
-        <form action="" id="formFillSection">
+        <form action="" id="formFillSection" onsubmit="event.preventDefault()">
             <input type="hidden" name="visit_id" value="<?php echo $visitId ?>">
             <input type="hidden" name="section_id" value="<?php echo $sectionId ?>">
             <?php foreach ($questions as $question) :
@@ -49,11 +49,11 @@ $questions = Question::where('section_id', $sectionId)->get();
                         foreach (json_decode($question->frm_option) as $k => $v) : ?>
                             <div class="icheck-primary">
                                 <input type="radio" id="option_<?php echo $k ?>" name="answer[<?php echo $question->id ?>]" value="<?php echo $k ?>" <?php
-                                                                                                                                                            if ($response != null) {
-                                                                                                                                                                $ans = explode(',', $response->answer);
-                                                                                                                                                                if (in_array($k, $ans)) echo 'checked';
-                                                                                                                                                            }
-                                                                                                                                                            ?> >
+                                                                                                                                                        if ($response != null) {
+                                                                                                                                                            $ans = explode(',', $response->answer);
+                                                                                                                                                            if (in_array($k, $ans)) echo 'checked';
+                                                                                                                                                        }
+                                                                                                                                                        ?>>
                                 <label for="option_<?php echo $k ?>"><?php echo $v ?></label>
                             </div>
                         <?php endforeach;
@@ -71,12 +71,19 @@ $questions = Question::where('section_id', $sectionId)->get();
                             </div>
                     <?php endforeach;
                     endif; ?>
+<hr>
+                    <div class="d-flex flex-column align-items-end">
+                        <button class="btn btn-primary" onclick="addActionPoint(<?php echo $question->id ?>)">
+                            <span class="icon text-white-50"><i class="fa fa-plus"></i> </span>
+                            <span class="text"> Add Action Point</span>
+                        </button>
+                    </div>
 
                 </div>
             <?php endforeach; ?>
             <hr>
             <div class="d-flex w-100 justify-content-center">
-                <input class="btn btn-sm btn-flat bg-gradient-primary mx-1" form="formFillSection" type="submit" value="Submit Answers">
+                <input id="submitResponse" class="btn btn-sm btn-flat bg-gradient-primary mx-1" form="formFillSection" type="submit" value="Submit Answers" >
                 <a href="index?page=visits-open&id=<?php echo $visitId ?>" class="btn btn-sm btn-flat bg-gradient-secondary mx-1">Cancel</a>
             </div>
         </form>
@@ -84,11 +91,12 @@ $questions = Question::where('section_id', $sectionId)->get();
 </div>
 
 <script>
+
     console.log("Here we are...");
     const visitId = '<?php echo $visitId ?>'
     const formFillSection = document.getElementById('formFillSection')
-    $('#formFillSection').submit((e) => {
-        e.preventDefault()
+    $('#submitResponse').click(() => {
+        // e.preventDefault()
         start_load()
         $.ajax({
             url: '../api/response/submit',
@@ -112,4 +120,10 @@ $questions = Question::where('section_id', $sectionId)->get();
             }
         })
     })
+
+    function addActionPoint(questionId) {
+        console.log('Bang...' + visitId + ' qn ' + questionId);
+        uni_modal("New Action Point", `visits/dialog_create_action_point.php?question_id=${questionId}&visit_id=${visitId}`, "large")
+    }
+
 </script>

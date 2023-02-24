@@ -5,6 +5,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class ActionPoint extends Model{
 
-    protected $fillable = ['visit_id', 'question_id', 'title', 'desc', 'assign_to', 'due_date', 'created_by'];    
+    protected $fillable = ['visit_id', 'question_id', 'title', 'description', 'assign_to', 'due_date', 'created_by'];    
     
 }

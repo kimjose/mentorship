@@ -6,6 +6,7 @@ use Umb\Mentorship\Controllers\Utils\Utility;
 use Umb\Mentorship\Models\FacilityVisit;
 use Umb\Mentorship\Models\VisitSection;
 use Illuminate\Database\Capsule\Manager as DB;
+use Umb\Mentorship\Models\ActionPoint;
 use Umb\Mentorship\Models\Response;
 
 class FacilityVisitsController extends Controller
@@ -118,9 +119,30 @@ class FacilityVisitsController extends Controller
 
     public function createActionPoint($data){
         try {
-            $attributes = ['visit_id', 'section_id'];
+            $assign_to = [];
+            $attributes = ['visit_id', 'question_id', 'title', 'description', 'due_date'];
             $missing = Utility::checkMissingAttributes($data, $attributes);
             throw_if(sizeof($missing) > 0, new \Exception("Missing parameters passed : " . json_encode($missing)));
+            extract($data);
+            $assignTo = implode(',', $assign_to);
+            $data['created_by'] = $this->user->id;
+            $data['assign_to'] = $assignTo;
+            ActionPoint::create($data);
+            self::response(SUCCESS_RESPONSE_CODE, 'Action Point created successfully.');
+        } catch (\Throwable $th) {
+            Utility::logError($th->getCode(), $th->getMessage());
+            $this->response(PRECONDITION_FAILED_ERROR_CODE, $th->getMessage());
+        }
+    }
+
+    public function updateActionPoint($id, $data){
+        try {
+            $attributes = ['visit_id', 'question_id', 'title', 'description', 'due_date'];
+            $missing = Utility::checkMissingAttributes($data, $attributes);
+            throw_if(sizeof($missing) > 0, new \Exception("Missing parameters passed : " . json_encode($missing)));
+            $ap = ActionPoint::findOrFail($id);
+            $ap->update($data);
+            self::response(SUCCESS_RESPONSE_CODE, 'Action Point updated successfully.');
         } catch (\Throwable $th) {
             Utility::logError($th->getCode(), $th->getMessage());
             $this->response(PRECONDITION_FAILED_ERROR_CODE, $th->getMessage());

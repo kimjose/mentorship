@@ -83,6 +83,14 @@ $router->post('/api/response/submit', function () {
     $controller = new FacilityVisitsController();
     $controller->submitResponse($_POST);
 });
+$router->post('/api/action_point', function(){
+    $controller = new FacilityVisitsController();
+    $controller->createActionPoint($_POST);
+});
+$router->post('/api/action_point/{id}', function($id){
+    $controller = new FacilityVisitsController();
+    $controller->updateActionPoint($id, $_POST);
+});
 $router->post('/api/visit_section', function () {
     try {
         VisitSection::create([

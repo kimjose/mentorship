@@ -20,7 +20,7 @@ $users = User::all();
             <textarea name="description" id="inputDescription" cols="30" rows="4" class="form-control"></textarea>
         </div>
         <div class="form-group">
-            <label for="inputDueDate"></label>
+            <label for="inputDueDate">Due Date</label>
             <input type="date" name="due_date" id="inputDueDate" class="form-control" required>
         </div>
         <div class="form-group">

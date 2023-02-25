@@ -109,6 +109,9 @@ $submittedBadge = "<span class='badge badge-success rounded-pill'>Submitted</spa
                 <div class="table-responsive">
                     <table class="table table-striped">
                         <thead>
+                            <th>Facility</th>
+                            <th>Checklist</th>
+                            <th>Section</th>
                             <th>Question</th>
                             <th>Action Point</th>
                             <th>Description</th>
@@ -122,6 +125,9 @@ $submittedBadge = "<span class='badge badge-success rounded-pill'>Submitted</spa
                             foreach ($aps as $ap) :
                             ?>
                                 <tr>
+                                    <td></td>
+                                    <td><?php echo $checklist->title ?></td>
+                                    <td><?php echo $section->title ?></td>
                                     <td><?php echo $ap->question()->question ?></td>
                                     <td><?php echo $ap->title ?></td>
                                     <td><?php echo $ap->description ?></td>

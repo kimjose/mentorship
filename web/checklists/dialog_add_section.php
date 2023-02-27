@@ -74,7 +74,7 @@
             .then(response => {
                 btnSaveSection.removeAttribute('disabled')
                 if (response.code === 200) {
-                    window.location.replace("index?page=checklists")
+                    window.location.reload()
                 } else throw new Error(response.message)
             })
             .catch(error => {

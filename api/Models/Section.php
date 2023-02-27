@@ -16,4 +16,11 @@ class Section extends Model{
         return Question::where("section_id", $this->id)->get();
     }
 
+    /**
+     * @return Checklist
+     */
+    public function checklist(){
+        return Checklist::find($this->checklist_id);
+    }
+
 }

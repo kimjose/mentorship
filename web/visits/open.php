@@ -41,8 +41,9 @@ $submittedBadge = "<span class='badge badge-success rounded-pill'>Submitted</spa
     </ol>
 
 </div>
-<h4 style="margin-left: 10px;">Visit Details</h4>
 <div class="card-body shadow m-2">
+
+<h4 style="margin-left: 10px;">Visit Details</h4>
     <div class="row p-2">
         <div class="col-md-6 col-sm-12 mb-1" style="border-left: solid 3px #000FAD; border-radius:3px">
             <h6 class="text-secondary text-bold">Facility</h6>

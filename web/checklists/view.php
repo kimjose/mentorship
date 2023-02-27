@@ -22,6 +22,21 @@ if ($id == '') :
 <?php
 endif;
 ?>
+
+<!-- Page Heading -->
+<div class="d-sm-flex align-items-center justify-content-between">
+    <ol class="breadcrumb mb-4 transparent">
+        <li class="breadcrumb-item">
+            <a href="index">Home</a>
+        </li>
+		<li class="breadcrumb-item">
+            <a href="index?page=checklists">Checklists</a>
+        </li>
+        <li class="breadcrumb-item active"> View </li>
+    </ol>
+
+</div>
+
 <script>
 	const checklistId = "<?php echo $id ?>"
 </script>

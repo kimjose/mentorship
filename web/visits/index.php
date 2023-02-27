@@ -10,6 +10,17 @@ $activeBadge = "<span class='badge badge-primary rounded-pill'>Active</span>";
 $inActiveBadge = "<span class='badge badge-warning rounded-pill'>In Active</span>";
 ?>
 
+<!-- Page Heading -->
+<div class="d-sm-flex align-items-center justify-content-between">
+    <ol class="breadcrumb mb-4 transparent">
+        <li class="breadcrumb-item">
+            <a href="index">Home</a>
+        </li>
+        <li class="breadcrumb-item active"> Visits </li>
+    </ol>
+
+</div>
+
 <div class="card shadow mb-4">
     <div class="card-header py-3">
         <button class="btn btn-primary ml-auto float-right btn-icon-split" data-toggle="modal" data-target="#modalVisit" id="btnAddVisit">

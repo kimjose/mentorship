@@ -5,6 +5,19 @@ use Umb\Mentorship\Controllers\QuestionsBuilder;
 $builder = new QuestionsBuilder();
 $checklists = $builder->getChecklists();
 ?>
+
+
+<!-- Page Heading -->
+<div class="d-sm-flex align-items-center justify-content-between">
+    <ol class="breadcrumb mb-4 transparent">
+        <li class="breadcrumb-item">
+            <a href="index">Home</a>
+        </li>
+        <li class="breadcrumb-item active"> Checklists </li>
+    </ol>
+
+</div>
+
 <div class="col-lg-12">
     <div class="card card-outline card-primary">
         <div class="card-header">
@@ -34,7 +47,7 @@ $checklists = $builder->getChecklists();
                 </thead>
                 <tbody>
                     <?php
-
+                    $i = 0;
                     foreach ($checklists as $checklist) :
                     ?>
                         <tr>

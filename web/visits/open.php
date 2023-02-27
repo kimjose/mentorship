@@ -16,6 +16,7 @@ if (!isset($_GET['id'])) :
 
 <?php
 $id = $_GET['id'];
+/** @var FacilityVisit $visit */
 $visit = FacilityVisit::find($id);
 if ($visit == null) return;
 $visitSections = VisitSection::where('visit_id', $id)->get();
@@ -26,6 +27,36 @@ $openedBadge = "<span class='badge badge-primary rounded-pill'>Opened</span>";
 $notOpenedBadge = "<span class='badge badge-warning rounded-pill'>Not Opened</span>";
 $submittedBadge = "<span class='badge badge-success rounded-pill'>Submitted</span>";
 ?>
+
+<!-- Page Heading -->
+<div class="d-sm-flex align-items-center justify-content-between">
+    <ol class="breadcrumb mb-4 transparent">
+        <li class="breadcrumb-item">
+            <a href="index">Home</a>
+        </li>
+        <li class="breadcrumb-item">
+            <a href="index?page=visits">Visits</a>
+        </li>
+        <li class="breadcrumb-item active"> Open </li>
+    </ol>
+
+</div>
+<h4 style="margin-left: 10px;">Visit Details</h4>
+<div class="card-body shadow m-2">
+    <div class="row p-2">
+        <div class="col-md-6 col-sm-12 mb-1" style="border-left: solid 3px #000FAD; border-radius:3px">
+            <h6 class="text-secondary text-bold">Facility</h6>
+            <p class="text-primary"><?php echo $visit->getFacility()->name ?></p>
+        </div>
+        <div class="col-md-6 col-sm-12" style="border-left: solid 3px #000FAD; border-radius:3px">
+        <h6 class="text-secondary text-bold">Date</h6>
+            <p class="text-primary"><?php echo $visit->visit_date ?></p>
+        </div>
+    </div>
+
+</div>
+
+
 <div class="card">
     <div class="card-header card-secondary card-outline card-outline-tabs">
         <ul class="nav nav-tabs" role="tablist">
@@ -49,7 +80,7 @@ $submittedBadge = "<span class='badge badge-success rounded-pill'>Submitted</spa
                     <div class="card shadow mb-4">
                         <!-- Card Header - Accordion -->
                         <a href="#collapseCardChecklist<?php echo $checklist->id ?>" class="d-block card-header py-3" data-toggle="collapse" role="button" aria-expanded="true" aria-controls="collapseCardExample">
-                            <h6 class="m-0 font-weight-bold text-primary text-center"><?php echo $checklist->title ?></h6>
+                            <h6 class="m-0 font-weight-bold text-primary text-center"> <abbr title="<?php echo $checklist->title ?>"> <?php echo $checklist->abbr ?> </abbr> </h6>
                         </a>
                         <!-- Card Content - Collapse -->
                         <div class="collapse hide" id="collapseCardChecklist<?php echo $checklist->id ?>">
@@ -109,7 +140,6 @@ $submittedBadge = "<span class='badge badge-success rounded-pill'>Submitted</spa
                 <div class="table-responsive">
                     <table class="table table-striped">
                         <thead>
-                            <th>Facility</th>
                             <th>Checklist</th>
                             <th>Section</th>
                             <th>Question</th>
@@ -121,11 +151,11 @@ $submittedBadge = "<span class='badge badge-success rounded-pill'>Submitted</spa
 
                         <tbody>
                             <?php
+                            /** @var ActionPoint[] $aps */
                             $aps = ActionPoint::where('visit_id', $visit->id)->get();
                             foreach ($aps as $ap) :
                             ?>
                                 <tr>
-                                    <td></td>
                                     <td><?php echo $checklist->title ?></td>
                                     <td><?php echo $section->title ?></td>
                                     <td><?php echo $ap->question()->question ?></td>

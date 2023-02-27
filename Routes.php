@@ -5,6 +5,7 @@ use Umb\Mentorship\Controllers\Controller;
 use Umb\Mentorship\Controllers\QuestionsBuilder;
 use Umb\Mentorship\Controllers\FacilitiesController;
 use Umb\Mentorship\Controllers\FacilityVisitsController;
+use Umb\Mentorship\Controllers\UsersController;
 use Umb\Mentorship\Models\VisitSection;
 
 require_once __DIR__ . "/vendor/autoload.php";
@@ -46,7 +47,16 @@ $router->post("/api/question/{id}", function ($id) {
     $data = json_decode(file_get_contents('php://input'), true);
     $builder->updateQuestion($id, $data);
 });
-
+$router->post("/api/user", function(){
+    $controller = new UsersController();
+    $data = json_decode(file_get_contents('php://input'), true);
+    $controller->createUser($data);
+});
+$router->post("/api/user/{id}", function($id){
+    $controller = new UsersController();
+    $data = json_decode(file_get_contents('php://input'), true);
+    $controller->updateUser($id, $data);
+});
 
 $router->post('/api/facility', function () {
     $data = json_decode(file_get_contents('php://input'), true);

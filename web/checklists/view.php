@@ -114,7 +114,7 @@ endif;
 											</span>
 										</div>
 									</div>
-									<h5><?php echo $question->question ?></h5>
+									<h5><?php echo $question->question ?> <span class='badge badge-secondary rounded-pill'><?php echo $question->frequency()->name; ?></span></h5>
 									<div class="col-md-12">
 										<input type="hidden" name="qid[]" value="<?php echo $question->id ?>">
 										<?php

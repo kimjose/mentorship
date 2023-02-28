@@ -1,6 +1,16 @@
 <?php
+require_once __DIR__ . '/../../vendor/autoload.php';
+
+use Umb\Mentorship\Models\Question;
+use Umb\Mentorship\Models\Frequency;
+
 $sectionId = $_GET['section_id'];
-$id = $_GET['id'];
+$id = '';
+if (isset($_GET['id'])) {
+    $id = $_GET['id'];
+    $question = Question::findOrFail($id);
+}
+$frequencies = Frequency::all();
 ?>
 <div class="container-fluid">
     <form action="" id="manage-question">
@@ -11,7 +21,16 @@ $id = $_GET['id'];
                     <input type="hidden" name="section_id" value="<?php echo $sectionId ?>">
                     <div class="form-group">
                         <label for="" class="control-label">Question</label>
-                        <textarea name="question" id="" cols="30" rows="4" class="form-control"></textarea>
+                        <textarea name="question" id="" cols="30" rows="4" class="form-control"><?php echo isset($id) ? $question->question : '' ?></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="">Frequency</label>
+                        <select name="frequency_id" id="selectFrequency" required class="form-control">
+                            <option hidden value="" <?php echo !isset($id) ? 'required' : '' ?>> Select frequency </option>
+                            <?php foreach ($frequencies as $frequency) : ?>
+                                <option value="<?php echo $frequency->id ?>" <?php echo (isset($id) &&  '') ? 'selected' : ''  ?> > <?php echo $frequency->name ?> </option>
+                            <?php endforeach; ?>
+                        </select>
                     </div>
                     <div class="form-group">
                         <label for="" class="control-label">Question Answer Type</label>
@@ -32,8 +51,8 @@ $id = $_GET['id'];
                             <center><b>Select Question Answer type first.</b></center>
                         <?php else : ?>
                             <div class="callout callout-info">
-                                <?php if ($type != 'textfield_s') :
-                                    $opt = $type == 'radio_opt' ? 'radio' : 'checkbox';
+                                <?php if ($question->type != 'textfield_s') :
+                                    $opt = $question->type == 'radio_opt' ? 'radio' : 'checkbox';
                                 ?>
                                     <table width="100%" class="table">
                                         <colgroup>
@@ -54,7 +73,7 @@ $id = $_GET['id'];
                                         <tbody>
                                             <?php
                                             $i = 0;
-                                            foreach (json_decode($frm_option) as $k => $v) :
+                                            foreach (json_decode($question->frm_option) as $k => $v) :
                                                 $i++;
                                             ?>
                                                 <tr class="">

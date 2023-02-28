@@ -118,7 +118,7 @@ class QuestionsBuilder extends Controller
                 $frmOption = json_encode($arr);
             }
             $q = Question::create([
-                "question" => $question, "type" => $type, 'frm_option' => $frmOption, "section_id" => $data['section_id'], "created_by" => $this->user->id
+                "question" => $question, "frequency_id" => $data['frequency_id'], "type" => $type, 'frm_option' => $frmOption, "section_id" => $data['section_id'], "created_by" => $this->user->id
             ]);
             // $attributes = ["question", "type", 'options', "order", "frequency", "section_id"];
             // $missing = Utility::checkMissingAttributes($data, $attributes);

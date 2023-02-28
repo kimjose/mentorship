@@ -4,6 +4,7 @@ use Umb\Mentorship\Models\Section;
 use Umb\Mentorship\Models\Question;
 use Umb\Mentorship\Models\Response;
 use Umb\Mentorship\Models\VisitSection;
+use Illuminate\Database\Capsule\Manager as DB;
 
 if (!isset($_GET['visit']) || !isset($_GET['section'])) :
 ?>
@@ -35,6 +36,9 @@ $questions = Question::where('section_id', $sectionId)->get();
             <input type="hidden" name="section_id" value="<?php echo $sectionId ?>">
             <?php foreach ($questions as $question) :
                 $response = Response::where('question_id', $question->id)->where('visit_id', $visitId)->first();
+                $query = "select r.*, fv.visit_date from responses r left join facility_visits fv on fv.id = r.visit_id where question_id = {$question->id} and visit_id != {$visitId} order by visit_date desc";
+                $prevResponses = DB::select($query);
+                $prevResponse = $prevResponses[0];
             ?>
                 <div class="callout callout-info">
                     <input type="hidden" name="qid[<?php echo $question->id ?>]" value="<?php echo $question->id ?>">
@@ -71,19 +75,29 @@ $questions = Question::where('section_id', $sectionId)->get();
                             </div>
                     <?php endforeach;
                     endif; ?>
-<hr>
-                    <div class="d-flex flex-column align-items-end">
-                        <button class="btn btn-primary" onclick="addActionPoint(<?php echo $question->id ?>)">
-                            <span class="icon text-white-50"><i class="fa fa-plus"></i> </span>
-                            <span class="text"> Add Action Point</span>
-                        </button>
+                    <hr>
+                    <div class="row">
+                        <div class="col-md-9 col-sm-10">
+                            <p class="text-primary"><?php echo $prevResponse ? $prevResponse->answer : '' ?></p>
+                            <b><?php echo $prevResponse ? $prevResponse->visit_date : '' ?></b>
+
+                        </div>
+                        <div class="col-md-3 col-sm-4">
+                            <div class="d-flex flex-column align-items-end">
+                                <button class="btn btn-primary" onclick="addActionPoint(<?php echo $question->id ?>)">
+                                    <span class="icon text-white-50"><i class="fa fa-plus"></i> </span>
+                                    <span class="text"> Add Action Point</span>
+                                </button>
+                            </div>
+                        </div>
                     </div>
+
 
                 </div>
             <?php endforeach; ?>
             <hr>
             <div class="d-flex w-100 justify-content-center">
-                <input id="submitResponse" class="btn btn-sm btn-flat bg-gradient-primary mx-1" form="formFillSection" type="submit" value="Submit Answers" >
+                <input id="submitResponse" class="btn btn-sm btn-flat bg-gradient-primary mx-1" form="formFillSection" type="submit" value="Submit Answers">
                 <a href="index?page=visits-open&id=<?php echo $visitId ?>" class="btn btn-sm btn-flat bg-gradient-secondary mx-1">Cancel</a>
             </div>
         </form>
@@ -91,7 +105,6 @@ $questions = Question::where('section_id', $sectionId)->get();
 </div>
 
 <script>
-
     console.log("Here we are...");
     const visitId = '<?php echo $visitId ?>'
     const formFillSection = document.getElementById('formFillSection')
@@ -125,5 +138,4 @@ $questions = Question::where('section_id', $sectionId)->get();
         console.log('Bang...' + visitId + ' qn ' + questionId);
         uni_modal("New Action Point", `visits/dialog_create_action_point.php?question_id=${questionId}&visit_id=${visitId}`, "large")
     }
-
 </script>

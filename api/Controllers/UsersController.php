@@ -9,12 +9,15 @@ class UsersController extends Controller{
 
     public function createUser($data){
         try {
-            $attributes = ['first_name', 'middle_name', 'last_name', 'email', 'phone_number', 'last_login', 'facility_id', 'active', 'created_by', 'program_id'];
+            $attributes = ['first_name', 'middle_name', 'last_name', 'email', 'phone_number', 'facility_id'];
             $missing = Utility::checkMissingAttributes($data, $attributes);
             throw_if(sizeof($missing) > 0, new \Exception("Missing parameters passed : " . json_encode($missing)));
             if($data['password'] != ''){
                 $data['password'] = md5($data['password']);
             } else unset($data['password']);
+            $data['username'] = substr($data['first_name'], 0, 1) . $data['last_name'];
+            $data['created_by'] = $this->user->id;
+            $data['active'] = 1;
             User::create($data);
             self::response(SUCCESS_RESPONSE_CODE, "User created successfully.");
         } catch (\Throwable $th) {
@@ -25,7 +28,7 @@ class UsersController extends Controller{
 
     public function updateUser($id, $data){
         try {
-            $attributes = ['first_name', 'middle_name', 'last_name', 'email', 'phone_number', 'password', 'last_login', 'facility_id', 'active', 'created_by', 'program_id'];
+            $attributes = ['first_name', 'middle_name', 'last_name', 'email', 'phone_number', 'password', 'facility_id'];
             $missing = Utility::checkMissingAttributes($data, $attributes);
             throw_if(sizeof($missing) > 0, new \Exception("Missing parameters passed : " . json_encode($missing)));
             $u = User::findOrFail($id);

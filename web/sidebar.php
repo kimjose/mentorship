@@ -23,7 +23,6 @@
             </a>
             
           </li>    
-        <?php if($currUser->type == 1): ?>
           <li class="nav-item">
             <a href="#" class="nav-link nav-edit_user">
               <i class="nav-icon fas fa-users"></i>
@@ -34,13 +33,13 @@
             </a>
             <ul class="nav nav-treeview">
               <li class="nav-item">
-                <a href="./index?page=new_user" class="nav-link nav-new_user tree-item">
+                <a href="./index?page=users-edit" class="nav-link nav-users-edit tree-item">
                   <i class="fas fa-angle-right nav-icon"></i>
                   <p>Add New</p>
                 </a>
               </li>
               <li class="nav-item">
-                <a href="./index?page=user_list" class="nav-link nav-user_list tree-item">
+                <a href="./index?page=users" class="nav-link nav-users tree-item">
                   <i class="fas fa-angle-right nav-icon"></i>
                   <p>List</p>
                 </a>
@@ -93,17 +92,7 @@
                 Facility Visits
               </p>
             </a>
-          </li>      
-        <?php else: ?>
-          <li class="nav-item">
-            <a href="./index?page=survey_widget" class="nav-link nav-survey_widget nav-answer_survey">
-              <i class="nav-icon fas fa-poll-h"></i>
-              <p>
-                Checklist List
-              </p>
-            </a>
-          </li>  
-        <?php endif; ?>
+          </li>
         </ul>
       </nav>
     </div>

@@ -112,12 +112,37 @@ $inActiveBadge = "<span class='badge badge-warning rounded-pill'>In Active</span
                             <?php endfor; ?>
                         </select>
                     </div>
-
+                    
                     <div class="form-group">
                         <label for="inputVisitDate">Visit Date</label>
                         <input type="date" class="form-control" id="inputVisitDate" name="visit_date" placeholder="Visit Date" required>
                     </div>
+                    <div class="row pl-2">
+                                <h5>Location</h5>
+                                <button class="btn btn-info btn-sm col-auto ml-3" onclick="verifyLocation()"><span class="text-dark">Verify Location</span></button>
+                                <small class="text-danger" id="sLocation"></small>
+                            </div>
 
+                            <div class="row">
+                                <div class="col-lg-4 col-md-6">
+                                    <div class="form-group">
+                                        <label for="inputLat">Latitude</label>
+                                        <input type="number" step="0.00001" class="form-control" min="-90" max="90" readonly id="inputLat" name="latitude">
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-6">
+                                    <div class="form-group">
+                                        <label for="inputLong">Longitude</label>
+                                        <input class="form-control" type="number" step="0.00001" min="-180" max="180" readonly id="inputLong" name="longitude">
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-6">
+                                    <div class="form-group">
+                                        <label for="inputDistance">FacilityDistance(Km) </label>
+                                        <input class="form-control" type="number" step="0.0001" readonly id="inputDistance" name="distance">
+                                    </div>
+                                </div>
+                            </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>

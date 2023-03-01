@@ -65,6 +65,9 @@ $submittedBadge = "<span class='badge badge-success rounded-pill'>Submitted</spa
                 <a class="nav-link  active" id="tabSections" data-toggle="pill" href="#tabContentSections" role="tab" aria-controls="tabContentVisit" aria-selected="true">Checklists</a>
             </li>
             <li class="nav-item">
+                <a class="nav-link" id="tabChartAbstractions" data-toggle="pill" href="#tabContentChartAbstractions" role="tab" aria-controls="#tabContentChartAbstractions" aria-selected="false">Chart Abstraction</a>
+            </li>
+            <li class="nav-item">
                 <a class="nav-link" id="tabActionPoints" data-toggle="pill" href="#tabContentActionPoints" role="tab" aria-controls="#tabContentActionPoints" aria-selected="false">Action Points</a>
             </li>
 
@@ -136,6 +139,43 @@ $submittedBadge = "<span class='badge badge-success rounded-pill'>Submitted</spa
 
 
             </div>
+            <!-- Tab Chart Abstraction -->
+            <div class="tab-pane fade show" id="tabContentChartAbstractions" role="tabpanel" aria-labelledby="custom-tabs-four-home-tab">
+                <div class="table-responsive">
+                            <!-- Dynamic table can be long based on user data elements
+                             of interest (artstartdate, TPT,VL,CACX,NCDs,weight,height etc.) -->    
+                <table class="table table-striped">
+                        <thead>
+                            <th>#</th>
+                            <th>CCCNumber</th>
+                            <th>Section</th>
+                            <th>AgeGroup</th>
+                            <th>Gaps Identified</th>
+                            <th>Assigned To</th>
+                            <th>Reviewed By</th>
+                        </thead>
+
+                        <tbody>
+                            <?php
+                            /** @var ActionPoint[] $aps */
+                            $aps = ActionPoint::where('visit_id', $visit->id)->get();
+                            foreach ($aps as $ap) :
+                            ?> // 
+                                <tr>
+                                    <td><?php echo $c ?></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- Tab Chart Abstraction end -->
             <!-- Tab Action points -->
             <div class="tab-pane fade show" id="tabContentActionPoints" role="tabpanel" aria-labelledby="custom-tabs-four-home-tab">
                 <div class="table-responsive">

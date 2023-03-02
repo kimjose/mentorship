@@ -5,6 +5,7 @@ use Umb\Mentorship\Models\Question;
 use Umb\Mentorship\Models\Response;
 use Umb\Mentorship\Models\VisitSection;
 use Illuminate\Database\Capsule\Manager as DB;
+use Umb\Mentorship\Models\FacilityVisit;
 
 if (!isset($_GET['visit']) || !isset($_GET['section'])) :
 ?>
@@ -14,8 +15,9 @@ if (!isset($_GET['visit']) || !isset($_GET['section'])) :
 <?php endif;
 $visitId = $_GET['visit'];
 $sectionId = $_GET['section'];
+$visit = FacilityVisit::find($visitId);
 $vs = VisitSection::where('visit_id', $visitId)->where('section_id', $sectionId)->first();
-
+$visitDate = $visit->visit_date;
 if ($vs == null || $vs->user_id != $currUser->id) :
 ?>
     <script>
@@ -36,7 +38,8 @@ $questions = Question::where('section_id', $sectionId)->get();
             <input type="hidden" name="section_id" value="<?php echo $sectionId ?>">
             <?php foreach ($questions as $question) :
                 $response = Response::where('question_id', $question->id)->where('visit_id', $visitId)->first();
-                $query = "select r.*, fv.visit_date from responses r left join facility_visits fv on fv.id = r.visit_id where question_id = {$question->id} and visit_id != {$visitId} order by visit_date desc";
+                $query = "select r.*, fv.visit_date from responses r left join facility_visits fv on fv.id = r.visit_id where question_id = {$question->id} and visit_date < '{$visit->visit_date}' order by visit_date desc";
+                // echo $query;
                 $prevResponses = DB::select($query);
                 $prevResponse = $prevResponses[0];
             ?>

@@ -45,12 +45,16 @@ $questions = Question::where('section_id', $sectionId)->get();
                     <input type="hidden" name="type[<?php echo $question->id ?>]" value="<?php echo $question->type ?>">
                     <h5><?php echo $question->question ?></h5>
                     <?php
-                    if ($question->type == 'textfield_s') : ?>
+                    if ($question->type == 'textfield_s') : 
+                        if($prevResponse) $prevResponse->answer_value = $prevResponse->answer;
+                    ?>
                         <div class="form-group">
                             <textarea name="answer[<?php echo $question->id ?>]" id="" cols="30" rows="4" class="form-control" placeholder="Write Something Here..."> <?php echo $response == null ? '' : $response->answer ?></textarea>
                         </div>
                         <?php elseif ($question->type == 'radio_opt') :
-                        foreach (json_decode($question->frm_option) as $k => $v) : ?>
+                        foreach (json_decode($question->frm_option) as $k => $v) :
+                            if($prevResponse && $prevResponse->answer = $k) $prevResponse->answer_value = $v;
+                         ?>
                             <div class="icheck-primary">
                                 <input type="radio" id="option_<?php echo $k ?>" name="answer[<?php echo $question->id ?>]" value="<?php echo $k ?>" <?php
                                                                                                                                                         if ($response != null) {
@@ -62,7 +66,11 @@ $questions = Question::where('section_id', $sectionId)->get();
                             </div>
                         <?php endforeach;
                     elseif ($question->type == 'check_opt') :
+                        $ansValues = [];
+                        $ansKeys = [];
+                        if($prevResponse) $ansKeys = explode(',', $prevResponse->answer);
                         foreach (json_decode($question->frm_option) as $k => $v) :
+                            if(in_array($k, $ansKeys)) $ansValues[] = $v;
                         ?>
                             <div class="icheck-primary">
                                 <input type="checkbox" id="option_<?php echo $k ?>" name="answer[<?php echo $question->id ?>][]" value="<?php echo $k ?>" <?php
@@ -73,12 +81,14 @@ $questions = Question::where('section_id', $sectionId)->get();
                                                                                                                                                             ?>>
                                 <label for="option_<?php echo $k ?>"><?php echo $v ?></label>
                             </div>
-                    <?php endforeach;
+                    <?php
+                        if($prevResponse) $prevResponse->answer_value = implode(',', $ansValues);
+                     endforeach;
                     endif; ?>
                     <hr>
                     <div class="row">
                         <div class="col-md-9 col-sm-10">
-                            <p class="text-primary"><?php echo $prevResponse ? $prevResponse->answer : '' ?></p>
+                            <p class="text-primary"><?php echo $prevResponse ? $prevResponse->answer_value : '' ?></p>
                             <b><?php echo $prevResponse ? $prevResponse->visit_date : '' ?></b>
 
                         </div>

@@ -1,11 +1,7 @@
 <?php
 
 /** @var Umb\EventsManager\Models\User $currUser */
-if (!in_array($currUser->category_id, [1])) : ?>
-    <script>
-        window.location.replace('index.php');
-    </script>
-<?php endif; ?>
+?>
 <?php
 /*** @var \Umb\EventsManager\Models\Facility[] $facilities */
 $facilities = \Umb\Mentorship\Models\Facility::where('id', '>', 1)->get();

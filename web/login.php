@@ -98,7 +98,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit'])) {
 								<label for="password" class="control-label text-dark">Password</label>
 								<input type="password" id="password" name="password" class="form-control form-control-sm" required>
 							</div>
-							<center><input class="btn-sm btn-block btn-wave col-md-4 btn-primary" name="submit" type="submit" value="Submit"></center>
+							<center><input class="btn-sm btn-block btn-wave col-md-4 btn-primary" name="submit" type="submit" value="Login"></center>
 						</form>
 					</div>
 				</div>

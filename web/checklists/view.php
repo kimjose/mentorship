@@ -107,7 +107,7 @@ endif;
 											<span class="dropleft float-right">
 												<a class="fa fa-ellipsis-v text-dark" href="javascript:void(0)" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></a>
 												<div class="dropdown-menu" >
-													<a class="dropdown-item edit_question text-dark" href="javascript:void(0)" data-id="<?php echo $question->id ?>">Edit</a>
+													<a class="dropdown-item edit_question text-dark" href="javascript:void(0)" data-id="<?php echo $question->id ?>" onclick="editQuestion(<?php echo $section->id . ',' . $question->id ?>)" >Edit</a>
 													<div class="dropdown-divider"></div>
 													<a class="dropdown-item delete_question text-dark" href="javascript:void(0)" data-id="<?php echo $question->id ?>">Delete</a>
 												</div>
@@ -167,15 +167,12 @@ endif;
 <?php include_once "dialog_add_section.php" ?>
 
 <script>
-	function editQuestion() {
-
-	}
 
 	function newQuestion(sectionId) {
 		uni_modal("New Question", `checklists/dialog_add_question.php?section_id=${sectionId}`, "large")
 	}
 
 	function editQuestion(sectionId, id) {
-		uni_modal("New Question", `manage_question.php?section_id=${sectionId}&id=${id}`, "large")
+		uni_modal("New Question", `checklists/dialog_add_question.php?section_id=${sectionId}&id=${id}`, "large")
 	}
 </script>

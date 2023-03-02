@@ -28,7 +28,7 @@ $frequencies = Frequency::all();
                         <select name="frequency_id" id="selectFrequency" required class="form-control">
                             <option hidden value="" <?php echo !isset($id) ? 'required' : '' ?>> Select frequency </option>
                             <?php foreach ($frequencies as $frequency) : ?>
-                                <option value="<?php echo $frequency->id ?>" <?php echo (isset($id) &&  '') ? 'selected' : ''  ?> > <?php echo $frequency->name ?> </option>
+                                <option value="<?php echo $frequency->id ?>" <?php echo (isset($id) &&  $question->frequency_id == $frequency->id) ? 'selected' : ''  ?> > <?php echo $frequency->name ?> </option>
                             <?php endforeach; ?>
                         </select>
                     </div>
@@ -36,10 +36,10 @@ $frequencies = Frequency::all();
                         <label for="" class="control-label">Question Answer Type</label>
                         <select name="type" id="type" class="custom-select custom-select-sm">
                             <!-- TODO: Add conditions -->
-                            <option value="" hidden selected="">Please Select here</option>
-                            <option value="radio_opt">Single Answer/Radio Button</option>
-                            <option value="check_opt">Multiple Answer/Check Boxes</option>
-                            <option value="textfield_s">Text Field/ Text Area</option>
+                            <option value="" hidden <?php echo !isset($id) ? 'selected' : '' ?> >Please Select here</option>
+                            <option value="radio_opt" <?php echo (isset($id) &&  $question->type == 'radio_opt') ? 'selected' : ''  ?>>Single Answer/Radio Button</option>
+                            <option value="check_opt" <?php echo (isset($id) &&  $question->type == 'check_opt') ? 'selected' : ''  ?> >Multiple Answer/Check Boxes</option>
+                            <option value="textfield_s" <?php echo (isset($id) &&  $question->type == 'textfield_s') ? 'selected' : ''  ?> >Text Field/ Text Area</option>
                         </select>
                     </div>
 

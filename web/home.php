@@ -1,6 +1,5 @@
-<?php include('db_connect.php') ?>
+
 <!-- Info boxes -->
-<?php if ($currUser->login_type == 1) : ?>
   <div class="row">
     <div class="col-12 col-sm-6 col-md-3">
       <div class="info-box">
@@ -9,7 +8,6 @@
         <div class="info-box-content">
           <span class="info-box-text">Total Subscribers</span>
           <span class="info-box-number">
-            <?php echo $conn->query("SELECT * FROM users where type = 3")->num_rows; ?>
           </span>
         </div>
         <!-- /.info-box-content -->
@@ -24,7 +22,6 @@
         <div class="info-box-content">
           <span class="info-box-text">Total Checklist</span>
           <span class="info-box-number">
-            <?php echo $conn->query("SELECT * FROM survey_set")->num_rows; ?>
           </span>
         </div>
         <!-- /.info-box-content -->
@@ -34,7 +31,6 @@
     <!-- /.col -->
   </div>
 
-<?php else : ?>
   <div class="col-12">
     <div class="card">
       <div class="card-body">
@@ -50,7 +46,6 @@
         <div class="info-box-content">
           <span class="info-box-text">Total Checklist Done</span>
           <span class="info-box-number">
-            <?php echo $conn->query("SELECT distinct(survey_id) FROM answers  where user_id = {$currUser->id}")->num_rows; ?>
           </span>
         </div>
         <!-- /.info-box-content -->
@@ -59,5 +54,3 @@
     </div>
     <!-- /.col -->
   </div>
-
-<?php endif; ?>

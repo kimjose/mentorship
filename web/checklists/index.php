@@ -47,7 +47,7 @@ $checklists = $builder->getChecklists();
                 </thead>
                 <tbody>
                     <?php
-                    $i = 0;
+                    $i = 1;
                     foreach ($checklists as $checklist) :
                     ?>
                         <tr>
@@ -57,14 +57,7 @@ $checklists = $builder->getChecklists();
                             <td><b class="truncate"><?php echo $checklist->description ?></b></td>
                             <td><b><?php echo date("M d, Y", strtotime($checklist->created_at)) ?></b></td>
                             <td class="text-center">
-                                <!-- <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
-		                      Action
-		                    </button>
-		                    <div class="dropdown-menu" style="">
-		                      <a class="dropdown-item" href="./index.php?page=edit_survey&id=<?php echo $row['id'] ?>">Edit</a>
-		                      <div class="dropdown-divider"></div>
-		                      <a class="dropdown-item delete_survey" href="javascript:void(0)" data-id="<?php echo $row['id'] ?>">Delete</a>
-		                    </div> -->
+
                                 <div class="btn-group">
                                     <a href="./index?page=checklists-edit&id=<?php echo $checklist->id ?>" class="btn btn-primary btn-flat">
                                         <i class="fas fa-edit"></i>

@@ -4,6 +4,10 @@ use Umb\Mentorship\Controllers\QuestionsBuilder;
 
 $builder = new QuestionsBuilder();
 $checklists = $builder->getChecklists();
+
+$publishedBadge = "<span class='badge badge-primary rounded-pill'>Published</span>";
+$draftBadge = "<span class='badge badge-warning rounded-pill'>Draft</span>";
+$retiredBadge = "<span class='badge badge-secondary rounded-pill'>Retired</span>";
 ?>
 
 
@@ -41,6 +45,7 @@ $checklists = $builder->getChecklists();
                         <th>Title</th>
                         <th>Abbreviation</th>
                         <th>Description</th>
+                        <td>Status</td>
                         <th>Start</th>
                         <th>Action</th>
                     </tr>
@@ -55,13 +60,29 @@ $checklists = $builder->getChecklists();
                             <td><b><?php echo ucwords($checklist->title) ?></b></td>
                             <td><b><?php echo ucwords($checklist->abbr) ?></b></td>
                             <td><b class="truncate"><?php echo $checklist->description ?></b></td>
+                            <td class="text-center"><?php
+                                                    switch ($checklist->status) {
+                                                        case 'draft':
+                                                            echo $draftBadge;
+                                                            break;
+                                                        case 'published':
+                                                            echo $publishedBadge;
+                                                            break;
+                                                        case 'retired':
+                                                            echo $retiredBadge;
+                                                            break;
+                                                    }
+                                                    ?>
+                            </td>
                             <td><b><?php echo date("M d, Y", strtotime($checklist->created_at)) ?></b></td>
                             <td class="text-center">
 
                                 <div class="btn-group">
-                                    <a href="./index?page=checklists-edit&id=<?php echo $checklist->id ?>" class="btn btn-primary btn-flat">
-                                        <i class="fas fa-edit"></i>
-                                    </a>
+                                    <?php if ($checklist->status == 'draft') : ?>
+                                        <a href="./index?page=checklists-edit&id=<?php echo $checklist->id ?>" class="btn btn-primary btn-flat">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                    <?php endif; ?>
                                     <a href="./index?page=checklists-view&id=<?php echo $checklist->id ?>" class="btn btn-info btn-flat">
                                         <i class="fas fa-eye"></i>
                                     </a>

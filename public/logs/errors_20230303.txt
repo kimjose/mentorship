@@ -4,3 +4,5 @@
 2023-03-03 12:06:15       Code 401      Message User not authenticated,..      ClientAddr ::1
 2023-03-03 12:06:15       Code 401      Message User not authenticated,..      ClientAddr ::1
 2023-03-03 12:06:15       Code 401      Message User not authenticated,..      ClientAddr ::1
+2023-03-03 13:02:43       Code 401      Message Session expired      ClientAddr ::1
+2023-03-03 13:02:43       Code 401      Message User not authenticated,..      ClientAddr ::1

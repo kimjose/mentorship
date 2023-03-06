@@ -28,13 +28,13 @@ $router->post("/api/checklist/{id}", function ($id) {
     $data = json_decode(file_get_contents('php://input'), true);
     $builder->updateChecklist($id, $data);
 });
-$router->post("/api/checklist/publish", function () {
+$router->post("/api/checklist-publish", function () {
     $builder = new QuestionsBuilder();
     $data = json_decode(file_get_contents('php://input'), true);
     $builder->publishChecklist($data);
 });
 
-$router->post("/api/checklist/retire", function () {
+$router->post("/api/checklist-retire", function () {
     $builder = new QuestionsBuilder();
     $data = json_decode(file_get_contents('php://input'), true);
     $builder->retireChecklist($data);

@@ -178,9 +178,11 @@ endif;
 	</div>
 	<div class="card-footer">
 		<div class="col-auto">
-			<button class="btn btn-primary">
-				<span class="text">Publish</span>
-			</button>
+			<?php if ($checklist->status == 'draft') : ?>
+				<button class="btn btn-primary" id="btnPublishChecklist">
+					<span class="text">Publish</span>
+				</button>
+			<?php endif; ?>
 		</div>
 	</div>
 </div>
@@ -195,4 +197,34 @@ endif;
 	function editQuestion(sectionId, id) {
 		uni_modal("New Question", `checklists/dialog_add_question.php?section_id=${sectionId}&id=${id}`, "large")
 	}
+
+	const btnPublishChecklist = document.getElementById("btnPublishChecklist")
+	btnPublishChecklist.addEventListener('click', () => {
+		btnPublishChecklist.setAttribute('disabled', '')
+		fetch("../api/checklist-publish", {
+				method: 'POST',
+				headers: {
+					"content-type": "application/x-www-form-urlencoded"
+				},
+				body: JSON.stringify({
+					id: checklistId
+				})
+			})
+			.then(response => {
+				return response.json()
+			})
+			.then(response => {
+				let code = response.code
+				if (code == 200) {
+					toastr.success(response.message)
+					setTimeout(() => {
+						window.location.reload()
+					}, 850)
+				} else throw new Error(response.message)
+			})
+			.catch(error => {
+				toastr.error(error.message)
+				btnPublishChecklist.removeAttribute('disabled')
+			})
+	})
 </script>

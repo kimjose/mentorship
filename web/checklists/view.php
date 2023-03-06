@@ -200,31 +200,34 @@ endif;
 
 	const btnPublishChecklist = document.getElementById("btnPublishChecklist")
 	btnPublishChecklist.addEventListener('click', () => {
-		btnPublishChecklist.setAttribute('disabled', '')
-		fetch("../api/checklist-publish", {
-				method: 'POST',
-				headers: {
-					"content-type": "application/x-www-form-urlencoded"
-				},
-				body: JSON.stringify({
-					id: checklistId
+		customConfirm("Confirm publish", "Once published this checklist will be available for filling in the visits but you will not be able edit it further. Do you wish to proceed?", () => {
+			btnPublishChecklist.setAttribute('disabled', '')
+			fetch("../api/checklist-publish", {
+					method: 'POST',
+					headers: {
+						"content-type": "application/x-www-form-urlencoded"
+					},
+					body: JSON.stringify({
+						id: checklistId
+					})
 				})
-			})
-			.then(response => {
-				return response.json()
-			})
-			.then(response => {
-				let code = response.code
-				if (code == 200) {
-					toastr.success(response.message)
-					setTimeout(() => {
-						window.location.reload()
-					}, 850)
-				} else throw new Error(response.message)
-			})
-			.catch(error => {
-				toastr.error(error.message)
-				btnPublishChecklist.removeAttribute('disabled')
-			})
+				.then(response => {
+					return response.json()
+				})
+				.then(response => {
+					let code = response.code
+					if (code == 200) {
+						toastr.success(response.message)
+						setTimeout(() => {
+							window.location.reload()
+						}, 850)
+					} else throw new Error(response.message)
+				})
+				.catch(error => {
+					toastr.error(error.message)
+					btnPublishChecklist.removeAttribute('disabled')
+				})
+		}, () => {})
+
 	})
 </script>

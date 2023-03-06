@@ -20,7 +20,7 @@ $id = $_GET['id'];
 $visit = FacilityVisit::find($id);
 if ($visit == null) return;
 $visitSections = VisitSection::where('visit_id', $id)->get();
-$checklists = Checklist::all();
+$checklists = Checklist::where('status', 'published')->get();
 
 
 $openedBadge = "<span class='badge badge-primary rounded-pill'>Opened</span>";

@@ -43,14 +43,14 @@ $submittedBadge = "<span class='badge badge-success rounded-pill'>Submitted</spa
 </div>
 <div class="card-body shadow m-2">
 
-<h4 style="margin-left: 10px;">Visit Details</h4>
+    <h4 style="margin-left: 10px;">Visit Details</h4>
     <div class="row p-2">
         <div class="col-md-6 col-sm-12 mb-1" style="border-left: solid 3px #000FAD; border-radius:3px">
             <h6 class="text-secondary text-bold">Facility</h6>
             <p class="text-primary"><?php echo $visit->getFacility()->name ?></p>
         </div>
         <div class="col-md-6 col-sm-12" style="border-left: solid 3px #000FAD; border-radius:3px">
-        <h6 class="text-secondary text-bold">Date</h6>
+            <h6 class="text-secondary text-bold">Date</h6>
             <p class="text-primary"><?php echo $visit->visit_date ?></p>
         </div>
     </div>
@@ -59,21 +59,19 @@ $submittedBadge = "<span class='badge badge-success rounded-pill'>Submitted</spa
 
 
 <div class="card">
-    <div class="card-header card-secondary card-outline card-outline-tabs">
+    <div class="card-body">
         <ul class="nav nav-tabs" role="tablist">
             <li class="nav-item">
-                <a class="nav-link  active" id="tabSections" data-toggle="pill" href="#tabContentSections" role="tab" aria-controls="tabContentVisit" aria-selected="true">Checklists</a>
+                <a class="nav-link  active" id="tabSections" data-toggle="tab" href="#tabContentSections" role="tab" aria-controls="tabContentVisit" aria-selected="true">Checklists</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" id="tabChartAbstractions" data-toggle="pill" href="#tabContentChartAbstractions" role="tab" aria-controls="#tabContentChartAbstractions" aria-selected="false">Chart Abstraction</a>
+                <a class="nav-link" id="tabChartAbstractions" data-toggle="tab" href="#tabContentChartAbstractions" role="tab" aria-controls="#tabContentChartAbstractions" aria-selected="false">Chart Abstraction</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" id="tabActionPoints" data-toggle="pill" href="#tabContentActionPoints" role="tab" aria-controls="#tabContentActionPoints" aria-selected="false">Action Points</a>
+                <a class="nav-link" id="tabActionPoints" data-toggle="tab" href="#tabContentActionPoints" role="tab" aria-controls="#tabContentActionPoints" aria-selected="false">Action Points</a>
             </li>
 
         </ul>
-    </div>
-    <div class="card-body">
         <div class="tab-content" id="tabContentVisit">
             <div class="tab-pane fade show active" id="tabContentSections" role="tabpanel" aria-labelledby="custom-tabs-four-home-tab">
                 <h3>Checklists</h3>
@@ -142,9 +140,9 @@ $submittedBadge = "<span class='badge badge-success rounded-pill'>Submitted</spa
             <!-- Tab Chart Abstraction -->
             <div class="tab-pane fade show" id="tabContentChartAbstractions" role="tabpanel" aria-labelledby="custom-tabs-four-home-tab">
                 <div class="table-responsive">
-                            <!-- Dynamic table can be long based on user data elements
-                             of interest (artstartdate, TPT,VL,CACX,NCDs,weight,height etc.) -->    
-                <table class="table table-striped">
+                    <!-- Dynamic table can be long based on user data elements
+                             of interest (artstartdate, TPT,VL,CACX,NCDs,weight,height etc.) -->
+                    <table class="table table-striped">
                         <thead>
                             <th>#</th>
                             <th>CCCNumber</th>
@@ -160,7 +158,7 @@ $submittedBadge = "<span class='badge badge-success rounded-pill'>Submitted</spa
                             /** @var ActionPoint[] $aps */
                             $aps = ActionPoint::where('visit_id', $visit->id)->get();
                             foreach ($aps as $ap) :
-                            ?> // 
+                            ?> //
                                 <tr>
                                     <td><?php echo $c ?></td>
                                     <td></td>

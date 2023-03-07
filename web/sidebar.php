@@ -87,9 +87,18 @@
           </li>
           <li class="nav-item">
             <a href="./index?page=visits" class="nav-link nav-visits nav-visits-open">
-              <i class="nav-icon fa fa-clipboard"></i>
+              <i class="nav-icon fas fa-route"></i>
               <p>
                 Facility Visits
+              </p>
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a href="./index?page=my_action_points" class="nav-link nav-my_action_points">
+              <i class="nav-icon fas fa-bullseye"></i>
+              <p>
+                My Action Points
               </p>
             </a>
           </li>

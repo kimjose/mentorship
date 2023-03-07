@@ -28,7 +28,7 @@ $frequencies = Frequency::all();
                         <select name="frequency_id" id="selectFrequency" required class="form-control">
                             <option hidden value="" <?php echo !isset($id) ? 'required' : '' ?>> Select frequency </option>
                             <?php foreach ($frequencies as $frequency) : ?>
-                                <option value="<?php echo $frequency->id ?>" <?php echo (isset($id) &&  $question->frequency_id == $frequency->id) ? 'selected' : ''  ?> > <?php echo $frequency->name ?> </option>
+                                <option value="<?php echo $frequency->id ?>" <?php echo (isset($id) &&  $question->frequency_id == $frequency->id) ? 'selected' : ''  ?>> <?php echo $frequency->name ?> </option>
                             <?php endforeach; ?>
                         </select>
                     </div>
@@ -36,10 +36,11 @@ $frequencies = Frequency::all();
                         <label for="" class="control-label">Question Answer Type</label>
                         <select name="type" id="type" class="custom-select custom-select-sm">
                             <!-- TODO: Add conditions -->
-                            <option value="" hidden <?php echo !isset($id) ? 'selected' : '' ?> >Please Select here</option>
+                            <option value="" hidden <?php echo !isset($id) ? 'selected' : '' ?>>Please Select here</option>
                             <option value="radio_opt" <?php echo (isset($id) &&  $question->type == 'radio_opt') ? 'selected' : ''  ?>>Single Answer/Radio Button</option>
-                            <option value="check_opt" <?php echo (isset($id) &&  $question->type == 'check_opt') ? 'selected' : ''  ?> >Multiple Answer/Check Boxes</option>
-                            <option value="textfield_s" <?php echo (isset($id) &&  $question->type == 'textfield_s') ? 'selected' : ''  ?> >Text Field/ Text Area</option>
+                            <option value="check_opt" <?php echo (isset($id) &&  $question->type == 'check_opt') ? 'selected' : ''  ?>>Multiple Answer/Check Boxes</option>
+                            <option value="textfield_s" <?php echo (isset($id) &&  $question->type == 'textfield_s') ? 'selected' : ''  ?>>Text Field/ Text Area</option>
+                            <option value="number_opt" <?php echo (isset($id) &&  $question->type == 'number_opt') ? 'selected' : ''  ?>>Number</option>
                         </select>
                     </div>
 
@@ -102,8 +103,10 @@ $frequencies = Frequency::all();
                             </div>
                     </div>
 
-                <?php else : ?>
+                <?php elseif($question->type == 'textfield_s') : ?>
                     <textarea name="frm_opt" id="" cols="30" rows="10" class="form-control" disabled="" placeholder="Write Something here..."></textarea>
+                <?php elseif($question->type == 'number_opt') : ?>
+                    <input type="number" name="frm_opt" id="" class="form-control" disabled placeholder="Number..">
                 <?php endif; ?>
             <?php endif; ?>
                 </div>
@@ -229,6 +232,11 @@ $frequencies = Frequency::all();
         <textarea name="frm_opt" id="" cols="30" rows="10" class="form-control" disabled="" placeholder="Write Something here..."></textarea>
     </div>
 </div>
+<div id="number_opt" style="display: none">
+    <div class="callout callout-info">
+        <input type="number" name="frm_opt" class="form-control" id="" placeholder="">
+    </div>
+</div>
 <script>
     function new_check(_this) {
         var tbody = _this.closest('.row').siblings('table').find('tbody')
@@ -272,6 +280,12 @@ $frequencies = Frequency::all();
         var textfield_s_clone = $('#textfield_s_clone').clone()
         $('.preview').html(textfield_s_clone.html())
     }
+
+    function number_opt() {
+        var number_opt_clone = $('#number_opt').clone()
+        $('.preview').html(number_opt_clone.html())
+    }
+
     $('[name="type"]').change(function() {
         window[$(this).val()]()
     })

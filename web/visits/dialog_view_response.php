@@ -19,25 +19,27 @@ $questions = Question::where('section_id', $sectionId)->get();
                 <th>Response</th>
             </thead>
             <tbody>
-                <?php foreach($questions as $question): 
+                <?php foreach ($questions as $question) :
                     $response = Response::where('question_id', $question->id)->where('visit_id', $visitId)->first();
-                    ?>
+                ?>
                     <tr>
                         <td><?php echo $question->question ?></td>
                         <td>
                             <?php
-                            if($question->type == 'textfield_s'){
+                            if ($question->type == 'textfield_s') {
                                 echo $response->answer;
-                            } elseif($question->type == 'radio_opt'){
+                            } elseif ($question->type == 'number_opt') {
+                                echo $response->answer;
+                            } elseif ($question->type == 'radio_opt') {
                                 $ans = $response->answer;
                                 echo json_decode($question->frm_option)->$ans;
-                            } elseif($question->type == 'check_opt'){
-                                if($response->answer != ''){
+                            } elseif ($question->type == 'check_opt') {
+                                if ($response->answer != '') {
                                     $answers = explode(',', $response->answer);
                                     $pool = '';
                                     $i = 0;
-                                    foreach($answers as $answer){
-                                        if($i != 0) $pool .= ', ';
+                                    foreach ($answers as $answer) {
+                                        if ($i != 0) $pool .= ', ';
                                         $pool .= json_decode($question->frm_option)->$answer;
                                         $i++;
                                     }

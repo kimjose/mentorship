@@ -91,21 +91,27 @@ class FacilityVisitsController extends Controller
                 $prevResponse = Response::where('visit_id', $visit_id)->where('question_id', $qid[$k])->first();
 
                 if ($prevResponse) {
-                    if ($type[$k] == 'check_opt') {
-                        $prevResponse->update(['answer' => implode(",", $answer[$k])]);
+                    if ($answer[$k] != null && trim($answer[$k]) != '') {
+                        $prevResponse->delete();
                     } else {
-                        $prevResponse->update(['answer' => trim($answer[$k])]);
+                        if ($type[$k] == 'check_opt') {
+                            $prevResponse->update(['answer' => implode(",", $answer[$k])]);
+                        } else {
+                            $prevResponse->update(['answer' => trim($answer[$k])]);
+                        }
                     }
                 } else {
-                    $response = [
-                        "visit_id" => $visit_id, "question_id" => $qid[$k], "created_by" => $this->user->id
-                    ];
-                    if ($type[$k] == 'check_opt') {
-                        $response["answer"] = implode(",", $answer[$k]);
-                    } else {
-                        $response['answer'] = trim($answer[$k]);
+                    if ($answer[$k] != null && trim($answer[$k]) != '') {
+                        $response = [
+                            "visit_id" => $visit_id, "question_id" => $qid[$k], "created_by" => $this->user->id
+                        ];
+                        if ($type[$k] == 'check_opt') {
+                            $response["answer"] = implode(",", $answer[$k]);
+                        } else {
+                            $response['answer'] = trim($answer[$k]);
+                        }
+                        Response::create($response);
                     }
-                    Response::create($response);
                 }
             }
             DB::statement("update visit_sections set submitted = 1 where visit_id={$visit_id} and section_id = {$section_id}");
@@ -118,7 +124,8 @@ class FacilityVisitsController extends Controller
         }
     }
 
-    public function createActionPoint($data){
+    public function createActionPoint($data)
+    {
         try {
             $assign_to = [];
             $attributes = ['visit_id', 'question_id', 'title', 'description', 'due_date'];
@@ -136,7 +143,8 @@ class FacilityVisitsController extends Controller
         }
     }
 
-    public function updateActionPoint($id, $data){
+    public function updateActionPoint($id, $data)
+    {
         try {
             $attributes = ['visit_id', 'question_id', 'title', 'description', 'due_date'];
             $missing = Utility::checkMissingAttributes($data, $attributes);
@@ -149,5 +157,4 @@ class FacilityVisitsController extends Controller
             $this->response(PRECONDITION_FAILED_ERROR_CODE, $th->getMessage());
         }
     }
-
 }

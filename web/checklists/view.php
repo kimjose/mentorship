@@ -143,9 +143,13 @@ endif;
 															<label for="option_<?php echo $k ?>"><?php echo $v ?></label>
 														</div>
 													<?php endforeach; ?>
-												<?php else : ?>
+												<?php elseif($question->type == 'textfield_s') : ?>
 													<div class="form-group">
 														<textarea name="answer[<?php echo $row['id'] ?>]" id="" cols="30" rows="4" class="form-control" placeholder="Write Something Here..."></textarea>
+													</div>
+												<?php elseif($question->type): ?>
+													<div class="form-group">
+														<input type="number" name="answer[<?php echo $row['id'] ?>]" id="" class="form-control" readonly aria-readonly="true">
 													</div>
 												<?php endif; ?>
 											</div>

@@ -169,7 +169,7 @@ class QuestionsBuilder extends Controller
             $labels = $data['label'];
             $frmOption = '';
             // echo 'Labels are,....' . json_encode($labels);
-            if ($type != 'textfield_s') {
+            if ($type != 'textfield_s' && $type != 'number_opt') {
                 $arr = array();
                 foreach ($labels as $k => $v) {
                     $i = 0;

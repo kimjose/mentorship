@@ -52,7 +52,7 @@ $frequencies = Frequency::all();
                             <center><b>Select Question Answer type first.</b></center>
                         <?php else : ?>
                             <div class="callout callout-info">
-                                <?php if ($question->type != 'textfield_s') :
+                                <?php if ($question->type != 'textfield_s' && $question->type != 'number_opt') :
                                     $opt = $question->type == 'radio_opt' ? 'radio' : 'checkbox';
                                 ?>
                                     <table width="100%" class="table">

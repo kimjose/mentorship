@@ -70,7 +70,7 @@
             </ul>
           </li>
           <li class="nav-item">
-            <a href="./index?page=survey_report" class="nav-link nav-survey_report">
+            <a href="./index?page=checklist_report" class="nav-link nav-checklist_report">
               <i class="nav-icon fas fa-poll"></i>
               <p>
                 Checklist Report

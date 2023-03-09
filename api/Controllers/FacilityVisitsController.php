@@ -95,7 +95,7 @@ class FacilityVisitsController extends Controller
                 $prevResponse = Response::where('visit_id', $visit_id)->where('question_id', $qid[$k])->first();
 
                 if ($prevResponse) {
-                    if ($answer[$k] != null && trim($answer[$k]) != '') {
+                    if ($answer[$k] == null || $answer[$k] == '') {
                         $prevResponse->delete();
                     } else {
                         if ($type[$k] == 'check_opt') {
@@ -105,7 +105,7 @@ class FacilityVisitsController extends Controller
                         }
                     }
                 } else {
-                    if ($answer[$k] != null && trim($answer[$k]) != '') {
+                    if ($answer[$k] != null && $answer[$k] != '') {
                         $response = [
                             "visit_id" => $visit_id, "question_id" => $qid[$k], "created_by" => $this->user->id
                         ];

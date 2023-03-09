@@ -120,6 +120,32 @@ $inActiveBadge = "<span class='badge badge-warning rounded-pill'>In Active</span
                             <?php endfor; ?>
                         </select>
                     </div>
+                    <div class="row pl-2">
+                        <h5>Location</h5>
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-lg-4 col-md-6">
+                            <div class="form-group">
+                                <label for="inputLat">Latitude</label>
+                                <input type="number" step="0.00001" class="form-control" min="-90" max="90" id="inputLat" name="latitude">
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-6">
+                            <div class="form-group">
+                                <label for="inputLong">Longitude</label>
+                                <input class="form-control" type="number" step="0.00001" min="-180" max="180" id="inputLong" name="longitude">
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <button class="btn btn-info btn-sm col-auto ml-3" onclick="currentLocation()">
+                                <span class="icon"><i class="fa fa-map-pin"></i> </span>
+                                <span class="text-dark">Current Location</span></button>
+                            <small class="text-danger" id="sLocation"></small>
+                        </div>
+                    </div>
                     <div class="form-group">
                         <input type="checkbox" id="checkActive">
                         <label for="checkActive"> Active </label>
@@ -141,6 +167,9 @@ $inActiveBadge = "<span class='badge badge-warning rounded-pill'>In Active</span
     const inputMflCode = document.querySelector("#inputMflCode")
     const selectCounty = document.querySelector("#selectCounty")
     const checkActive = document.querySelector("#checkActive")
+    const inputLat = document.querySelector("#inputLat")
+    const inputLong = document.querySelector("#inputLong")
+    const sLocation = document.querySelector("#sLocation")
     let editedId = "";
 
     $(document).ready(function() {
@@ -158,6 +187,8 @@ $inActiveBadge = "<span class='badge badge-warning rounded-pill'>In Active</span
         editedId = facility.id;
         inputName.value = facility.name
         inputMflCode.value = facility.mfl_code
+        inputLat.value = facility.latitude
+        inputLong.value = facility.longitude
         $(selectCounty).val(facility.county_code)
         checkActive.checked = facility.active
     }
@@ -167,6 +198,8 @@ $inActiveBadge = "<span class='badge badge-warning rounded-pill'>In Active</span
         let name = inputName.value.trim();
         let mflCode = inputMflCode.value.trim();
         let county = $(selectCounty).val()
+        let latitude = inputLat.value.trim();
+        let longitude = inputLong.value.trim()
         let active = checkActive.checked
         if (name === '') {
             inputUsername.focus()
@@ -186,6 +219,8 @@ $inActiveBadge = "<span class='badge badge-warning rounded-pill'>In Active</span
             name: name,
             county_code: county,
             mfl_code: mflCode,
+            latitude: latitude,
+            longitude: longitude,
             active: active ? 1 : 0
         }
         let saveUrl = '../api/facility'
@@ -193,7 +228,6 @@ $inActiveBadge = "<span class='badge badge-warning rounded-pill'>In Active</span
         btnSaveFacility.setAttribute('disabled', '')
         fetch(
                 editedId === "" ? saveUrl : updateUrl, {
-
                     method: "POST",
                     body: JSON.stringify(data),
                     headers: {
@@ -218,6 +252,24 @@ $inActiveBadge = "<span class='badge badge-warning rounded-pill'>In Active</span
             })
 
     }
+
+
+    function currentLocation() {
+        toastr.info("Getting Location...")
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(showPosition, error => {
+                toastr.error(error.message)
+            });
+        } else {
+            sLocation.innerHTML = "Geolocation is not supported by this browser.";
+        }
+    }
+
+    function showPosition(position) {
+        inputLat.value = position.coords.latitude
+        inputLong.value = position.coords.longitude
+    }
+
 
     function deleteFacility(user) {
         // TODO

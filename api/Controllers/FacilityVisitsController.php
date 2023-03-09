@@ -25,11 +25,13 @@ class FacilityVisitsController extends Controller
     public function createVisit($data)
     {
         try {
-            $attributes = ['facility_id', 'visit_date'];
+            $attributes = ['facility_id', 'visit_date', 'latitude', 'longitude'];
             $missing = Utility::checkMissingAttributes($data, $attributes);
             throw_if(sizeof($missing) > 0, new \Exception("Missing parameters passed : " . json_encode($missing)));
             $existing = FacilityVisit::where('facility_id', $data['facility_id'])->where('visit_date', $data['visit_date'])->first();
             if ($existing) throw new \Exception("A similar visit already exists", 1);
+            $data['latitude'] = $data['latitude'] == '' ? null : $data['latitude'];
+            $data['longitude'] = $data['longitude'] == '' ? null : $data['longitude'];
             $data['created_by'] = $this->user->id;
             FacilityVisit::create($data);
             $this->response(SUCCESS_RESPONSE_CODE, 'Visit created successfully! 👍');
@@ -42,12 +44,14 @@ class FacilityVisitsController extends Controller
     public function updateVisit($id, $data)
     {
         try {
-            $attributes = ['facility_id', 'visit_date'];
+            $attributes = ['facility_id', 'visit_date', 'latitude', 'longitude'];
             $missing = Utility::checkMissingAttributes($data, $attributes);
             throw_if(sizeof($missing) > 0, new \Exception("Missing parameters passed : " . json_encode($missing)));
             $existing = FacilityVisit::where('facility_id', $data['facility_id'])->where('visit_date', $data['visit_date'])->where('id', '!=', $id)->first();
             if ($existing) throw new \Exception("A similar visit already exists", 1);
             $visit = FacilityVisit::findOrFail($id);
+            $data['latitude'] = $data['latitude'] == '' ? null : $data['latitude'];
+            $data['longitude'] = $data['longitude'] == '' ? null : $data['longitude'];
             $visit->update($data);
             $this->response(SUCCESS_RESPONSE_CODE, 'Visit updated successfully! 👍');
         } catch (\Throwable $th) {

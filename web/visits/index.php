@@ -127,21 +127,16 @@ $inActiveBadge = "<span class='badge badge-warning rounded-pill'>In Active</span
                                 <div class="col-lg-4 col-md-6">
                                     <div class="form-group">
                                         <label for="inputLat">Latitude</label>
-                                        <input type="number" step="0.00001" class="form-control" min="-90" max="90" readonly id="inputLat" name="latitude">
+                                        <input type="number" step="0.00001" class="form-control" min="-90" max="90" id="inputLat" name="latitude">
                                     </div>
                                 </div>
                                 <div class="col-lg-4 col-md-6">
                                     <div class="form-group">
                                         <label for="inputLong">Longitude</label>
-                                        <input class="form-control" type="number" step="0.00001" min="-180" max="180" readonly id="inputLong" name="longitude">
+                                        <input class="form-control" type="number" step="0.00001" min="-180" max="180" id="inputLong" name="longitude">
                                     </div>
                                 </div>
-                                <div class="col-lg-4 col-md-6">
-                                    <div class="form-group">
-                                        <label for="inputDistance">FacilityDistance(Km) </label>
-                                        <input class="form-control" type="number" step="0.0001" readonly id="inputDistance" name="distance">
-                                    </div>
-                                </div>
+                                
                             </div>
                 </div>
                 <div class="modal-footer">
@@ -159,6 +154,9 @@ $inActiveBadge = "<span class='badge badge-warning rounded-pill'>In Active</span
     const selectFacility = document.querySelector("#selectFacility");
     const inputVisitDate = document.querySelector("#inputVisitDate")
     let editedId = "";
+    const inputLat = document.querySelector("#inputLat")
+    const inputLong = document.querySelector("#inputLong")
+    const sLocation = document.querySelector("#sLocation")
 
     $(document).ready(function() {
         $('#tableVisits').dataTable()
@@ -185,6 +183,8 @@ $inActiveBadge = "<span class='badge badge-warning rounded-pill'>In Active</span
         let btnSaveVisit = document.getElementById('btnSaveVisit')
         let visitDate = inputVisitDate.value
         let facility = $(selectFacility).val()
+        let latitude = inputLat.value.trim();
+        let longitude = inputLong.value.trim()
         if (visitDate === '') {
             inputVisitDate.focus()
             return
@@ -196,7 +196,9 @@ $inActiveBadge = "<span class='badge badge-warning rounded-pill'>In Active</span
         //['username', 'email', 'phone_number', 'first_name', 'last_name', 'active', 'password']
         let data = {
             visit_date: visitDate,
-            facility_id: facility
+            facility_id: facility,
+            latitude: latitude,
+            longitude: longitude
         }
         let saveUrl = '../api/visit'
         let updateUrl = `../api/visit/${editedId}`
@@ -228,6 +230,27 @@ $inActiveBadge = "<span class='badge badge-warning rounded-pill'>In Active</span
             })
 
     }
+
+    function verifyLocation() {
+            toastr.info("Getting Location...")
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(showPosition, (error) => {
+                    toastr.error(error.message)
+                    inputLat.value = 0.00
+                    inputLong.value = 0.00
+                }, {
+                    timeout: 10000
+                });
+            } else {
+                sLocation.innerHTML = "Geolocation is not supported by this browser.";
+            }
+        }
+
+        function showPosition(position) {
+            inputLat.value = position.coords.latitude
+            inputLong.value = position.coords.longitude
+            inputDistance.value = getDistanceFromCoordinates([position.coords.latitude, position.coords.longitude], [venue.latitude, venue.longitude]).toFixed(2)
+        }
 
     function deleteVisit(visit) {
         // TODO

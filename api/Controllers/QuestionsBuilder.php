@@ -2,6 +2,8 @@
 
 namespace Umb\Mentorship\Controllers;
 
+use Box\Spout\Common\Entity\Cell;
+use Box\Spout\Reader\Common\Creator\ReaderEntityFactory;
 use Umb\Mentorship\Models\Section;
 use Umb\Mentorship\Models\Question;
 use Umb\Mentorship\Models\Checklist;
@@ -230,6 +232,120 @@ class QuestionsBuilder extends Controller
         } catch (\Throwable $th) {
             Utility::logError($th->getCode(), $th->getMessage());
             $this->response(PRECONDITION_FAILED_ERROR_CODE, $th->getMessage());
+        }
+    }
+
+    public function importQuestions()
+    {
+        try {
+            $missing = Utility::checkMissingAttributes($_POST, ["section_id"]);
+            throw_if(sizeof($missing) > 0, new \Exception("Missing parameters passed : " . json_encode($missing)));
+            $missing = Utility::checkMissingAttributes($_FILES, ["upload_file"]);
+            throw_if(sizeof($missing) > 0, new \Exception("Missing parameters passed : " . json_encode($missing)));
+
+            // get section and checklist --  run validations(check if the checklist is draft)
+            /** @var Section */
+            $section = Section::findOrFail($_POST['section_id']);
+            $checklist = $section->checklist();
+            if ($checklist->status != 'draft') throw new \Exception("The checklist has already been published.", 403);
+
+            // upload file to temp dir
+            $tempDir = $_ENV['TEMP_DIR'];
+            if (!is_dir($tempDir)) {
+                mkdir($tempDir);
+            }
+            $filename = "sample_import_{$section->id}_" . time();
+            $uploaded = Utility::uploadFile($filename, $tempDir);
+            if ($uploaded === null) throw new \Exception("Could not upload file");
+
+            // read uploaded file
+            $attributes = ['question', 'category', 'frequency', 'type', 'options'];
+            $data = [];
+            $reader = ReaderEntityFactory::createReaderFromFile($tempDir . $uploaded);
+            $reader->open($tempDir . $uploaded);
+            foreach ($reader->getSheetIterator() as $sheet) {
+                $k = 0;
+                foreach ($sheet->getRowIterator() as $row) {
+                    // do stuff with the row
+                    if ($k > 0) {
+                        $datum = [];
+                        $cells = $row->getCells();
+                        for ($i = 0; $i < sizeof($cells); $i++) {
+                            $cell = $cells[$i];
+                            $datum[$attributes[$i]] = $cell->getValue();
+                        }
+                        $data[] = $datum;
+                    }
+                    $k++;
+                }
+            }
+            // store results to database
+            DB::beginTransaction();
+            $categories = ["individual", "facility"];
+            $frequencies = ["regular", "monthly", "quarterly", "semi-annual", "annual"];
+            $answerTypes = ["text", "number", "single", "multiple"];
+            $enumTypes = ['textfield_s', 'number_opt', 'radio_opt', 'check_opt'];
+            foreach ($data as $datum) {
+                $insert['section_id'] = $section->id;
+                $question = $datum['question'];
+                $category = $datum['category'];
+                $frequency = $datum['frequency'];
+                $type = $datum['type'];
+                $optionText = '';
+                if (!in_array($category, $categories)) throw new \Exception("Invalid category for question {$question}.", 403);
+                if (!in_array($frequency, $frequencies)) throw new \Exception("Invalid frequency for question {$question}.", 403);
+                if (!in_array($type, $answerTypes)) throw new \Exception("Invalid answer type for question {$question}.", 403);
+                $insert['question'] = $question;
+                $insert['category'] = $category;
+                switch ($frequency) {
+                    case $frequencies[0]:
+                        $frequencyId = 1;
+                        break;
+                    case $frequencies[1]:
+                        $frequencyId = 2;
+                        break;
+                    case $frequencies[2]:
+                        $frequencyId = 3;
+                        break;
+                    case $frequencies[3]:
+                        $frequencyId = 4;
+                        break;
+                    case $frequencies[4]:
+                        $frequencyId = 5;
+                        break;
+                    default:
+                        $frequencyId = 1;
+                        break;
+                }
+                $insert['frequency_id'] = $frequencyId;
+                $insert['date_created'] = date('Y-m-d');
+                $insert['created_by'] = $this->user->id;
+                $insert['type'] = $enumTypes[array_search($type, $answerTypes)];
+                if ($type == $answerTypes[2] || $type == $answerTypes[3]) { // Dropdowns
+                    $options = explode(',', $datum['options']);
+                    $optionArr = array();
+                    foreach ($options as $option) {
+                        $i = 0;
+                        while ($i == 0) {
+                            $k = substr(str_shuffle(str_repeat($x = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ', ceil(5 / strlen($x)))), 1, 5);
+                            if (!isset($arr[$k]))
+                                $i = 1;
+                        }
+                        $optionArr[$k] = $option;
+                    }
+                    $optionText = json_encode($optionArr);
+                }
+                $insert['frm_option'] = $optionText;
+                // echo json_encode($insert);
+                Question::create($insert);
+            }
+            self::response(SUCCESS_RESPONSE_CODE, "Import successfull.");
+            unlink($tempDir . $uploaded);
+            DB::commit();
+        } catch (\Throwable $th) {
+            DB::rollback();
+            Utility::logError($th->getCode(), $th->getMessage());
+            self::response(PRECONDITION_FAILED_ERROR_CODE, $th->getMessage());
         }
     }
 }

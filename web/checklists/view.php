@@ -98,6 +98,10 @@ endif;
 								<div class="row p-2">
 									<h4>Questions</h4>
 									<?php if ($checklist->status == 'draft') : ?>
+										<button class="btn btn-primary btn-icon-split ml-auto float-right" onclick='importQuestions(<?php echo $section->id ?>)'>
+											<span class="icon text-white-50"><i class="fa fa-download"></i> </span>
+											<span class="text"> Import Questions</span>
+										</button>
 										<button class="btn btn-primary btn-icon-split ml-auto float-right" onclick='newQuestion(<?php echo $section->id ?>)'>
 											<span class="icon text-white-50"><i class="fa fa-plus"></i> </span>
 											<span class="text"> Add Question</span>
@@ -147,11 +151,11 @@ endif;
 													<?php endforeach; ?>
 												<?php elseif ($question->type == 'textfield_s') : ?>
 													<div class="form-group">
-														<textarea name="answer[<?php echo $row['id'] ?>]" id="" cols="30" rows="4" class="form-control" placeholder="Write Something Here..."></textarea>
+														<textarea name="answer[<?php echo $question->id ?>]" id="" cols="30" rows="4" class="form-control" placeholder="Write Something Here..."></textarea>
 													</div>
 												<?php elseif ($question->type) : ?>
 													<div class="form-group">
-														<input type="number" name="answer[<?php echo $row['id'] ?>]" id="" class="form-control" readonly aria-readonly="true">
+														<input type="number" name="answer[<?php echo $question->id ?>]" id="" class="form-control" readonly aria-readonly="true">
 													</div>
 												<?php endif; ?>
 											</div>
@@ -202,6 +206,10 @@ endif;
 
 	function editQuestion(sectionId, id) {
 		uni_modal("New Question", `checklists/dialog_add_question.php?section_id=${sectionId}&id=${id}`, "large")
+	}
+
+	function importQuestions(sectionId){
+		uni_modal("Import Question", `checklists/dialog_import_questions.php?section_id=${sectionId}`, "large")
 	}
 
 	const btnPublishChecklist = document.getElementById("btnPublishChecklist")

@@ -1,3 +1,0 @@
-2023-02-25 18:58:45       Code 401      Message User not authenticated,..      ClientAddr ::1
-2023-02-25 18:58:45       Code 401      Message User not authenticated,..      ClientAddr ::1
-2023-02-25 19:40:53       Code 401      Message Session expired      ClientAddr ::1

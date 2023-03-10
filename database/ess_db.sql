@@ -1,8 +1,8 @@
 -- MySQL dump 10.13  Distrib 8.0.32, for Linux (x86_64)
 --
--- Host: localhost    Database: ess
+-- Host: localhost    Database: ess_db
 -- ------------------------------------------------------
--- Server version	8.0.32-0ubuntu0.20.04.2
+-- Server version	8.0.32-0ubuntu0.22.04.2
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -285,9 +285,10 @@ DROP TABLE IF EXISTS `questions`;
 CREATE TABLE `questions` (
   `id` int NOT NULL AUTO_INCREMENT,
   `question` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `category` enum('Facility','Individual') COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'Facility',
   `frequency_id` int NOT NULL,
   `frm_option` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `type` enum('check_opt','textfield_s','radio_opt','number_opt') COLLATE utf8mb4_general_ci NOT NULL,
+  `type` enum('check_opt','textfield_s','radio_opt','number_opt') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `order_by` int NOT NULL DEFAULT '0',
   `section_id` int NOT NULL,
   `date_created` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -310,7 +311,7 @@ CREATE TABLE `questions` (
 
 LOCK TABLES `questions` WRITE;
 /*!40000 ALTER TABLE `questions` DISABLE KEYS */;
-INSERT INTO `questions` VALUES (1,'Setc',1,'{\"cZfjg\":\"One\",\"Jnajz\":\"Two\",\"GPZRB\":\"Three\"}','check_opt',0,1,'2023-02-21 17:16:08',1,'2023-02-21 14:16:08','2023-02-28 11:59:06'),(2,'Question two',1,'','textfield_s',0,1,'2023-02-21 17:23:13',1,'2023-02-21 14:23:13','2023-02-28 11:59:06'),(3,'Question for section two',1,'{\"MSZsi\":\"One\",\"vkbRQ\":\"twe\",\"tIVBM\":\"Tree\",\"dDMOV\":\"Fork\"}','check_opt',0,2,'2023-02-21 17:32:34',1,'2023-02-21 14:32:34','2023-02-28 11:59:06'),(4,'What is your gender',1,'{\"Jhvde\":\"Male\",\"Jhryd\":\"Female\",\"BelDL\":\"LGBT\"}','radio_opt',0,1,'2023-02-23 14:53:52',1,'2023-02-23 11:53:52','2023-02-28 11:59:06'),(5,'What is the mostly user regimen type?',1,'{\"Ivlyu\":\"LPV\\/r\",\"geksS\":\"DTG\",\"FDYkL\":\"NVP\",\"VhFQt\":\"ATV\\/r\"}','radio_opt',0,3,'2023-02-27 13:18:05',1,'2023-02-27 10:18:05','2023-02-28 11:59:06'),(6,'Why do you ask many questions?',1,'','textfield_s',0,3,'2023-02-28 16:14:54',1,'2023-02-28 13:14:54','2023-02-28 13:14:54'),(7,'What sector is this?',3,'{\"iyuTE\":\"One\",\"XHLEh\":\"Two\",\"uCevs\":\"Biggot\"}','radio_opt',0,5,'2023-03-06 17:17:22',1,'2023-03-06 14:17:22','2023-03-06 14:17:22'),(8,'How many people are there in this meeting?',1,'','number_opt',0,6,'2023-03-07 13:28:36',1,'2023-03-07 10:28:36','2023-03-08 06:33:56'),(9,'What is the tx curr for the facility',2,'','number_opt',0,6,'2023-03-08 09:31:26',1,'2023-03-08 06:31:26','2023-03-08 06:31:26'),(10,'Select the most common regimen',2,'{\"KTnwQ\":\"DTG\",\"CQWFN\":\"EFV\",\"PvKsb\":\"LPV\\/r\",\"ztHDX\":\"NVP\"}','radio_opt',0,6,'2023-03-08 09:41:24',1,'2023-03-08 06:41:24','2023-03-08 06:41:24'),(11,'Describe the order of flow',1,'','textfield_s',0,6,'2023-03-08 09:44:12',1,'2023-03-08 06:44:12','2023-03-08 06:44:12'),(12,'Leave this blank',1,'','textfield_s',0,6,'2023-03-08 09:51:38',1,'2023-03-08 06:51:38','2023-03-08 06:51:38'),(13,'blank checks',1,'{\"tBaNO\":\"Up\",\"qNyLn\":\"Down\",\"Wtieo\":\"Bootilicius\"}','check_opt',0,6,'2023-03-08 09:52:22',1,'2023-03-08 06:52:22','2023-03-08 06:52:22');
+INSERT INTO `questions` VALUES (1,'Setc','Facility',1,'{\"cZfjg\":\"One\",\"Jnajz\":\"Two\",\"GPZRB\":\"Three\"}','check_opt',0,1,'2023-02-21 17:16:08',1,'2023-02-21 14:16:08','2023-02-28 11:59:06'),(2,'Question two','Facility',1,'','textfield_s',0,1,'2023-02-21 17:23:13',1,'2023-02-21 14:23:13','2023-02-28 11:59:06'),(3,'Question for section two','Facility',1,'{\"MSZsi\":\"One\",\"vkbRQ\":\"twe\",\"tIVBM\":\"Tree\",\"dDMOV\":\"Fork\"}','check_opt',0,2,'2023-02-21 17:32:34',1,'2023-02-21 14:32:34','2023-02-28 11:59:06'),(4,'What is your gender','Facility',1,'{\"Jhvde\":\"Male\",\"Jhryd\":\"Female\",\"BelDL\":\"LGBT\"}','radio_opt',0,1,'2023-02-23 14:53:52',1,'2023-02-23 11:53:52','2023-02-28 11:59:06'),(5,'What is the mostly user regimen type?','Facility',1,'{\"Ivlyu\":\"LPV\\/r\",\"geksS\":\"DTG\",\"FDYkL\":\"NVP\",\"VhFQt\":\"ATV\\/r\"}','radio_opt',0,3,'2023-02-27 13:18:05',1,'2023-02-27 10:18:05','2023-02-28 11:59:06'),(6,'Why do you ask many questions?','Facility',1,'','textfield_s',0,3,'2023-02-28 16:14:54',1,'2023-02-28 13:14:54','2023-02-28 13:14:54'),(7,'What sector is this?','Facility',3,'{\"iyuTE\":\"One\",\"XHLEh\":\"Two\",\"uCevs\":\"Biggot\"}','radio_opt',0,5,'2023-03-06 17:17:22',1,'2023-03-06 14:17:22','2023-03-06 14:17:22'),(8,'How many people are there in this meeting?','Facility',1,'','number_opt',0,6,'2023-03-07 13:28:36',1,'2023-03-07 10:28:36','2023-03-08 06:33:56'),(9,'What is the tx curr for the facility','Facility',2,'','number_opt',0,6,'2023-03-08 09:31:26',1,'2023-03-08 06:31:26','2023-03-08 06:31:26'),(10,'Select the most common regimen','Facility',2,'{\"KTnwQ\":\"DTG\",\"CQWFN\":\"EFV\",\"PvKsb\":\"LPV\\/r\",\"ztHDX\":\"NVP\"}','radio_opt',0,6,'2023-03-08 09:41:24',1,'2023-03-08 06:41:24','2023-03-08 06:41:24'),(11,'Describe the order of flow','Facility',1,'','textfield_s',0,6,'2023-03-08 09:44:12',1,'2023-03-08 06:44:12','2023-03-08 06:44:12'),(12,'Leave this blank','Facility',1,'','textfield_s',0,6,'2023-03-08 09:51:38',1,'2023-03-08 06:51:38','2023-03-08 06:51:38'),(13,'blank checks','Facility',1,'{\"tBaNO\":\"Up\",\"qNyLn\":\"Down\",\"Wtieo\":\"Bootilicius\"}','check_opt',0,6,'2023-03-08 09:52:22',1,'2023-03-08 06:52:22','2023-03-08 06:52:22');
 /*!40000 ALTER TABLE `questions` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -494,4 +495,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-03-09 14:29:52
+-- Dump completed on 2023-03-10  9:49:23

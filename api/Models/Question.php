@@ -4,7 +4,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Question extends Model{
 
-    protected $fillable = ["question", "frequency_id", "type", 'frm_option', "order", "frequency", "section_id", "created_by"];
+    protected $fillable = ["question", "category", "frequency_id", "type", 'frm_option', "order", "frequency", "section_id", "created_by"];
 
     /**
      * @return Section

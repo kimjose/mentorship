@@ -4,3 +4,4 @@ composer.lock
 .env
 .idea/
 public/logs/
+public/temp/

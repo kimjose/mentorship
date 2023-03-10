@@ -72,6 +72,7 @@ endif;
 
 				<div class="row m-1">
 					<h3>Sections</h3>
+
 					<?php if ($checklist->status == 'draft') : ?>
 						<button class="btn btn-primary btn-icon-split ml-auto float-right" data-toggle="modal" data-target="#modalSection">
 							<span class="icon text-white-50"><i class="fa fa-plus"></i> </span>
@@ -79,7 +80,8 @@ endif;
 						</button>
 					<?php endif; ?>
 				</div>
-
+					<p>To import the questions, add sections and upload an excel file. Use this <a href="../public/templates/questions_import_template.xlsx">template </a> to popuplate your excel.</p>
+			
 			</div>
 
 			<div class="body">
@@ -143,11 +145,11 @@ endif;
 															<label for="option_<?php echo $k ?>"><?php echo $v ?></label>
 														</div>
 													<?php endforeach; ?>
-												<?php elseif($question->type == 'textfield_s') : ?>
+												<?php elseif ($question->type == 'textfield_s') : ?>
 													<div class="form-group">
 														<textarea name="answer[<?php echo $row['id'] ?>]" id="" cols="30" rows="4" class="form-control" placeholder="Write Something Here..."></textarea>
 													</div>
-												<?php elseif($question->type): ?>
+												<?php elseif ($question->type) : ?>
 													<div class="form-group">
 														<input type="number" name="answer[<?php echo $row['id'] ?>]" id="" class="form-control" readonly aria-readonly="true">
 													</div>

@@ -281,7 +281,7 @@ class QuestionsBuilder extends Controller
             }
             // store results to database
             DB::beginTransaction();
-            $categories = ["individual", "facility"];
+            $categories = ["individual", "facility", "sdp"];
             $frequencies = ["regular", "monthly", "quarterly", "semi-annual", "annual"];
             $answerTypes = ["text", "number", "single", "multiple"];
             $enumTypes = ['textfield_s', 'number_opt', 'radio_opt', 'check_opt'];

@@ -11,6 +11,12 @@
             "bootstrap.php"
         ]
     },
+    "co-authors": [
+        {
+            "name": "fkimonye",
+            "email": "kimonyefrancis@gmail.com"
+        }
+    ],
     "authors": [
         {
             "name": "kimjose",

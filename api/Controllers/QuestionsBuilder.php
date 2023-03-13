@@ -339,9 +339,9 @@ class QuestionsBuilder extends Controller
                 // echo json_encode($insert);
                 Question::create($insert);
             }
-            self::response(SUCCESS_RESPONSE_CODE, "Import successfull.");
             unlink($tempDir . $uploaded);
             DB::commit();
+            self::response(SUCCESS_RESPONSE_CODE, "Import successfull.");
         } catch (\Throwable $th) {
             DB::rollback();
             Utility::logError($th->getCode(), $th->getMessage());

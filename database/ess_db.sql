@@ -285,7 +285,7 @@ DROP TABLE IF EXISTS `questions`;
 CREATE TABLE `questions` (
   `id` int NOT NULL AUTO_INCREMENT,
   `question` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `category` enum('facility','individual') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'facility',
+  `category` enum('individual','facility','sdp') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'facility',
   `frequency_id` int NOT NULL,
   `frm_option` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `type` enum('check_opt','textfield_s','radio_opt','number_opt') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
@@ -466,4 +466,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-03-10 18:44:57
+-- Dump completed on 2023-03-13  8:27:20

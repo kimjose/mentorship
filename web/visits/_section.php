@@ -117,6 +117,7 @@ $questions = Question::where('section_id', $sectionId)->get();
             <?php endforeach; ?>
             <hr>
             <div class="d-flex w-100 justify-content-center">
+                <input id="saveDraft" class="btn btn-sm btn-flat bg-gradient-primary mx-1" form="formFillSection" type="submit" value="Save Draft">
                 <input id="submitResponse" class="btn btn-sm btn-flat bg-gradient-primary mx-1" form="formFillSection" type="submit" value="Submit Answers">
                 <a href="index?page=visits-open&id=<?php echo $visitId ?>" class="btn btn-sm btn-flat bg-gradient-secondary mx-1">Cancel</a>
             </div>
@@ -128,6 +129,33 @@ $questions = Question::where('section_id', $sectionId)->get();
     console.log("Here we are...");
     const visitId = '<?php echo $visitId ?>'
     const formFillSection = document.getElementById('formFillSection')
+
+    $('#saveDraft').click(() => {
+        // e.preventDefault()
+        start_load()
+        $.ajax({
+            url: '../api/response/save_draft',
+            method: 'POST',
+            data: new FormData(formFillSection),
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: function(resp) {
+                if (resp.code == 200) {
+                    alert_toast("Thank You.", 'success')
+                    setTimeout(function() {
+                        location.href = `index?page=visits-open&id=${visitId}`
+                    }, 2000)
+                } else {
+                    toastr.error(resp.message)
+                }
+            },
+            error: function(request, status, error) {
+                alert(request.responseText);
+            }
+        })
+    })
+
     $('#submitResponse').click(() => {
         // e.preventDefault()
         start_load()

@@ -23,7 +23,7 @@ $visitSections = VisitSection::where('visit_id', $id)->get();
 $checklists = Checklist::where('status', 'published')->get();
 
 
-$openedBadge = "<span class='badge badge-primary rounded-pill'>Opened</span>";
+$openedBadge = "<span class='badge badge-primary rounded-pill'>Draft</span>";
 $notOpenedBadge = "<span class='badge badge-warning rounded-pill'>Not Opened</span>";
 $submittedBadge = "<span class='badge badge-success rounded-pill'>Submitted</span>";
 ?>
@@ -116,12 +116,15 @@ $submittedBadge = "<span class='badge badge-success rounded-pill'>Submitted</spa
                                                     </td>
                                                     <td class="text-center">
                                                         <div class="btn-group">
-                                                            <button class="btn btn-primary btn-flat" data-tooltip="tooltip" title="Edit Section" onclick='openSection("<?php echo $section->id; ?>")'>
-                                                                <i class="fas fa-edit"></i>
-                                                            </button>
-                                                            <button class="btn btn-secondary btn-flat" data-tooltip="tooltip" title="View Response" onclick='viewResponse(<?php echo $section->id; ?>)'>
-                                                                <i class="fas fa-eye"></i>
-                                                            </button>
+                                                            <?php if ($openedSection == null || !$openedSection->submitted) : ?>
+                                                                <button class="btn btn-primary btn-flat" data-tooltip="tooltip" title="Edit Section" onclick='openSection("<?php echo $section->id; ?>")'>
+                                                                    <i class="fas fa-edit"></i>
+                                                                </button>
+                                                            <?php else : ?>
+                                                                <button class="btn btn-secondary btn-flat" data-tooltip="tooltip" title="View Response" onclick='viewResponse(<?php echo $section->id; ?>)'>
+                                                                    <i class="fas fa-eye"></i>
+                                                                </button>
+                                                            <?php endif; ?>
                                                         </div>
                                                     </td>
                                                 </tr>

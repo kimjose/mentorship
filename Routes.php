@@ -103,9 +103,14 @@ $router->post('/api/open_visit_section', function () {
     $controller = new FacilityVisitsController();
     $controller->openVisitSection($data);
 });
-
+$router->post('/api/response/save_draft', function () {
+    $controller = new FacilityVisitsController();
+    $_POST['submitted'] = 0;
+    $controller->submitResponse($_POST);
+});
 $router->post('/api/response/submit', function () {
     $controller = new FacilityVisitsController();
+    $_POST['submitted'] = 1;
     $controller->submitResponse($_POST);
 });
 $router->post('/api/action_point', function(){

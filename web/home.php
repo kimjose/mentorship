@@ -16,7 +16,7 @@ $startDate = date_format($startDate, 'Y-m-d');
 $users = User::all();
 $facilities = DB::select("select f.*, (select COUNT(fv.facility_id) from facility_visits fv where fv.facility_id = f.id GROUP BY fv.facility_id) as visits from facilities f order by visits desc;");
 $checklists = Checklist::where('status', 'published')->get();
-/** @var FacilityVisit[] */
+/** @var FacilityVisit[] $periodVisits */
 $periodVisits = FacilityVisit::where('visit_date', '>=', $startDate)->where('visit_date', '<=', $endDate)->orderBy('visit_date', 'asc')->get();
 
 ?>
@@ -179,7 +179,6 @@ $periodVisits = FacilityVisit::where('visit_date', '>=', $startDate)->where('vis
     let startDate = new Date(startDateString)
     let endDate = new Date(endDateString)
     let diff = (endDate - startDate) / (24 * 3600 * 1000)
-    console.log(`Difference is :  ${diff}`);
 
     for (let i = 0; i <= diff; i++) {
       let mDate = new Date(startDate.getTime() + (i * (24 * 3600 * 1000)))
@@ -191,15 +190,15 @@ $periodVisits = FacilityVisit::where('visit_date', '>=', $startDate)->where('vis
       values.push(dayVisits.length);
     }
 
-    var ticksStyle = {
+    let ticksStyle = {
       fontColor: '#495057',
       fontStyle: 'bold'
     }
-    var mode = 'index'
-    var intersect = true
-    var $visitorsChart = $('#graphVisitsOverTime')
+    let mode = 'index'
+    let intersect = true
+    let $visitorsChart = $('#graphVisitsOverTime')
     // eslint-disable-next-line no-unused-vars
-    var visitorsChart = new Chart($visitorsChart, {
+    let visitorsChart = new Chart($visitorsChart, {
       data: {
         labels: labels,
         datasets: [{

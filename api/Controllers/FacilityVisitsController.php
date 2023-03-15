@@ -3,6 +3,7 @@
 namespace Umb\Mentorship\Controllers;
 
 use Umb\Mentorship\Controllers\Utils\Utility;
+use Umb\Mentorship\Models\ApComment;
 use Umb\Mentorship\Models\FacilityVisit;
 use Umb\Mentorship\Models\Notification;
 use Umb\Mentorship\Models\VisitSection;
@@ -143,7 +144,7 @@ class FacilityVisitsController extends Controller
             $data['created_by'] = $this->user->id;
             $data['assign_to'] = $assignTo;
             $ap = ActionPoint::create($data);
-            foreach ($assign_to as $userId){
+            foreach ($assign_to as $userId) {
                 Notification::create([
                     'user_id' => $userId, 'message' => "You have been assigned an action point(${title})"
                 ]);
@@ -171,4 +172,23 @@ class FacilityVisitsController extends Controller
             $this->response(PRECONDITION_FAILED_ERROR_CODE, $th->getMessage());
         }
     }
+
+    public function addApComment($data)
+    {
+        try {
+            $attributes = ['ap_id', 'comment'];
+            $missing = Utility::checkMissingAttributes($data, $attributes);
+            throw_if(sizeof($missing) > 0, new \Exception("Missing parameters passed : " . json_encode($missing)));
+            $ap = ActionPoint::findOrFail($data['ap_id']);
+            $data['user_id'] = $this->user->id;
+            if ($ap->status === "Done") throw new \Exception("This action point has been marked as done and no further comments can be added.");
+            ApComment::create($data);
+            if ($this->user->id != $ap->created_by) $this->createNotification($ap->created_by, "Someone commented on action point {$ap->title}");
+            self::response(SUCCESS_RESPONSE_CODE, 'Comment added successfully.');
+        } catch (\Throwable $th) {
+            Utility::logError($th->getCode(), $th->getMessage());
+            $this->response(PRECONDITION_FAILED_ERROR_CODE, $th->getMessage());
+        }
+    }
+
 }

@@ -9,4 +9,8 @@ class User extends Model{
 
     protected $hidden = ['password'];
 
+    public function getNames(): string
+    {
+        return $this->first_name . ' ' . $this->last_name;
+    }
 }

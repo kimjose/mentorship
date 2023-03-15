@@ -121,6 +121,11 @@ $router->post('/api/action_point/{id}', function($id){
     $controller = new FacilityVisitsController();
     $controller->updateActionPoint($id, $_POST);
 });
+$router->post('/api/ap_comment', function(){
+    $data = json_decode(file_get_contents('php://input'), true);
+    $controller = new FacilityVisitsController();
+    $controller->addApComment($data);
+});
 $router->post('/api/visit_section', function () {
     try {
         VisitSection::create([

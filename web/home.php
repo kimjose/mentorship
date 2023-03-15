@@ -17,7 +17,7 @@ $users = User::all();
 $facilities = DB::select("select f.*, (select COUNT(fv.facility_id) from facility_visits fv where fv.facility_id = f.id GROUP BY fv.facility_id) as visits from facilities f order by visits desc;");
 $checklists = Checklist::where('status', 'published')->get();
 /** @var FacilityVisit[] */
-$periodVisits = FacilityVisit::where('visit_date', '>=', $startDate)->where('visit_date', '<=', $endDate)->get();
+$periodVisits = FacilityVisit::where('visit_date', '>=', $startDate)->where('visit_date', '<=', $endDate)->orderBy('visit_date', 'asc')->get();
 
 ?>
 
@@ -167,7 +167,29 @@ $periodVisits = FacilityVisit::where('visit_date', '>=', $startDate)->where('vis
 
 
 <script>
+  const startDateString = "<?php echo $startDate; ?>"
+  const endDateString = "<?php echo $endDate; ?>"
+  const visits = JSON.parse('<?php echo $periodVisits ?>');
+
   function drawVisitsGraph() {
+
+    console.log(visits);
+    let labels = [];
+    let values = [];
+    let startDate = new Date(startDateString)
+    let endDate = new Date(endDateString)
+    let diff = (endDate - startDate) / (24 * 3600 * 1000)
+    console.log(`Difference is :  ${diff}`);
+
+    for (let i = 0; i <= diff; i++) {
+      let mDate = new Date(startDate.getTime() + (i * (24 * 3600 * 1000)))
+      let label = DateFormatter.formatDate(mDate, 'MM/DD')
+      labels.push(label)
+      let dayVisits = visits.filter((visit) => {
+        return visit.visit_date === DateFormatter.formatDate(mDate, 'yyyy-MM-DD')
+      })
+      values.push(dayVisits.length);
+    }
 
     var ticksStyle = {
       fontColor: '#495057',
@@ -179,10 +201,11 @@ $periodVisits = FacilityVisit::where('visit_date', '>=', $startDate)->where('vis
     // eslint-disable-next-line no-unused-vars
     var visitorsChart = new Chart($visitorsChart, {
       data: {
-        labels: ['18th', '20th', '22nd', '24th', '26th', '28th', '30th'],
+        labels: labels,
         datasets: [{
+            label: 'visits',
             type: 'line',
-            data: [100, 120, 170, 167, 180, 177, 160],
+            data: values,
             backgroundColor: 'transparent',
             borderColor: '#007bff',
             pointBorderColor: '#007bff',
@@ -190,17 +213,6 @@ $periodVisits = FacilityVisit::where('visit_date', '>=', $startDate)->where('vis
             fill: false
             // pointHoverBackgroundColor: '#007bff',
             // pointHoverBorderColor    : '#007bff'
-          },
-          {
-            type: 'line',
-            data: [60, 80, 70, 67, 80, 77, 100],
-            backgroundColor: 'tansparent',
-            borderColor: '#ced4da',
-            pointBorderColor: '#ced4da',
-            pointBackgroundColor: '#ced4da',
-            fill: false
-            // pointHoverBackgroundColor: '#ced4da',
-            // pointHoverBorderColor    : '#ced4da'
           }
         ]
       },
@@ -219,7 +231,10 @@ $periodVisits = FacilityVisit::where('visit_date', '>=', $startDate)->where('vis
         },
         scales: {
           yAxes: [{
-            // display: false,
+            scaleLabel: {
+              display: true,
+              labelString: "No. of Visits",
+            },
             gridLines: {
               display: true,
               lineWidth: '4px',
@@ -228,10 +243,14 @@ $periodVisits = FacilityVisit::where('visit_date', '>=', $startDate)->where('vis
             },
             ticks: $.extend({
               beginAtZero: true,
-              suggestedMax: 200
+              suggestedMax: 10
             }, ticksStyle)
           }],
           xAxes: [{
+            scaleLabel: {
+              display: true,
+              labelString: "Dates",
+            },
             display: true,
             gridLines: {
               display: false

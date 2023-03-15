@@ -31,6 +31,8 @@
   <link rel="stylesheet" href="assets/dist/css/adminlte.min.css">
   <link rel="stylesheet" href="assets/dist/css/styles.css">
   <link rel="stylesheet" href="assets/css/app.css">
+
+  <!--⚡⚡⚡⚡ Scripts ⚡⚡⚡⚡ -->
 	<script src="assets/plugins/jquery/jquery.min.js"></script>
   <!-- jQuery UI 1.11.4 -->
   <script src="assets/plugins/jquery-ui/jquery-ui.min.js"></script>
@@ -52,5 +54,6 @@
 <!-- ChartJS -->
 <script src="assets/plugins/chart.js/Chart.min.js"></script>
 
+<script src="assets/js/app.js"></script>
 
 </head>

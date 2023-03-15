@@ -46,6 +46,34 @@
 	          end_load()  
 
 	}
+    window.view_modal = function($title = '' , $url='',$size=""){
+        start_load()
+        $.ajax({
+            url:$url,
+            error:err=>{
+                console.log()
+                alert("An error occured")
+            },
+            success:function(resp){
+                if(resp){
+                    $('#view_modal .modal-title').html($title)
+                    $('#view_modal .modal-body').html(resp)
+                    if($size != ''){
+                        $('#view_modal .modal-dialog').addClass($size)
+                    }else{
+                        $('#view_modal .modal-dialog').removeAttr("class").addClass("modal-dialog modal-md")
+                    }
+                    $('#view_modal').modal({
+                        show:true,
+                        backdrop:'static',
+                        keyboard:false,
+                        focus:true
+                    })
+                    end_load()
+                }
+            }
+        })
+    }
 	  window.uni_modal = function($title = '' , $url='',$size=""){
 	      start_load()
 	      $.ajax({

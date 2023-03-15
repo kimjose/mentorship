@@ -252,7 +252,7 @@ $submittedBadge = "<span class='badge badge-success rounded-pill'>Submitted</spa
     })
 
     function viewResponse(sectionId) {
-        uni_modal("View Response", `visits/dialog_view_response.php?section_id=${sectionId}&visit_id=${visitId}`, "large")
+        view_modal("View Response", `visits/dialog_view_response.php?section_id=${sectionId}&visit_id=${visitId}`, "large")
     }
 
     function openSection(sectionId) {

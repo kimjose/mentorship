@@ -55,6 +55,7 @@ $users = User::all();
                 method: 'POST',
                 type: 'POST',
                 success: function(resp) {
+                    end_load()
                     if (resp.code == 200) {
                         alert_toast('Data successfully saved.', "success");
                         setTimeout(function() {
@@ -65,6 +66,7 @@ $users = User::all();
                     }
                 },
                 error: function(request, status, error) {
+                    end_load()
                     alert(request.responseText);
                 }
             })

@@ -191,4 +191,20 @@ class FacilityVisitsController extends Controller
         }
     }
 
+    public function markApAsDone($data){
+        try{
+            $attributes = ['id'];
+            $missing = Utility::checkMissingAttributes($data, $attributes);
+            throw_if(sizeof($missing) > 0, new \Exception("Missing parameters passed : " . json_encode($missing)));
+            $ap = ActionPoint::findOrFail($data['id']);
+            if($ap->status === 'Done') throw new \Exception('This action has already been marked as done.');
+            $ap->status = "Done";
+            $ap->save();
+            self::response(SUCCESS_RESPONSE_CODE, "The action point has been marked as done.");
+        } catch (\Throwable $th) {
+            Utility::logError($th->getCode(), $th->getMessage());
+            $this->response(PRECONDITION_FAILED_ERROR_CODE, $th->getMessage());
+        }
+    }
+
 }

@@ -126,6 +126,11 @@ $router->post('/api/ap_comment', function(){
     $controller = new FacilityVisitsController();
     $controller->addApComment($data);
 });
+$router->post('/api/mark_as_done', function(){
+    $data = json_decode(file_get_contents('php://input'), true);
+    $controller = new FacilityVisitsController();
+    $controller->markApAsDone($data);
+});
 $router->post('/api/visit_section', function () {
     try {
         VisitSection::create([

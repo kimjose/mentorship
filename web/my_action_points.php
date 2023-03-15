@@ -6,6 +6,10 @@ use Umb\Mentorship\Models\ApComment;
 $query = "select ap.*, concat(u.first_name, ' ', u.last_name), q.question, s.abbr as 'section_abbr', s.title as 'section_title', c.abbr 'checklist_abbr', c.title 'checklist_title', fv.visit_date, f.name 'facility_name' from action_points ap left join users u on u.id = ap.created_by LEFT join questions q on q.id = ap.question_id 
 left join sections s on s.id = q.section_id LEFT join checklists c on c.id = s.checklist_id left join facility_visits fv on ap.visit_id = fv.id LEFT join facilities f on f.id = fv.facility_id where {$currUser->id} in(ap.assign_to);";
 $actionPoints = DB::select($query);
+
+
+$doneBadge = "<span class='badge badge-success rounded-pill'>Done</span>";
+$pendingBadge = "<span class='badge badge-warning rounded-pill'>Pending</span>";
 ?>
 
 <!-- Page Heading -->
@@ -89,7 +93,11 @@ $actionPoints = DB::select($query);
                                 </div>
                             <?php endforeach; ?>
                         </td>
-                        <td></td>
+                        <td>
+                            <?php
+                            echo $ap->status === 'Done' ? $doneBadge : $pendingBadge;
+                            ?>
+                        </td>
                         <td class="text-center">
                             <div class="btn-group">
                                 <button class="btn btn-info btn-flat" data-tooltip="tooltip" title="Add Comment"
@@ -100,7 +108,7 @@ $actionPoints = DB::select($query);
                                 <?php if ($currUser->id == $ap->created_by): ?>
                                     <button type="button" class="btn btn-outline-success btn-flat" title="Mark as Done"
                                             data-id="<?php echo $ap->id ?>"
-                                            onclick='deleteVisit(<?php echo ''; ?>)'>
+                                            onclick='markAsDone(<?php echo $ap->id; ?>)'>
                                         <i class="fas fa-check"></i>
                                     </button>
                                 <?php endif; ?>
@@ -196,6 +204,34 @@ $actionPoints = DB::select($query);
                 end_load()
                 toastr.error(err.message)
             })
+    }
+
+    function markAsDone(id) {
+        customConfirm("Mark as Done", "Confirm mark this action as done!!", () => {
+            fetch('../api/mark_as_done', {
+                method: 'POST',
+                body: JSON.stringify({id: id}),
+                headers: {
+                    "content-type": "application/x-www-form-urlencoded"
+                }
+            })
+                .then(response => {
+                    response.json()
+                })
+                .then(response => {
+                    console.log('response is' + response)
+                    if (response.code === 200) {
+                        toastr.success(response.message)
+                        setTimeout(() => {
+                            location.reload()
+                        }, 998)
+                    } else throw new Error(response.message)
+                })
+                .catch(err => {
+                    toastr.error(err.message)
+                })
+        }, () => {
+        })
     }
 
     initialize()

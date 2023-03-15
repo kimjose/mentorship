@@ -142,7 +142,7 @@ $(function () {
 <!-- AdminLTE for demo purposes -->
 <!-- <script src="assets/dist/js/demo.js"></script> -->
 <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
-<script src="assets/dist/js/pages/dashboard2.js"></script>
+<!-- <script src="assets/dist/js/pages/dashboard2.js"></script> -->
 <!-- DataTables  & Plugins -->
 <script src="assets/plugins/datatables/jquery.dataTables.min.js"></script>
 <script src="assets/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
@@ -156,5 +156,4 @@ $(function () {
 <script src="assets/plugins/datatables-buttons/js/buttons.html5.min.js"></script>
 <script src="assets/plugins/datatables-buttons/js/buttons.print.min.js"></script>
 <script src="assets/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
-<script src="assets/js/app.js"></script>
 

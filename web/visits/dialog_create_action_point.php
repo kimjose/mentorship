@@ -43,6 +43,15 @@ $users = User::all();
         $('#formActionPoint').submit(e => {
             e.preventDefault()
             let formActionPoint = document.getElementById('formActionPoint');
+            let title = $('#inputTitle').val()
+            let dueDate = $('#inputDueDate').val()
+            let error = ''
+            if(title.trim() === '') error = 'Title is required.'
+            if (dueDate.trim() === '') error += "\n The due date is required."
+            if (error !== ''){
+                toastr.error(error)
+                return;
+            }
             let formData = new FormData(formActionPoint);
             start_load()
 

@@ -184,6 +184,6 @@ $questions = Question::where('section_id', $sectionId)->get();
 
     function addActionPoint(questionId) {
         console.log('Bang...' + visitId + ' qn ' + questionId);
-        uni_modal("New Action Point", `visits/dialog_create_action_point.php?question_id=${questionId}&visit_id=${visitId}`, "large")
+        uni_modal("New Action Point", `visits/dialog_create_action_point?question_id=${questionId}&visit_id=${visitId}`, "large")
     }
 </script>

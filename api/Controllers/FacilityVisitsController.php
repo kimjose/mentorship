@@ -4,6 +4,7 @@ namespace Umb\Mentorship\Controllers;
 
 use Umb\Mentorship\Controllers\Utils\Utility;
 use Umb\Mentorship\Models\FacilityVisit;
+use Umb\Mentorship\Models\Notification;
 use Umb\Mentorship\Models\VisitSection;
 use Illuminate\Database\Capsule\Manager as DB;
 use Umb\Mentorship\Models\ActionPoint;
@@ -136,13 +137,21 @@ class FacilityVisitsController extends Controller
             $attributes = ['visit_id', 'question_id', 'title', 'description', 'due_date'];
             $missing = Utility::checkMissingAttributes($data, $attributes);
             throw_if(sizeof($missing) > 0, new \Exception("Missing parameters passed : " . json_encode($missing)));
+            DB::beginTransaction();
             extract($data);
             $assignTo = implode(',', $assign_to);
             $data['created_by'] = $this->user->id;
             $data['assign_to'] = $assignTo;
-            ActionPoint::create($data);
+            $ap = ActionPoint::create($data);
+            foreach ($assign_to as $userId){
+                Notification::create([
+                    'user_id' => $userId, 'message' => "You have been assigned an action point(${title})"
+                ]);
+            }
+            DB::commit();
             self::response(SUCCESS_RESPONSE_CODE, 'Action Point created successfully.');
         } catch (\Throwable $th) {
+            DB::rollback();
             Utility::logError($th->getCode(), $th->getMessage());
             $this->response(PRECONDITION_FAILED_ERROR_CODE, $th->getMessage());
         }

@@ -216,7 +216,7 @@ $pendingBadge = "<span class='badge badge-warning rounded-pill'>Pending</span>";
                 }
             })
                 .then(response => {
-                    response.json()
+                    return response.json()
                 })
                 .then(response => {
                     console.log('response is' + response)

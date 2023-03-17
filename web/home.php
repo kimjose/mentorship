@@ -134,6 +134,7 @@ $periodVisits = FacilityVisit::where('visit_date', '>=', $startDate)->where('vis
                 </li>
               <?php endfor; ?>
             </ul>
+            <a href="index?page=facilities" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
           </div>
         </div>
       </div>
@@ -158,6 +159,7 @@ $periodVisits = FacilityVisit::where('visit_date', '>=', $startDate)->where('vis
                 </li>
               <?php endfor; ?>
             </ul>
+            <a href="index?page=facilities" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
           </div>
         </div>
       </div>
@@ -202,18 +204,17 @@ $periodVisits = FacilityVisit::where('visit_date', '>=', $startDate)->where('vis
       data: {
         labels: labels,
         datasets: [{
-            label: 'visits',
-            type: 'line',
-            data: values,
-            backgroundColor: 'transparent',
-            borderColor: '#007bff',
-            pointBorderColor: '#007bff',
-            pointBackgroundColor: '#007bff',
-            fill: false
-            // pointHoverBackgroundColor: '#007bff',
-            // pointHoverBorderColor    : '#007bff'
-          }
-        ]
+          label: 'visits',
+          type: 'line',
+          data: values,
+          backgroundColor: 'transparent',
+          borderColor: '#007bff',
+          pointBorderColor: '#007bff',
+          pointBackgroundColor: '#007bff',
+          fill: false
+          // pointHoverBackgroundColor: '#007bff',
+          // pointHoverBorderColor    : '#007bff'
+        }]
       },
       options: {
         maintainAspectRatio: false,

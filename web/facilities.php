@@ -3,8 +3,9 @@
 /** @var Umb\EventsManager\Models\User $currUser */
 ?>
 <?php
+use Illuminate\Database\Capsule\Manager as DB;
 /*** @var \Umb\EventsManager\Models\Facility[] $facilities */
-$facilities = \Umb\Mentorship\Models\Facility::where('id', '>', 1)->get();
+$facilities = DB::select("select f.*, c.name 'county', (select count(fv.facility_id) from facility_visits fv where fv.facility_id = f.id group by fv.facility_id ) as visits from facilities f left join counties c on c.code = f.county_code");
 $activeBadge = "<span class='badge badge-primary rounded-pill'>Active</span>";
 $inActiveBadge = "<span class='badge badge-warning rounded-pill'>In Active</span>";
 ?>
@@ -38,6 +39,7 @@ $inActiveBadge = "<span class='badge badge-warning rounded-pill'>In Active</span
                         <th>MFL Code</th>
                         <th>County</th>
                         <th>Status</th>
+                        <th>Visits</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -48,6 +50,7 @@ $inActiveBadge = "<span class='badge badge-warning rounded-pill'>In Active</span
                         <th>MFL Code</th>
                         <th>County</th>
                         <th>Status</th>
+                        <th>Visits</th>
                         <th>Actions</th>
                     </tr>
                 </tfoot>
@@ -60,9 +63,10 @@ $inActiveBadge = "<span class='badge badge-warning rounded-pill'>In Active</span
                             <td><?php echo $i ?></td>
                             <td><?php echo $facility->name ?></td>
                             <td><?php echo $facility->mfl_code  ?></td>
-                            <td><?php echo $facility->getCounty()->name ?></php>
+                            <td><?php echo $facility->county ?></php>
                             </td>
                             <td><?php echo $facility->active ? $activeBadge : $inActiveBadge ?></td>
+                            <td><?php echo $facility->visits ?? 0 ?></td>
                             <td class="text-center">
                                 <div class="btn-group">
                                     <button class="btn btn-primary btn-flat" data-tooltip="tooltip" title="Edit Facility" onclick='editFacility(<?php echo json_encode($facility); ?>)' data-toggle="modal" data-target="#modalFacility">

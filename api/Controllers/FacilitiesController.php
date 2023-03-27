@@ -4,6 +4,7 @@ namespace Umb\Mentorship\Controllers;
 
 use Umb\Mentorship\Controllers\Utils\Utility;
 use Umb\Mentorship\Models\Facility;
+use Umb\Mentorship\Models\Team;
 
 class FacilitiesController extends Controller
 {
@@ -55,6 +56,34 @@ class FacilitiesController extends Controller
 
     public function getFacilities(){
         return Facility::all();
+    }
+
+    public function createTeam($data){
+        try {
+            $attributes = ['team_lead', 'name'];
+            $missing = Utility::checkMissingAttributes($data, $attributes);
+            throw_if(sizeof($missing) > 0, new \Exception("Missing parameters passed : " . json_encode($missing)));
+            Team::create($data);
+            self::response(SUCCESS_RESPONSE_CODE, "Teams created successfully.");
+        } catch (\Throwable $th){
+            Utility::logError($th->getCode(), $th->getMessage());
+            $this->response(PRECONDITION_FAILED_ERROR_CODE, $th->getMessage());
+        }
+    }
+
+    public function updateTeam($id,$data){
+        try {
+
+            $attributes = ['team_lead', 'name'];
+            $missing = Utility::checkMissingAttributes($data, $attributes);
+            throw_if(sizeof($missing) > 0, new \Exception("Missing parameters passed : " . json_encode($missing)));
+            $team = Team::findOrFail($id);
+            $team->update($data);
+            self::response(SUCCESS_RESPONSE_CODE, "Teams created successfully.");
+        } catch (\Throwable $th){
+            Utility::logError($th->getCode(), $th->getMessage());
+            $this->response(PRECONDITION_FAILED_ERROR_CODE, $th->getMessage());
+        }
     }
 
 }

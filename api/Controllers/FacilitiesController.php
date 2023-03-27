@@ -17,13 +17,14 @@ class FacilitiesController extends Controller
 
     public function addFacility($data){
         try {
-            $attributes = ['mfl_code', 'name', 'county_code', 'latitude', 'longitude', 'active'];
+            $attributes = ['mfl_code', 'name', 'county_code', 'latitude', 'longitude', 'active', 'team_id'];
             $missing = Utility::checkMissingAttributes($data, $attributes);
             throw_if(sizeof($missing) > 0, new \Exception("Missing parameters passed : " . json_encode($missing)));
             $exists = Facility::where('mfl_code', $data['mfl_code'])->first();
             throw_if($exists != null, new \Exception("Facility already exists.", -1));
             $data['latitude'] = $data['latitude'] == '' ? null : $data['latitude'];
             $data['longitude'] = $data['longitude'] == '' ? null : $data['longitude'];
+            $data['team_id'] = $data['team_id'] == '' ? null : $data['team_id'];
             Facility::create($data);
             $this->response(SUCCESS_RESPONSE_CODE, "The facility has been added successfully");
         } catch (\Throwable $th){
@@ -34,7 +35,7 @@ class FacilitiesController extends Controller
 
     public function updateFacility($id, $data){
         try {
-            $attributes = ['mfl_code', 'name', 'county_code', 'active'];
+            $attributes = ['mfl_code', 'name', 'county_code', 'active', 'team_id'];
             $missing = Utility::checkMissingAttributes($data, $attributes);
             throw_if(sizeof($missing) > 0, new \Exception("Missing parameters passed : " . json_encode($missing)));
             $exists = Facility::where('mfl_code', $data['mfl_code'])->where('id','!=', $id)->first();
@@ -46,6 +47,7 @@ class FacilitiesController extends Controller
             $facility->active = $data['active'];
             $facility->latitude = $data['latitude'] == '' ? null : $data['latitude'];
             $facility->longitude = $data['longitude'] == '' ? null : $data['longitude'];
+            $facility->team_id = $data['team_id'] == '' ? null : $data['team_id'];
             $facility->save();
             $this->response(SUCCESS_RESPONSE_CODE, "The facility has been updated successfully");
         } catch (\Throwable $th){

@@ -64,7 +64,7 @@ class FacilitiesController extends Controller
             $missing = Utility::checkMissingAttributes($data, $attributes);
             throw_if(sizeof($missing) > 0, new \Exception("Missing parameters passed : " . json_encode($missing)));
             Team::create($data);
-            self::response(SUCCESS_RESPONSE_CODE, "Teams created successfully.");
+            self::response(SUCCESS_RESPONSE_CODE, "Team created successfully.");
         } catch (\Throwable $th){
             Utility::logError($th->getCode(), $th->getMessage());
             $this->response(PRECONDITION_FAILED_ERROR_CODE, $th->getMessage());
@@ -79,7 +79,7 @@ class FacilitiesController extends Controller
             throw_if(sizeof($missing) > 0, new \Exception("Missing parameters passed : " . json_encode($missing)));
             $team = Team::findOrFail($id);
             $team->update($data);
-            self::response(SUCCESS_RESPONSE_CODE, "Teams created successfully.");
+            self::response(SUCCESS_RESPONSE_CODE, "Team updated successfully.");
         } catch (\Throwable $th){
             Utility::logError($th->getCode(), $th->getMessage());
             $this->response(PRECONDITION_FAILED_ERROR_CODE, $th->getMessage());

@@ -60,7 +60,7 @@ if (isset($_GET['id'])) {
 				<hr>
 				<div class="col-lg-12 text-right justify-content-center d-flex">
 					<button id="btnSaveChecklist" class="btn btn-primary mr-2" onclick="saveChecklist()">Save</button>
-					<button class="btn btn-secondary" type="button" onclick="location.href = 'index?page=checklist'">Cancel</button>
+					<button class="btn btn-secondary" type="button" onclick="location.href = 'index?page=checklists'">Cancel</button>
 				</div>
 			</form>
 		</div>

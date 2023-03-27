@@ -1,8 +1,8 @@
   <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <div class="dropdown">
-   	<a href="javascript:void(0)" class="brand-link dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
-        <span class="brand-image img-circle elevation-3 d-flex justify-content-center align-items-center bg-primary text-white font-weight-500" style="width: 38px;height:50px"><?php echo strtoupper(substr($currUser->first_name, 0,1).substr($currUser->last_name, 0,1)) ?></span>
-        <span class="brand-text font-weight-light"><?php echo ucwords($currUser->first_name.' '.$currUser->last_name) ?></span>
+      <a href="javascript:void(0)" class="brand-link dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
+        <span class="brand-image img-circle elevation-3 d-flex justify-content-center align-items-center bg-primary text-white font-weight-500" style="width: 38px;height:50px"><?php echo strtoupper(substr($currUser->first_name, 0, 1) . substr($currUser->last_name, 0, 1)) ?></span>
+        <span class="brand-text font-weight-light"><?php echo ucwords($currUser->first_name . ' ' . $currUser->last_name) ?></span>
 
       </a>
       <div class="dropdown-menu">
@@ -21,8 +21,8 @@
                 Dashboard
               </p>
             </a>
-            
-          </li>    
+
+          </li>
           <li class="nav-item">
             <a href="#" class="nav-link nav-edit_user">
               <i class="nav-icon fas fa-users"></i>
@@ -76,7 +76,7 @@
                 Checklist Report
               </p>
             </a>
-          </li> 
+          </li>
           <li class="nav-item">
             <a href="./index?page=facilities" class="nav-link nav-facilities">
               <i class="nav-icon fa fa-building"></i>
@@ -95,34 +95,49 @@
           </li>
 
           <li class="nav-item">
-            <a href="./index?page=my_action_points" class="nav-link nav-my_action_points">
+            <a href="#" class="nav-link nav-edit_user">
               <i class="nav-icon fas fa-bullseye"></i>
               <p>
                 My Action Points
+                <i class="right fas fa-angle-left"></i>
               </p>
             </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="./index?page=action_points-assigned" class="nav-link nav-action_points-assigned tree-item">
+                  <i class="fas fa-angle-right nav-icon"></i>
+                  <p>Assigned </p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="./index?page=action_points-created" class="nav-link nav-action_points-created tree-item">
+                  <i class="fas fa-angle-right nav-icon"></i>
+                  <p>Created</p>
+                </a>
+              </li>
+            </ul>
           </li>
         </ul>
       </nav>
     </div>
   </aside>
   <script>
-  	$(document).ready(function(){
-  		var page = '<?php echo isset($_GET['page']) ? $_GET['page'] : 'home' ?>';
-  		if($('.nav-link.nav-'+page).length > 0){
-  			$('.nav-link.nav-'+page).addClass('active')
-          console.log($('.nav-link.nav-'+page).hasClass('tree-item'))
-  			if($('.nav-link.nav-'+page).hasClass('tree-item') == true){
-          $('.nav-link.nav-'+page).closest('.nav-treeview').siblings('a').addClass('active')
-  				$('.nav-link.nav-'+page).closest('.nav-treeview').parent().addClass('menu-open')
-  			}
-        if($('.nav-link.nav-'+page).hasClass('nav-is-tree') == true){
-          $('.nav-link.nav-'+page).parent().addClass('menu-open')
+    $(document).ready(function() {
+      var page = '<?php echo isset($_GET['page']) ? $_GET['page'] : 'home' ?>';
+      if ($('.nav-link.nav-' + page).length > 0) {
+        $('.nav-link.nav-' + page).addClass('active')
+        console.log($('.nav-link.nav-' + page).hasClass('tree-item'))
+        if ($('.nav-link.nav-' + page).hasClass('tree-item') == true) {
+          $('.nav-link.nav-' + page).closest('.nav-treeview').siblings('a').addClass('active')
+          $('.nav-link.nav-' + page).closest('.nav-treeview').parent().addClass('menu-open')
+        }
+        if ($('.nav-link.nav-' + page).hasClass('nav-is-tree') == true) {
+          $('.nav-link.nav-' + page).parent().addClass('menu-open')
         }
 
-  		}
-      $('.manage_account').click(function(){
-        uni_modal('Manage Account','manage_user?id='+$(this).attr('data-id'))
+      }
+      $('.manage_account').click(function() {
+        uni_modal('Manage Account', 'manage_user?id=' + $(this).attr('data-id'))
       })
-  	})
+    })
   </script>

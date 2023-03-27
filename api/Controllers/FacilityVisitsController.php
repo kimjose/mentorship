@@ -3,7 +3,9 @@
 namespace Umb\Mentorship\Controllers;
 
 use Umb\Mentorship\Controllers\Utils\Utility;
+use Umb\Mentorship\Models\ApComment;
 use Umb\Mentorship\Models\FacilityVisit;
+use Umb\Mentorship\Models\Notification;
 use Umb\Mentorship\Models\VisitSection;
 use Illuminate\Database\Capsule\Manager as DB;
 use Umb\Mentorship\Models\ActionPoint;
@@ -118,7 +120,8 @@ class FacilityVisitsController extends Controller
                     }
                 }
             }
-            DB::statement("update visit_sections set submitted = 1 where visit_id={$visit_id} and section_id = {$section_id}");
+            if ($_POST['submitted'])
+                DB::statement("update visit_sections set submitted = 1 where visit_id={$visit_id} and section_id = {$section_id}");
             DB::commit();
             $this->response(SUCCESS_RESPONSE_CODE, 'Response submitted successfully.');
         } catch (\Throwable $th) {
@@ -135,13 +138,21 @@ class FacilityVisitsController extends Controller
             $attributes = ['visit_id', 'question_id', 'title', 'description', 'due_date'];
             $missing = Utility::checkMissingAttributes($data, $attributes);
             throw_if(sizeof($missing) > 0, new \Exception("Missing parameters passed : " . json_encode($missing)));
+            DB::beginTransaction();
             extract($data);
             $assignTo = implode(',', $assign_to);
             $data['created_by'] = $this->user->id;
             $data['assign_to'] = $assignTo;
-            ActionPoint::create($data);
+            $ap = ActionPoint::create($data);
+            foreach ($assign_to as $userId) {
+                Notification::create([
+                    'user_id' => $userId, 'message' => "You have been assigned an action point(${title})"
+                ]);
+            }
+            DB::commit();
             self::response(SUCCESS_RESPONSE_CODE, 'Action Point created successfully.');
         } catch (\Throwable $th) {
+            DB::rollback();
             Utility::logError($th->getCode(), $th->getMessage());
             $this->response(PRECONDITION_FAILED_ERROR_CODE, $th->getMessage());
         }
@@ -161,4 +172,39 @@ class FacilityVisitsController extends Controller
             $this->response(PRECONDITION_FAILED_ERROR_CODE, $th->getMessage());
         }
     }
+
+    public function addApComment($data)
+    {
+        try {
+            $attributes = ['ap_id', 'comment'];
+            $missing = Utility::checkMissingAttributes($data, $attributes);
+            throw_if(sizeof($missing) > 0, new \Exception("Missing parameters passed : " . json_encode($missing)));
+            $ap = ActionPoint::findOrFail($data['ap_id']);
+            $data['user_id'] = $this->user->id;
+            if ($ap->status === "Done") throw new \Exception("This action point has been marked as done and no further comments can be added.");
+            ApComment::create($data);
+            if ($this->user->id != $ap->created_by) $this->createNotification($ap->created_by, "Someone commented on action point {$ap->title}");
+            self::response(SUCCESS_RESPONSE_CODE, 'Comment added successfully.');
+        } catch (\Throwable $th) {
+            Utility::logError($th->getCode(), $th->getMessage());
+            $this->response(PRECONDITION_FAILED_ERROR_CODE, $th->getMessage());
+        }
+    }
+
+    public function markApAsDone($data){
+        try{
+            $attributes = ['id'];
+            $missing = Utility::checkMissingAttributes($data, $attributes);
+            throw_if(sizeof($missing) > 0, new \Exception("Missing parameters passed : " . json_encode($missing)));
+            $ap = ActionPoint::findOrFail($data['id']);
+            if($ap->status === 'Done') throw new \Exception('This action has already been marked as done.');
+            $ap->status = "Done";
+            $ap->save();
+            self::response(SUCCESS_RESPONSE_CODE, "The action point has been marked as done.");
+        } catch (\Throwable $th) {
+            Utility::logError($th->getCode(), $th->getMessage());
+            $this->response(PRECONDITION_FAILED_ERROR_CODE, $th->getMessage());
+        }
+    }
+
 }

@@ -46,6 +46,34 @@
 	          end_load()  
 
 	}
+    window.view_modal = function($title = '' , $url='',$size=""){
+        start_load()
+        $.ajax({
+            url:$url,
+            error:err=>{
+                console.log()
+                alert("An error occured")
+            },
+            success:function(resp){
+                if(resp){
+                    $('#view_modal .modal-title').html($title)
+                    $('#view_modal .modal-body').html(resp)
+                    if($size != ''){
+                        $('#view_modal .modal-dialog').addClass($size)
+                    }else{
+                        $('#view_modal .modal-dialog').removeAttr("class").addClass("modal-dialog modal-md")
+                    }
+                    $('#view_modal').modal({
+                        show:true,
+                        backdrop:'static',
+                        keyboard:false,
+                        focus:true
+                    })
+                    end_load()
+                }
+            }
+        })
+    }
 	  window.uni_modal = function($title = '' , $url='',$size=""){
 	      start_load()
 	      $.ajax({
@@ -142,7 +170,7 @@ $(function () {
 <!-- AdminLTE for demo purposes -->
 <!-- <script src="assets/dist/js/demo.js"></script> -->
 <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
-<script src="assets/dist/js/pages/dashboard2.js"></script>
+<!-- <script src="assets/dist/js/pages/dashboard2.js"></script> -->
 <!-- DataTables  & Plugins -->
 <script src="assets/plugins/datatables/jquery.dataTables.min.js"></script>
 <script src="assets/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
@@ -156,5 +184,4 @@ $(function () {
 <script src="assets/plugins/datatables-buttons/js/buttons.html5.min.js"></script>
 <script src="assets/plugins/datatables-buttons/js/buttons.print.min.js"></script>
 <script src="assets/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
-<script src="assets/js/app.js"></script>
 

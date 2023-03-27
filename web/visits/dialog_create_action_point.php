@@ -43,6 +43,15 @@ $users = User::all();
         $('#formActionPoint').submit(e => {
             e.preventDefault()
             let formActionPoint = document.getElementById('formActionPoint');
+            let title = $('#inputTitle').val()
+            let dueDate = $('#inputDueDate').val()
+            let error = ''
+            if(title.trim() === '') error = 'Title is required.'
+            if (dueDate.trim() === '') error += "\n The due date is required."
+            if (error !== ''){
+                toastr.error(error)
+                return;
+            }
             let formData = new FormData(formActionPoint);
             start_load()
 
@@ -55,6 +64,7 @@ $users = User::all();
                 method: 'POST',
                 type: 'POST',
                 success: function(resp) {
+                    end_load()
                     if (resp.code == 200) {
                         alert_toast('Data successfully saved.', "success");
                         setTimeout(function() {
@@ -65,6 +75,7 @@ $users = User::all();
                     }
                 },
                 error: function(request, status, error) {
+                    end_load()
                     alert(request.responseText);
                 }
             })

@@ -103,9 +103,14 @@ $router->post('/api/open_visit_section', function () {
     $controller = new FacilityVisitsController();
     $controller->openVisitSection($data);
 });
-
+$router->post('/api/response/save_draft', function () {
+    $controller = new FacilityVisitsController();
+    $_POST['submitted'] = 0;
+    $controller->submitResponse($_POST);
+});
 $router->post('/api/response/submit', function () {
     $controller = new FacilityVisitsController();
+    $_POST['submitted'] = 1;
     $controller->submitResponse($_POST);
 });
 $router->post('/api/action_point', function(){
@@ -115,6 +120,16 @@ $router->post('/api/action_point', function(){
 $router->post('/api/action_point/{id}', function($id){
     $controller = new FacilityVisitsController();
     $controller->updateActionPoint($id, $_POST);
+});
+$router->post('/api/ap_comment', function(){
+    $data = json_decode(file_get_contents('php://input'), true);
+    $controller = new FacilityVisitsController();
+    $controller->addApComment($data);
+});
+$router->post('/api/mark_as_done', function(){
+    $data = json_decode(file_get_contents('php://input'), true);
+    $controller = new FacilityVisitsController();
+    $controller->markApAsDone($data);
 });
 $router->post('/api/visit_section', function () {
     try {

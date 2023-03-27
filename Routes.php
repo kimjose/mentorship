@@ -93,6 +93,16 @@ $router->post('/api/team/{id}', function ($id){
     $controller = new FacilitiesController();
     $controller->updateTeam($id, $data);
 });
+$router->post('/api/add_facility_to_team', function (){
+    $data = json_decode(file_get_contents('php://input'), true);
+    $controller = new FacilitiesController();
+    $controller->addFacilityToTeam($data);
+});
+$router->post('/api/remove_facility_from_team', function (){
+    $data = json_decode(file_get_contents('php://input'), true);
+    $controller = new FacilitiesController();
+    $controller->removeFacilityFromTeam($data);
+});
 $router->get('/api/visits', function () {
     $controller = new FacilityVisitsController();
     Controller::response(SUCCESS_RESPONSE_CODE, '', $controller->getVisits());

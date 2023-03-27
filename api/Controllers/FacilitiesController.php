@@ -88,4 +88,34 @@ class FacilitiesController extends Controller
         }
     }
 
+    public function removeFacilityFromTeam($data){
+        try {
+            $attributes = ['team_id', 'facility_id'];
+            $missing = Utility::checkMissingAttributes($data, $attributes);
+            throw_if(sizeof($missing) > 0, new \Exception("Missing parameters passed : " . json_encode($missing)));
+            $facility = Facility::where('team_id',$data['team_id'])->where('id', $data['facility_id'])->firstOrFail();
+            $data = (array)$facility;
+            $data['team_id'] = null;
+            $facility->update($data);
+            self::response(SUCCESS_RESPONSE_CODE, 'Facility removed from team successfully.');
+        } catch (\Throwable $th){
+            Utility::logError($th->getCode(), $th->getMessage());
+            $this->response(PRECONDITION_FAILED_ERROR_CODE, $th->getMessage());
+        }
+    }
+
+    public function addFacilityToTeam($data) {
+        try{
+            $attributes = ['team_id', 'facility_id'];
+            $missing = Utility::checkMissingAttributes($data, $attributes);
+            throw_if(sizeof($missing) > 0, new \Exception("Missing parameters passed : " . json_encode($missing)));
+            $facility = Facility::findOrFail($data['facility_id']);
+            $facility->update(['team_id' => null]);
+            self::response(SUCCESS_RESPONSE_CODE, 'Facility removed from team successfully.');
+        } catch (\Throwable $th){
+            Utility::logError($th->getCode(), $th->getMessage());
+            $this->response(PRECONDITION_FAILED_ERROR_CODE, $th->getMessage());
+        }
+    }
+
 }

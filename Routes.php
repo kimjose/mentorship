@@ -56,7 +56,12 @@ $router->post("/api/question", function () {
 $router->post("/api/question/{id}", function ($id) {
     $builder = new QuestionsBuilder();
     $data = json_decode(file_get_contents('php://input'), true);
-    $builder->updateQuestion($id, $data);
+    $builder->updateQuestion($id, $_POST);
+});
+$router->post("/api/delete_question", function () {
+    $builder = new QuestionsBuilder();
+    $data = json_decode(file_get_contents('php://input'), true);
+    $builder->deleteQuestion($data);
 });
 $router->post("/api/import_questions", function(){
     $builder = new QuestionsBuilder();

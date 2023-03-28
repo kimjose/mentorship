@@ -11,6 +11,7 @@ if (isset($_GET['id'])) {
     $question = Question::findOrFail($id);
 }
 $frequencies = Frequency::all();
+$categories = ['individual', 'sdp', 'facility'];
 ?>
 <div class="container-fluid">
     <form action="" id="manage-question">
@@ -23,6 +24,16 @@ $frequencies = Frequency::all();
                         <label for="" class="control-label">Question</label>
                         <textarea name="question" id="" cols="30" rows="4" class="form-control"><?php echo isset($id) ? $question->question : '' ?></textarea>
                     </div>
+                    <div class="form-group">
+                        <label for="">Category</label>
+                        <select name="category" id="selectCategory" required class="form-control select2">
+                            <option hidden value="" <?php echo !isset($id) ? 'required' : '' ?>> Select category </option>
+                            <?php foreach ($categories as $category) : ?>
+                                <option value="<?php echo $category ?>" <?php echo (isset($id) &&  $question->category == $category) ? 'selected' : ''  ?>> <?php echo $category ?> </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+
                     <div class="form-group">
                         <label for="">Frequency</label>
                         <select name="frequency_id" id="selectFrequency" required class="form-control">
@@ -96,16 +107,21 @@ $frequencies = Frequency::all();
                                         </tbody>
                                     </table>
                                     <div class="row">
+                                        
                                         <div class="col-sm-12 text-center">
-                                            <button class="btn btn-sm btn-flat btn-default" type="button" onclick="<?php echo $type ?>($(this))"><i class="fa fa-plus"></i> Add</button>
+                                            <?php if ($opt == 'radio') : ?>
+                                                <button class="btn btn-sm btn-flat btn-default" type="button" onclick="new_radio($(this))"><i class="fa fa-plus"></i> Add</button>
+                                            <?php elseif ($opt == 'checkbox') : ?>
+                                                <button class="btn btn-sm btn-flat btn-default" type="button" onclick="new_check($(this))"><i class="fa fa-plus"></i> Add</button>
+                                            <?php endif; ?>
                                         </div>
                                     </div>
                             </div>
                     </div>
 
-                <?php elseif($question->type == 'textfield_s') : ?>
+                <?php elseif ($question->type == 'textfield_s') : ?>
                     <textarea name="frm_opt" id="" cols="30" rows="10" class="form-control" disabled="" placeholder="Write Something here..."></textarea>
-                <?php elseif($question->type == 'number_opt') : ?>
+                <?php elseif ($question->type == 'number_opt') : ?>
                     <input type="number" name="frm_opt" id="" class="form-control" disabled placeholder="Number..">
                 <?php endif; ?>
             <?php endif; ?>
@@ -238,6 +254,8 @@ $frequencies = Frequency::all();
     </div>
 </div>
 <script>
+    let qid = '<?php echo $id ?>'
+
     function new_check(_this) {
         var tbody = _this.closest('.row').siblings('table').find('tbody')
         var count = tbody.find('tr').last().find('.icheck-primary').attr('data-count')
@@ -301,7 +319,7 @@ $frequencies = Frequency::all();
 
 
             $.ajax({
-                url: '../api/question',
+                url: qid != '' ? `../api/question/${qid}` : '../api/question',
                 data: new FormData($(this)[0]),
                 cache: false,
                 contentType: false,
@@ -319,6 +337,7 @@ $frequencies = Frequency::all();
                     }
                 },
                 error: function(request, status, error) {
+                    end_load()
                     alert(request.responseText);
                 }
             })

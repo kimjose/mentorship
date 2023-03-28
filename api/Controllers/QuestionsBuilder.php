@@ -103,7 +103,7 @@ class QuestionsBuilder extends Controller
             //        create sections and questions for new checklist
             // else  end.
             $checklist->update([
-                'status' => 'retired',  'published_at' => date('Y-m-d H:i:s'), 'retired_by' => $this->user->id
+                'status' => 'retired',  'retired_at' => date('Y-m-d H:i:s'), 'retired_by' => $this->user->id
             ]);
             $recreate = $data['recreate'];
             if ($recreate === true) {
@@ -166,9 +166,13 @@ class QuestionsBuilder extends Controller
     public function addQuestion($data)
     {
         try {
+            $attributes = ['question', 'type', 'category'];
+            $missing = Utility::checkMissingAttributes($data, $attributes);
+            throw_if(sizeof($missing) > 0, new \Exception("Missing parameters passed : " . json_encode($missing)));
             $question = $data['question'];
             $type = $data['type'];
             $labels = $data['label'];
+            $category = $data['category'];
             $frmOption = '';
             // echo 'Labels are,....' . json_encode($labels);
             if ($type != 'textfield_s' && $type != 'number_opt') {
@@ -186,7 +190,7 @@ class QuestionsBuilder extends Controller
                 $frmOption = json_encode($arr);
             }
             $q = Question::create([
-                "question" => $question, "frequency_id" => $data['frequency_id'], "type" => $type, 'frm_option' => $frmOption, "section_id" => $data['section_id'], "created_by" => $this->user->id
+                "question" => $question, 'category' => $category, "frequency_id" => $data['frequency_id'], "type" => $type, 'frm_option' => $frmOption, "section_id" => $data['section_id'], "created_by" => $this->user->id
             ]);
             // $attributes = ["question", "type", 'options', "order", "frequency", "section_id"];
             // $missing = Utility::checkMissingAttributes($data, $attributes);
@@ -205,9 +209,13 @@ class QuestionsBuilder extends Controller
     public function updateQuestion($id, $data)
     {
         try {
-            $question = $data['question'];
+            $attributes = ['question', 'type', 'category'];
+            $missing = Utility::checkMissingAttributes($data, $attributes);
+            throw_if(sizeof($missing) > 0, new \Exception("Missing parameters passed : " . json_encode($missing)));
+            $q = $data['question'];
             $type = $data['type'];
             $labels = $data['label'];
+            $category = $data['category'];
             $frmOption = '';
             // echo 'Labels are,....' . json_encode($labels);
             if ($type != 'textfield_s') {
@@ -226,9 +234,28 @@ class QuestionsBuilder extends Controller
             }
             $question = Question::findOrFail($id);
             $question->update([
-                "question" => $question, "frequency_id" => $data['frequency_id'], "type" => $type, 'frm_option' => $frmOption, "section_id" => $data['section_id'], "created_by" => $this->user->id
+                "question" => $q, 'category' => $category, "frequency_id" => $data['frequency_id'], "type" => $type, 'frm_option' => $frmOption, "section_id" => $data['section_id'], "created_by" => $this->user->id
             ]);
+            // echo "Here here";
             self::response(SUCCESS_RESPONSE_CODE, "Question updated successfully.");
+        } catch (\Throwable $th) {
+            Utility::logError($th->getCode(), $th->getMessage());
+            $this->response(PRECONDITION_FAILED_ERROR_CODE, $th->getMessage());
+        }
+    }
+
+    public function deleteQuestion($data){
+        try {
+            $attributes = ['id'];
+            $missing = Utility::checkMissingAttributes($data, $attributes);
+            throw_if(sizeof($missing) > 0, new \Exception("Missing parameters passed : " . json_encode($missing)));
+            /** @var Question $question */
+            $question = Question::findOrFail($data['id']);
+            $section = $question->section();
+            $checklist = $section->checklist();
+            if($checklist->status != 'draft') throw new \Exception("Delete not allowed", -1);
+            $question->delete();
+            self::response(SUCCESS_RESPONSE_CODE, "Question deleted successfully.");
         } catch (\Throwable $th) {
             Utility::logError($th->getCode(), $th->getMessage());
             $this->response(PRECONDITION_FAILED_ERROR_CODE, $th->getMessage());

@@ -44,6 +44,12 @@
                   <p>List</p>
                 </a>
               </li>
+              <li class="nav-item">
+                <a href="./index?page=users-categories" class="nav-link nav-users-categories tree-item">
+                  <i class="fas fa-angle-right nav-icon"></i>
+                  <p>Categories</p>
+                </a>
+              </li>
             </ul>
           </li>
           <li class="nav-item">

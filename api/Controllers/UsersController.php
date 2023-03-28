@@ -4,6 +4,7 @@ namespace Umb\Mentorship\Controllers;
 use Umb\Mentorship\Models\User;
 use Umb\Mentorship\Controllers\Controller;
 use Umb\Mentorship\Controllers\Utils\Utility;
+use UserCategory;
 
 class UsersController extends Controller{
 
@@ -37,6 +38,34 @@ class UsersController extends Controller{
             } else unset($data['password']);
             $u->update($data);
             self::response(SUCCESS_RESPONSE_CODE, "User updated successfully.");
+        } catch (\Throwable $th) {
+            Utility::logError($th->getCode(), $th->getMessage());
+            $this->response(PRECONDITION_FAILED_ERROR_CODE, $th->getMessage());
+        }
+    }
+
+    public function createUserCategory($data){
+        try {
+            $attributes = ["access_level", "name", "description", "permissions"];
+            $missing = Utility::checkMissingAttributes($data, $attributes);
+            throw_if(sizeof($missing) > 0, new \Exception("Missing parameters passed : " . json_encode($missing)));
+            $data['created_by'] = $this->user->id;
+            UserCategory::create($data);
+            self::response(SUCCESS_RESPONSE_CODE, "The user category created successfully.");
+        } catch (\Throwable $th) {
+            Utility::logError($th->getCode(), $th->getMessage());
+            $this->response(PRECONDITION_FAILED_ERROR_CODE, $th->getMessage());
+        }
+    }
+
+    public function updateUserCategory($id, $data){
+        try {
+            $attributes = ["access_level", "name", "description", "permissions"];
+            $missing = Utility::checkMissingAttributes($data, $attributes);
+            throw_if(sizeof($missing) > 0, new \Exception("Missing parameters passed : " . json_encode($missing)));
+            $userCategory = UserCategory::findOrFail($id);
+            $userCategory->update($data);
+            self::response(SUCCESS_RESPONSE_CODE, "The user category updated successfully.");
         } catch (\Throwable $th) {
             Utility::logError($th->getCode(), $th->getMessage());
             $this->response(PRECONDITION_FAILED_ERROR_CODE, $th->getMessage());

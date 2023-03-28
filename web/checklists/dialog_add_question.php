@@ -11,6 +11,7 @@ if (isset($_GET['id'])) {
     $question = Question::findOrFail($id);
 }
 $frequencies = Frequency::all();
+$categories = ['individual', 'sdp', 'facility'];
 ?>
 <div class="container-fluid">
     <form action="" id="manage-question">
@@ -23,6 +24,16 @@ $frequencies = Frequency::all();
                         <label for="" class="control-label">Question</label>
                         <textarea name="question" id="" cols="30" rows="4" class="form-control"><?php echo isset($id) ? $question->question : '' ?></textarea>
                     </div>
+                    <div class="form-group">
+                        <label for="">Category</label>
+                        <select name="category" id="selectCategory" required class="form-control select2">
+                            <option hidden value="" <?php echo !isset($id) ? 'required' : '' ?>> Select category </option>
+                            <?php foreach ($categories as $category) : ?>
+                                <option value="<?php echo $category ?>" <?php echo (isset($id) &&  $question->category == $category) ? 'selected' : ''  ?>> <?php echo $category ?> </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+
                     <div class="form-group">
                         <label for="">Frequency</label>
                         <select name="frequency_id" id="selectFrequency" required class="form-control">
@@ -238,6 +249,7 @@ $frequencies = Frequency::all();
     </div>
 </div>
 <script>
+    let id = '<?php echo $id ?>'
     function new_check(_this) {
         var tbody = _this.closest('.row').siblings('table').find('tbody')
         var count = tbody.find('tr').last().find('.icheck-primary').attr('data-count')
@@ -301,7 +313,7 @@ $frequencies = Frequency::all();
 
 
             $.ajax({
-                url: '../api/question',
+                url: id != '' ? `../api/question/${id}` : '../api/question',
                 data: new FormData($(this)[0]),
                 cache: false,
                 contentType: false,
@@ -312,13 +324,14 @@ $frequencies = Frequency::all();
                     if (resp.code == 200) {
                         alert_toast('Data successfully saved.', "success");
                         setTimeout(function() {
-                            location.reload()
+                            // location.reload()
                         }, 1500)
                     } else {
                         toastr.error(resp.message)
                     }
                 },
                 error: function(request, status, error) {
+                    end_load()
                     alert(request.responseText);
                 }
             })

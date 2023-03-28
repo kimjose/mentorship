@@ -80,8 +80,8 @@ endif;
 						</button>
 					<?php endif; ?>
 				</div>
-					<p>To import the questions, add sections and upload an excel file. Use this <a href="../public/templates/questions_import_template.xlsx">template </a> to popuplate your excel.</p>
-			
+				<p>To import the questions, add sections and upload an excel file. Use this <a href="../public/templates/questions_import_template.xlsx">template </a> to popuplate your excel.</p>
+
 			</div>
 
 			<div class="body">
@@ -123,13 +123,16 @@ endif;
 															<div class="dropdown-menu">
 																<a class="dropdown-item edit_question text-dark" href="javascript:void(0)" data-id="<?php echo $question->id ?>" onclick="editQuestion(<?php echo $section->id . ',' . $question->id ?>)">Edit</a>
 																<div class="dropdown-divider"></div>
-																<a class="dropdown-item delete_question text-dark" href="javascript:void(0)" data-id="<?php echo $question->id ?>">Delete</a>
+																<a class="dropdown-item delete_question text-dark" href="javascript:void(0)" data-id="<?php echo $question->id ?> " onclick="deleteQuestion(<?php echo $question->id ?>)">Delete</a>
 															</div>
 														</span>
 													</div>
 												<?php endif; ?>
 											</div>
-											<h5><?php echo $question->question ?> <span class='badge badge-secondary rounded-pill'><?php echo $question->frequency()->name; ?></span></h5>
+											<h5><?php echo $question->question ?> <span class='badge badge-secondary rounded-pill'><?php echo $question->frequency()->name; ?></span>
+												<span class='badge badge-info rounded-pill'><?php echo $question->category; ?></span>
+											</h5>
+
 											<div class="col-md-12">
 												<input type="hidden" name="qid[]" value="<?php echo $question->id ?>">
 												<?php
@@ -208,7 +211,35 @@ endif;
 		uni_modal("New Question", `checklists/dialog_add_question.php?section_id=${sectionId}&id=${id}`, "large")
 	}
 
-	function importQuestions(sectionId){
+	function deleteQuestion(qid) {
+		customConfirm("Confirm delete", "Are you sure you want to delete this question?", () => {
+			fetch('../api/delete_question', {
+					method: 'POST',
+					body: JSON.stringify({
+						id: qid
+					}),
+					headers: {
+						"content-type": "application/x-www-form-urlencoded"
+					}
+				})
+				.then(response => {
+					return response.json();
+				})
+				.then(response => {
+					if (response.code === 200) {
+						alert_toast(response.message, "success");
+						setTimeout(() => window.location.reload(), 890)
+					} else throw new Error(response.message)
+				})
+				.catch(err => {
+					toastr.error(err.message)
+				})
+		}, () => {
+			console.log("Oooh how lucky i am..🤸..");
+		})
+	}
+
+	function importQuestions(sectionId) {
 		uni_modal("Import Question", `checklists/dialog_import_questions.php?section_id=${sectionId}`, "large")
 	}
 

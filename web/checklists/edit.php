@@ -1,6 +1,6 @@
 <?php
 
-use Umb\Mentorship\Models\CheckList;
+use Umb\Mentorship\Models\Checklist;
 
 $id = "";
 if (isset($_GET['id'])) {

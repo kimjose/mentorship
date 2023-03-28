@@ -5,6 +5,7 @@ namespace Umb\Mentorship\Controllers;
 use Umb\Mentorship\Controllers\Utils\Utility;
 use Umb\Mentorship\Models\Facility;
 use Umb\Mentorship\Models\Team;
+use Illuminate\Database\Capsule\Manager as DB;
 
 class FacilitiesController extends Controller
 {
@@ -83,6 +84,44 @@ class FacilitiesController extends Controller
             $team->update($data);
             self::response(SUCCESS_RESPONSE_CODE, "Team updated successfully.");
         } catch (\Throwable $th){
+            Utility::logError($th->getCode(), $th->getMessage());
+            $this->response(PRECONDITION_FAILED_ERROR_CODE, $th->getMessage());
+        }
+    }
+
+    public function removeFacilityFromTeam($data){
+        try {
+            $attributes = ['team_id', 'facility_id'];
+            $missing = Utility::checkMissingAttributes($data, $attributes);
+            throw_if(sizeof($missing) > 0, new \Exception("Missing parameters passed : " . json_encode($missing)));
+            $facility = Facility::where('team_id',$data['team_id'])->where('id', $data['facility_id'])->firstOrFail();
+            $data = (array)$facility;
+            $data['team_id'] = null;
+            $facility->update($data);
+            self::response(SUCCESS_RESPONSE_CODE, 'Facility removed from team successfully.');
+        } catch (\Throwable $th){
+            Utility::logError($th->getCode(), $th->getMessage());
+            $this->response(PRECONDITION_FAILED_ERROR_CODE, $th->getMessage());
+        }
+    }
+
+    public function addFacilitiesToTeam($data) {
+        try{
+            $facility_ids = [];
+            $attributes = ['team_id'];
+            $missing = Utility::checkMissingAttributes($data, $attributes);
+            throw_if(sizeof($missing) > 0, new \Exception("Missing parameters passed : " . json_encode($missing)));
+            extract($data);
+            DB::beginTransaction();
+            foreach($facility_ids as $facilityId){
+                $facility = Facility::findOrFail($facilityId);
+                $facility->team_id = $team_id;
+                $facility->save();
+            }
+            DB::commit();
+            self::response(SUCCESS_RESPONSE_CODE, 'Facilities added to team.');
+        } catch (\Throwable $th){
+            DB::rollback();
             Utility::logError($th->getCode(), $th->getMessage());
             $this->response(PRECONDITION_FAILED_ERROR_CODE, $th->getMessage());
         }

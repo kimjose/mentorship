@@ -1,8 +1,8 @@
 -- MySQL dump 10.13  Distrib 8.0.32, for Linux (x86_64)
 --
--- Host: localhost    Database: ess_db
+-- Host: localhost    Database: ess
 -- ------------------------------------------------------
--- Server version	8.0.32-0ubuntu0.22.04.2
+-- Server version	8.0.32-0ubuntu0.20.04.2
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -450,6 +450,60 @@ INSERT INTO `teams` VALUES (1,'Team Oned',48,'2023-03-27 10:11:25','2023-03-27 1
 UNLOCK TABLES;
 
 --
+-- Table structure for table `user_categories`
+--
+
+DROP TABLE IF EXISTS `user_categories`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `user_categories` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `access_level` enum('Program','Facility') NOT NULL,
+  `name` varchar(50) NOT NULL,
+  `description` varchar(100) DEFAULT '',
+  `permissions` text NOT NULL,
+  `created_by` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `fk_category_creator` (`created_by`),
+  CONSTRAINT `fk_category_creator` FOREIGN KEY (`created_by`) REFERENCES `users` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `user_categories`
+--
+
+LOCK TABLES `user_categories` WRITE;
+/*!40000 ALTER TABLE `user_categories` DISABLE KEYS */;
+/*!40000 ALTER TABLE `user_categories` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `user_permissions`
+--
+
+DROP TABLE IF EXISTS `user_permissions`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `user_permissions` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(50) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `user_permissions`
+--
+
+LOCK TABLES `user_permissions` WRITE;
+/*!40000 ALTER TABLE `user_permissions` DISABLE KEYS */;
+/*!40000 ALTER TABLE `user_permissions` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `users`
 --
 
@@ -532,4 +586,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-03-27 13:22:05
+-- Dump completed on 2023-03-28 10:20:01

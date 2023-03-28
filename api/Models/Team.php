@@ -14,4 +14,11 @@ class Team extends Model{
         return User::find($this->team_lead);
     }
 
+    /**
+     * @return Facility[]
+     */
+    public function facilities(){
+        return Facility::where('team_id', $this->id)->get();
+    }
+
 }

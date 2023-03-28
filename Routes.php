@@ -72,6 +72,17 @@ $router->post("/api/user/{id}", function($id){
     $data = json_decode(file_get_contents('php://input'), true);
     $controller->updateUser($id, $data);
 });
+$router->post("/api/user_category", function(){
+    $controller = new UsersController();
+    $data = json_decode(file_get_contents('php://input'), true);
+    $controller->createUserCategory($data);
+});
+$router->post("/api/user/{id}", function($id){
+    $controller = new UsersController();
+    $data = json_decode(file_get_contents('php://input'), true);
+    $controller->updateUserCategory($id, $data);
+});
+
 
 $router->post('/api/facility', function () {
     $data = json_decode(file_get_contents('php://input'), true);
@@ -92,6 +103,15 @@ $router->post('/api/team/{id}', function ($id){
     $data = json_decode(file_get_contents('php://input'), true);
     $controller = new FacilitiesController();
     $controller->updateTeam($id, $data);
+});
+$router->post('/api/add_facilities_to_team', function (){
+    $controller = new FacilitiesController();
+    $controller->addFacilitiesToTeam($_POST);
+});
+$router->post('/api/remove_facility_from_team', function (){
+    $data = json_decode(file_get_contents('php://input'), true);
+    $controller = new FacilitiesController();
+    $controller->removeFacilityFromTeam($data);
 });
 $router->get('/api/visits', function () {
     $controller = new FacilityVisitsController();

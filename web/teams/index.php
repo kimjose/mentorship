@@ -32,7 +32,7 @@ $teams = Team::all();
 							<th class="text-center"><?php echo $i++ ?></th>
 							<td><b><?php echo ucwords($team->name) ?></b></td>
 							<td><b><?php echo ucwords($team->lead()->getNames())  ?></b></td>
-							<td><b><?php echo 0 ?></b></td>
+							<td><b><?php echo sizeof($team->facilities()) ?></b></td>
 							<td class="text-center">
 								<button type="button" class="btn btn-default btn-sm btn-flat border-info wave-effect text-info dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
 									Action

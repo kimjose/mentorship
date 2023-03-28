@@ -1,5 +1,6 @@
 <?php
 
+use Umb\Mentorship\Models\Facility;
 use Umb\Mentorship\Models\Team;
 use Umb\Mentorship\Models\User;
 
@@ -39,6 +40,70 @@ $users = User::all();
         </div>
     </div>
 </div>
+<?php if ($id != '') : ?>
+    <div class="card">
+        <div class="card-body">
+            <ul class="nav nav-tabs" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link  active" id="tabSections" data-toggle="tab" href="#tabContentSections" role="tab" aria-controls="tabContentVisit" aria-selected="true">Facilities</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="tabChartAbstractions" data-toggle="tab" href="#tabContentChartAbstractions" role="tab" aria-controls="#tabContentChartAbstractions" aria-selected="false">Team Members</a>
+                </li>
+
+
+            </ul>
+
+            <div class="tab-content" id="tabContentTeam">
+                <div class="tab-pane fade show active" id="tabContentSections" role="tabpanel" aria-labelledby="custom-tabs-four-home-tab">
+                    <div class="card-header">
+                        <div class="card-tools">
+                            <button id="btnAddFacilities" class="btn btn-block btn-sm btn-default btn-flat border-primary"><i class="fa fa-plus"></i> Add Facilities</button>
+                        </div>
+                    </div>
+                    <table class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Facility Name</th>
+                                <th>MFL Code</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php
+                            $i = 1;
+                            $facilities = Facility::where('team_id', $id)->get();
+                            foreach ($facilities as $facility) :
+                            ?>
+                                <tr>
+                                    <td><?php echo $i ?></td>
+                                    <td><?php echo $facility->name ?></td>
+                                    <td><?php echo $facility->mfl_code ?></td>
+                                    <td>
+                                        <button type="button" class="btn btn-outline-danger btn-flat" data-tooltip="tooltip" title="Remove from team" data-id="<?php echo $facility->id ?>" onclick='removeFacility(<?php echo $facility->id; ?>)'>
+                                            <i class="fas fa-times"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            <?php
+                                $i++;
+                            endforeach; ?>
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th>#</th>
+                                <th>Facility Name</th>
+                                <th>MFL Code</th>
+                                <th>Actions</th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+<?php endif; ?>
 <script>
     const id = '<?php echo $id ?>'
     const formManageTeam = document.querySelector('#manage_team')
@@ -47,6 +112,9 @@ $users = User::all();
 
     $(document).ready(function() {
         $('.select2').select2()
+        $('#btnAddFacilities').click(() => {
+            uni_modal("Add Facilities", `teams/dialog_add_facilities?team_id=${id}`, "large")
+        })
     })
 
     $('#manage_team').submit(e => {
@@ -86,4 +154,32 @@ $users = User::all();
                 toastr.error(err.message)
             })
     })
+
+    function removeFacility(facilityId) {
+        customConfirm("Confirm Action", "Are you sure you want to remove this facility from the team?", () => {
+            fetch('../api/remove_facility_from_team', {
+                    method: 'POST',
+                    headers: {
+                        "content-type": "application/x-www-form-urlencoded"
+                    },
+                    body: JSON.stringify({
+                        'facility_id': facilityId,
+                        'team_id': id
+                    })
+                })
+                .then(response => {
+                    return response.json();
+                })
+                .then(response => {
+                    if (response.code === 200) {
+                        toastr.success(response.message);
+                        setTimeout(() => window.location.reload(), 969)
+                    } else throw new Error(response.message)
+                })
+                .catch(err => {
+                    toastr.error(err.message)
+                })
+        }, () => {})
+
+    }
 </script>

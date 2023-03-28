@@ -3,11 +3,15 @@
 /** @var Umb\EventsManager\Models\User $currUser */
 ?>
 <?php
+
 use Illuminate\Database\Capsule\Manager as DB;
+use Umb\Mentorship\Models\Team;
+
 /*** @var \Umb\EventsManager\Models\Facility[] $facilities */
-$facilities = DB::select("select f.*, c.name 'county', (select count(fv.facility_id) from facility_visits fv where fv.facility_id = f.id group by fv.facility_id ) as visits from facilities f left join counties c on c.code = f.county_code");
+$facilities = DB::select("select f.*, c.name 'county', t.name 'team_name', (select count(fv.facility_id) from facility_visits fv where fv.facility_id = f.id group by fv.facility_id ) as visits from facilities f left join counties c on c.code = f.county_code left join teams t on t.id = f.team_id");
 $activeBadge = "<span class='badge badge-primary rounded-pill'>Active</span>";
 $inActiveBadge = "<span class='badge badge-warning rounded-pill'>In Active</span>";
+$teams = Team::all();
 ?>
 
 
@@ -38,6 +42,7 @@ $inActiveBadge = "<span class='badge badge-warning rounded-pill'>In Active</span
                         <th>Name</th>
                         <th>MFL Code</th>
                         <th>County</th>
+                        <th>Team</th>
                         <th>Status</th>
                         <th>Visits</th>
                         <th>Actions</th>
@@ -49,6 +54,7 @@ $inActiveBadge = "<span class='badge badge-warning rounded-pill'>In Active</span
                         <th>Name</th>
                         <th>MFL Code</th>
                         <th>County</th>
+                        <th>Team</th>
                         <th>Status</th>
                         <th>Visits</th>
                         <th>Actions</th>
@@ -64,6 +70,8 @@ $inActiveBadge = "<span class='badge badge-warning rounded-pill'>In Active</span
                             <td><?php echo $facility->name ?></td>
                             <td><?php echo $facility->mfl_code  ?></td>
                             <td><?php echo $facility->county ?></php>
+                            </td>
+                            <td><?php echo $facility->team_name ?></php>
                             </td>
                             <td><?php echo $facility->active ? $activeBadge : $inActiveBadge ?></td>
                             <td><?php echo $facility->visits ?? 0 ?></td>
@@ -112,7 +120,7 @@ $inActiveBadge = "<span class='badge badge-warning rounded-pill'>In Active</span
                     </div>
                     <div class="form-group">
                         <label for="selectCounty">County</label>
-                        <select name="county_code" id="selectCounty" class="form-control">
+                        <select name="county_code" id="selectCounty" class="form-control select2">
                             <option value="" hidden selected>Select County</option>
                             <?php
 
@@ -122,6 +130,15 @@ $inActiveBadge = "<span class='badge badge-warning rounded-pill'>In Active</span
                             ?>
                                 <option value="<?php echo $county->code ?>"><?php echo $county->name; ?> </option>
                             <?php endfor; ?>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="selectTeam">Team</label>
+                        <select name="team_id" id="selectTeam" class="form-control select2">
+                            <option value="" hidden selected>Select Team</option>
+                            <?php foreach ($teams as $team) : ?>
+                                <option value="<?php echo $team->id ?>"> <?php echo $team->name ?></option>
+                            <?php endforeach; ?>
                         </select>
                     </div>
                     <div class="row pl-2">
@@ -170,6 +187,7 @@ $inActiveBadge = "<span class='badge badge-warning rounded-pill'>In Active</span
     const inputName = document.querySelector("#inputName");
     const inputMflCode = document.querySelector("#inputMflCode")
     const selectCounty = document.querySelector("#selectCounty")
+    const selectTeam = document.querySelector("#selectTeam")
     const checkActive = document.querySelector("#checkActive")
     const inputLat = document.querySelector("#inputLat")
     const inputLong = document.querySelector("#inputLong")
@@ -178,6 +196,7 @@ $inActiveBadge = "<span class='badge badge-warning rounded-pill'>In Active</span
 
     $(document).ready(function() {
         $('#tableFacilities').dataTable()
+        $('.select2').select2()
     })
 
     function initialize() {
@@ -194,7 +213,10 @@ $inActiveBadge = "<span class='badge badge-warning rounded-pill'>In Active</span
         inputLat.value = facility.latitude
         inputLong.value = facility.longitude
         $(selectCounty).val(facility.county_code)
+        $(selectTeam).val(facility.team_id)
         checkActive.checked = facility.active
+
+        $('.select2').select2()
     }
 
     function saveFacility() {
@@ -205,6 +227,7 @@ $inActiveBadge = "<span class='badge badge-warning rounded-pill'>In Active</span
         let latitude = inputLat.value.trim();
         let longitude = inputLong.value.trim()
         let active = checkActive.checked
+        let team = $(selectTeam).val()
         if (name === '') {
             inputUsername.focus()
             return
@@ -225,6 +248,7 @@ $inActiveBadge = "<span class='badge badge-warning rounded-pill'>In Active</span
             mfl_code: mflCode,
             latitude: latitude,
             longitude: longitude,
+            team_id: team,
             active: active ? 1 : 0
         }
         let saveUrl = '../api/facility'

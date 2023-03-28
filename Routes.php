@@ -104,10 +104,9 @@ $router->post('/api/team/{id}', function ($id){
     $controller = new FacilitiesController();
     $controller->updateTeam($id, $data);
 });
-$router->post('/api/add_facility_to_team', function (){
-    $data = json_decode(file_get_contents('php://input'), true);
+$router->post('/api/add_facilities_to_team', function (){
     $controller = new FacilitiesController();
-    $controller->addFacilityToTeam($data);
+    $controller->addFacilitiesToTeam($_POST);
 });
 $router->post('/api/remove_facility_from_team', function (){
     $data = json_decode(file_get_contents('php://input'), true);

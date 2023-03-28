@@ -56,7 +56,11 @@ $users = User::all();
 
             <div class="tab-content" id="tabContentTeam">
                 <div class="tab-pane fade show active" id="tabContentSections" role="tabpanel" aria-labelledby="custom-tabs-four-home-tab">
-
+                    <div class="card-header">
+                        <div class="card-tools">
+                            <button id="btnAddFacilities" class="btn btn-block btn-sm btn-default btn-flat border-primary"><i class="fa fa-plus"></i> Add Facilities</button>
+                        </div>
+                    </div>
                     <table class="table table-bordered table-striped">
                         <thead>
                             <tr>
@@ -108,6 +112,9 @@ $users = User::all();
 
     $(document).ready(function() {
         $('.select2').select2()
+        $('#btnAddFacilities').click(() => {
+            uni_modal("Add Facilities", `teams/dialog_add_facilities?team_id=${id}`, "large")
+        })
     })
 
     $('#manage_team').submit(e => {

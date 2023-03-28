@@ -19,6 +19,7 @@ $checklists = Checklist::where('status', 'published')->get();
 /** @var FacilityVisit[] $periodVisits */
 $periodVisits = FacilityVisit::where('visit_date', '>=', $startDate)->where('visit_date', '<=', $endDate)->orderBy('visit_date', 'asc')->get();
 
+$responses = DB::select("select r.*, q.category, q.frequency_id from responses r left join questions q on q.id = r.question_id ");
 ?>
 
 <!-- Page Heading -->
@@ -119,7 +120,7 @@ $periodVisits = FacilityVisit::where('visit_date', '>=', $startDate)->where('vis
             <h6 class="card-title"> Facilities with most visits</h6>
           </div>
           <div class="card-body p-2">
-            <ul class=" p-0" style="list-style:none;">
+            <ul class=" p-0" style="list-style:none; overflow-y:auto; overflow-x:hidden; min-height: 260px; height: 260px; max-height: 260px;">
               <?php for ($i = 0; $i < 5; $i++) :
                 $facility = $facilities[$i]; ?>
                 <li class="mt-1">
@@ -144,7 +145,7 @@ $periodVisits = FacilityVisit::where('visit_date', '>=', $startDate)->where('vis
             <h6 class="card-title"> Facilities with least visits</h6>
           </div>
           <div class="card-body">
-            <ul class=" p-0" style="list-style:none;">
+            <ul class=" p-0" style="list-style:none; overflow-y:auto; overflow-x:hidden; min-height: 260px; height: 260px; max-height: 260px;">
               <?php for ($i = 1; $i <= 5; $i++) :
                 $facility = $facilities[sizeof($facilities) - $i]; ?>
                 <li class="mt-1">
@@ -165,6 +166,30 @@ $periodVisits = FacilityVisit::where('visit_date', '>=', $startDate)->where('vis
       </div>
     </div>
   </div>
+  <div class="card">
+    <div class="card-header">
+      <h3 class="card-title">Response Category Analysis</h3>
+
+      <div class="card-tools">
+        <button type="button" class="btn btn-tool" data-card-widget="collapse">
+          <i class="fas fa-minus"></i>
+        </button>
+        <button type="button" class="btn btn-tool" data-card-widget="remove">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+    </div>
+    <!-- /.card-header -->
+    <div class="card-body">
+      <div class="chart tab-pane" id="sales-chart" style="position: relative; height: 300px;">
+        <canvas id="canvasResponse" height="300" style="height: 300px;"></canvas>
+      </div>
+    </div>
+    <!-- /.card-body -->
+    <div class="card-footer p-0">
+    </div>
+    <!-- /.footer -->
+  </div>
 </div>
 
 
@@ -172,6 +197,37 @@ $periodVisits = FacilityVisit::where('visit_date', '>=', $startDate)->where('vis
   const startDateString = "<?php echo $startDate; ?>"
   const endDateString = "<?php echo $endDate; ?>"
   const visits = JSON.parse('<?php echo $periodVisits ?>');
+  const responses = JSON.parse('<?php echo json_encode($responses) ?>')
+
+  function drawResponseDonut() {
+    let canvasResponse = $('#canvasResponse').get(0).getContext('2d')
+    let labels = ['Facility', 'SDP', 'Individual']
+    let data = [0, 0, 0]
+    responses.forEach(response => {
+      if (response.category === 'facility') data[0]++
+      if (response.category === 'sdp') data[1]++
+      if (response.category === 'individual') data[2]++
+    })
+    let pieData = {
+      labels: labels,
+      datasets: [{
+        data: data,
+        backgroundColor: ['#f56954', '#00a65a', '#f39c12']
+      }]
+    }
+    var pieOptions = {
+      legend: {
+        display: false
+      },
+      maintainAspectRatio: false,
+      responsive: true
+    }
+    let pieChart = new Chart(canvasResponse, { // lgtm[js/unused-local-variable]
+      type: 'doughnut',
+      data: pieData,
+      options: pieOptions
+    })
+  }
 
   function drawVisitsGraph() {
 
@@ -263,4 +319,5 @@ $periodVisits = FacilityVisit::where('visit_date', '>=', $startDate)->where('vis
   }
 
   drawVisitsGraph()
+  drawResponseDonut()
 </script>

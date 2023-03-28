@@ -107,16 +107,21 @@ $categories = ['individual', 'sdp', 'facility'];
                                         </tbody>
                                     </table>
                                     <div class="row">
+                                        
                                         <div class="col-sm-12 text-center">
-                                            <button class="btn btn-sm btn-flat btn-default" type="button" onclick="<?php echo $type ?>($(this))"><i class="fa fa-plus"></i> Add</button>
+                                            <?php if ($opt == 'radio') : ?>
+                                                <button class="btn btn-sm btn-flat btn-default" type="button" onclick="new_radio($(this))"><i class="fa fa-plus"></i> Add</button>
+                                            <?php elseif ($opt == 'checkbox') : ?>
+                                                <button class="btn btn-sm btn-flat btn-default" type="button" onclick="new_check($(this))"><i class="fa fa-plus"></i> Add</button>
+                                            <?php endif; ?>
                                         </div>
                                     </div>
                             </div>
                     </div>
 
-                <?php elseif($question->type == 'textfield_s') : ?>
+                <?php elseif ($question->type == 'textfield_s') : ?>
                     <textarea name="frm_opt" id="" cols="30" rows="10" class="form-control" disabled="" placeholder="Write Something here..."></textarea>
-                <?php elseif($question->type == 'number_opt') : ?>
+                <?php elseif ($question->type == 'number_opt') : ?>
                     <input type="number" name="frm_opt" id="" class="form-control" disabled placeholder="Number..">
                 <?php endif; ?>
             <?php endif; ?>
@@ -249,7 +254,8 @@ $categories = ['individual', 'sdp', 'facility'];
     </div>
 </div>
 <script>
-    let id = '<?php echo $id ?>'
+    let qid = '<?php echo $id ?>'
+
     function new_check(_this) {
         var tbody = _this.closest('.row').siblings('table').find('tbody')
         var count = tbody.find('tr').last().find('.icheck-primary').attr('data-count')
@@ -313,7 +319,7 @@ $categories = ['individual', 'sdp', 'facility'];
 
 
             $.ajax({
-                url: id != '' ? `../api/question/${id}` : '../api/question',
+                url: qid != '' ? `../api/question/${qid}` : '../api/question',
                 data: new FormData($(this)[0]),
                 cache: false,
                 contentType: false,
@@ -324,7 +330,7 @@ $categories = ['individual', 'sdp', 'facility'];
                     if (resp.code == 200) {
                         alert_toast('Data successfully saved.', "success");
                         setTimeout(function() {
-                            // location.reload()
+                            location.reload()
                         }, 1500)
                     } else {
                         toastr.error(resp.message)

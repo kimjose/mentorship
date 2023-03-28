@@ -46,7 +46,8 @@ $questions = Question::where('section_id', $sectionId)->get();
                 <div class="callout callout-info">
                     <input type="hidden" name="qid[<?php echo $question->id ?>]" value="<?php echo $question->id ?>">
                     <input type="hidden" name="type[<?php echo $question->id ?>]" value="<?php echo $question->type ?>">
-                    <h5><?php echo $question->question ?></h5>
+                    <h5><?php echo $question->question ?><span class='badge badge-secondary rounded-pill'><?php echo $question->frequency()->name; ?></span>
+												<span class='badge badge-info rounded-pill'><?php echo $question->category; ?></span></h5>
                     <?php
                     if ($question->type == 'textfield_s') :
                         if ($prevResponse) $prevResponse->answer_value = $prevResponse->answer;

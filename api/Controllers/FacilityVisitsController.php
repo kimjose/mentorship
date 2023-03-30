@@ -9,6 +9,7 @@ use Umb\Mentorship\Models\Notification;
 use Umb\Mentorship\Models\VisitSection;
 use Illuminate\Database\Capsule\Manager as DB;
 use Umb\Mentorship\Models\ActionPoint;
+use Umb\Mentorship\Models\Facility;
 use Umb\Mentorship\Models\Response;
 
 class FacilityVisitsController extends Controller
@@ -147,10 +148,11 @@ class FacilityVisitsController extends Controller
             $assignTo = implode(',', $assign_to);
             $data['created_by'] = $this->user->id;
             $data['assign_to'] = $assignTo;
+            $facility = Facility::findOrFail($data['facility_id']);
             $ap = ActionPoint::create($data);
             foreach ($assign_to as $userId) {
                 Notification::create([
-                    'user_id' => $userId, 'message' => "You have been assigned an action point( {$title})"
+                    'user_id' => $userId, 'message' => "You have been assigned an action point( {$title} - {$facility->name})"
                 ]);
             }
             DB::commit();

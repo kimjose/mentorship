@@ -26,106 +26,104 @@ $pendingBadge = "<span class='badge badge-warning rounded-pill'>Pending</span>";
 
 <div class="card shadow mb-4">
     <div class="card-header py-3">
-
+        <button class="btn btn-primary ml-auto float-right btn-icon-split" data-toggle="modal" data-target="#modalFacility" id="btnAddUser">
+            <span class="icon text-white-50"><i class="fa fa-plus"></i> </span>
+            <span class="text"> Add Facility</span>
+        </button>
     </div>
     <div class="card-body">
         <div class="table-responsive">
             <table class="table table-bordered table-striped" id="tableVisits">
                 <thead>
-                <tr>
-                    <th>#</th>
-                    <th>Visit Details</th>
-                    <th>Title</th>
-                    <th>Description</th>
-                    <th>Date Due</th>
-                    <th>Checklist</th>
-                    <th>Section</th>
-                    <th>Question</th>
-                    <th>Comments</th>
-                    <th>Status</th>
-                    <th>Actions</th>
-                </tr>
+                    <tr>
+                        <th>#</th>
+                        <th>Visit Details</th>
+                        <th>Title</th>
+                        <th>Description</th>
+                        <th>Date Due</th>
+                        <th>Checklist</th>
+                        <th>Section</th>
+                        <th>Question</th>
+                        <th>Comments</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
                 </thead>
                 <tfoot>
-                <tr>
-                    <th>#</th>
-                    <th>Visit Details</th>
-                    <th>Title</th>
-                    <th>Description</th>
-                    <th>Date Due</th>
-                    <th>Checklist</th>
-                    <th>Section</th>
-                    <th>Question</th>
-                    <th>Comments</th>
-                    <th>Status</th>
-                    <th>Actions</th>
-                </tr>
+                    <tr>
+                        <th>#</th>
+                        <th>Visit Details</th>
+                        <th>Title</th>
+                        <th>Description</th>
+                        <th>Date Due</th>
+                        <th>Checklist</th>
+                        <th>Section</th>
+                        <th>Question</th>
+                        <th>Comments</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
                 </tfoot>
                 <tbody>
-                <?php
-                $i = 1;
-                foreach ($actionPoints
+                    <?php
+                    $i = 1;
+                    foreach ($actionPoints
 
-                         as $ap) :
+                        as $ap) :
                     ?>
-                    <tr>
-                        <td><?php echo $i ?></td>
-                        <td>
-                            <p><?php echo $ap->facility_name ?></p>
-                            <b><?php echo $ap->visit_date ?></b>
-                        </td>
-                        <td><?php echo $ap->title ?></td>
-                        <td><?php echo $ap->description ?></td>
-                        <td><?php echo $ap->due_date ?></td>
-                        <td><abbr title="<?php echo $ap->checklist_title ?>"> <?php echo $ap->checklist_abbr ?></abbr>
-                        </td>
-                        <td><abbr title="<?php echo $ap->section_title ?>"> <?php echo $ap->section_abbr ?></abbr></td>
-                        <td><?php echo $ap->question ?></td>
-                        <td>
-                            <?php
-                            /** @var ApComment[] $comments */
-                            $comments = ApComment::where('ap_id', $ap->id)->get();
-                            foreach ($comments as $apComment):
+                        <tr>
+                            <td><?php echo $i ?></td>
+                            <td>
+                                <p><?php echo $ap->facility_name ?></p>
+                                <b><?php echo $ap->visit_date ?></b>
+                            </td>
+                            <td><?php echo $ap->title ?></td>
+                            <td><?php echo $ap->description ?></td>
+                            <td><?php echo $ap->due_date ?></td>
+                            <td><abbr title="<?php echo $ap->checklist_title ?>"> <?php echo $ap->checklist_abbr ?></abbr>
+                            </td>
+                            <td><abbr title="<?php echo $ap->section_title ?>"> <?php echo $ap->section_abbr ?></abbr></td>
+                            <td><?php echo $ap->question ?></td>
+                            <td>
+                                <?php
+                                /** @var ApComment[] $comments */
+                                $comments = ApComment::where('ap_id', $ap->id)->get();
+                                foreach ($comments as $apComment) :
                                 ?>
-                                <div class="card mt-1 p-1">
-                                    <p><?php echo $apComment->comment ?></p>
-                                    <small class="text-info"><?php echo $apComment->creator()->getNames(); ?></small>
-                                </div>
-                            <?php endforeach; ?>
-                        </td>
-                        <td>
-                            <?php
-                            echo $ap->status === 'Done' ? $doneBadge : $pendingBadge;
-                            ?>
-                        </td>
-                        <td class="text-center">
-                            <div class="btn-group">
-                                <button class="btn btn-info btn-flat" data-tooltip="tooltip" title="Add Comment"
-                                        onclick='addComment(<?php echo $ap->id ?>)' data-toggle="modal"
-                                        data-target="#modalComment">
-                                    <i class="far fa-comment"></i>
-                                </button>
-                                <?php if ($currUser->id == $ap->created_by): ?>
-                                    <button type="button" class="btn btn-outline-success btn-flat" title="Mark as Done"
-                                            data-id="<?php echo $ap->id ?>"
-                                            onclick='markAsDone(<?php echo $ap->id; ?>)'>
-                                        <i class="fas fa-check"></i>
+                                    <div class="card mt-1 p-1">
+                                        <p><?php echo $apComment->comment ?></p>
+                                        <small class="text-info"><?php echo $apComment->creator()->getNames(); ?></small>
+                                    </div>
+                                <?php endforeach; ?>
+                            </td>
+                            <td>
+                                <?php
+                                echo $ap->status === 'Done' ? $doneBadge : $pendingBadge;
+                                ?>
+                            </td>
+                            <td class="text-center">
+                                <div class="btn-group">
+                                    <button class="btn btn-info btn-flat" data-tooltip="tooltip" title="Add Comment" onclick='addComment(<?php echo $ap->id ?>)' data-toggle="modal" data-target="#modalComment">
+                                        <i class="far fa-comment"></i>
                                     </button>
-                                <?php endif; ?>
-                            </div>
-                        </td>
-                    </tr>
+                                    <?php if ($currUser->id == $ap->created_by) : ?>
+                                        <button type="button" class="btn btn-outline-success btn-flat" title="Mark as Done" data-id="<?php echo $ap->id ?>" onclick='markAsDone(<?php echo $ap->id; ?>)'>
+                                            <i class="fas fa-check"></i>
+                                        </button>
+                                    <?php endif; ?>
+                                </div>
+                            </td>
+                        </tr>
 
                     <?php $i++;
-                endforeach; ?>
+                    endforeach; ?>
                 </tbody>
             </table>
         </div>
     </div>
 </div>
 <!-- Add comment dialog -->
-<div class="modal fade" id="modalComment" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-     aria-hidden="true">
+<div class="modal fade" id="modalComment" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -146,8 +144,7 @@ $pendingBadge = "<span class='badge badge-warning rounded-pill'>Pending</span>";
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-                    <button type="submit" name="savebtn" id="btnSaveComment" class="btn btn-primary"
-                            onclick="saveComment()">Save
+                    <button type="submit" name="savebtn" id="btnSaveComment" class="btn btn-primary" onclick="saveComment()">Save
                     </button>
                 </div>
             </form>
@@ -178,16 +175,17 @@ $pendingBadge = "<span class='badge badge-warning rounded-pill'>Pending</span>";
             return
         }
         let data = {
-            comment: comment, ap_id: apId
+            comment: comment,
+            ap_id: apId
         }
         start_load()
         fetch('../api/ap_comment', {
-            method: 'POST',
-            body: JSON.stringify(data),
-            headers: {
-                "content-type": "application/x-www-form-urlencoded"
-            }
-        })
+                method: 'POST',
+                body: JSON.stringify(data),
+                headers: {
+                    "content-type": "application/x-www-form-urlencoded"
+                }
+            })
             .then(response => {
                 return response.json();
             })
@@ -209,12 +207,14 @@ $pendingBadge = "<span class='badge badge-warning rounded-pill'>Pending</span>";
     function markAsDone(id) {
         customConfirm("Mark as Done", "Confirm mark this action as done!!", () => {
             fetch('../api/mark_as_done', {
-                method: 'POST',
-                body: JSON.stringify({id: id}),
-                headers: {
-                    "content-type": "application/x-www-form-urlencoded"
-                }
-            })
+                    method: 'POST',
+                    body: JSON.stringify({
+                        id: id
+                    }),
+                    headers: {
+                        "content-type": "application/x-www-form-urlencoded"
+                    }
+                })
                 .then(response => {
                     return response.json()
                 })
@@ -230,10 +230,8 @@ $pendingBadge = "<span class='badge badge-warning rounded-pill'>Pending</span>";
                 .catch(err => {
                     toastr.error(err.message)
                 })
-        }, () => {
-        })
+        }, () => {})
     }
 
     initialize()
-
 </script>

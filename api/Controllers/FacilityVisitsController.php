@@ -135,10 +135,14 @@ class FacilityVisitsController extends Controller
     {
         try {
             $assign_to = [];
-            $attributes = ['visit_id', 'question_id', 'title', 'description', 'due_date'];
+            $attributes = ['title', 'description', 'due_date'];
             $missing = Utility::checkMissingAttributes($data, $attributes);
             throw_if(sizeof($missing) > 0, new \Exception("Missing parameters passed : " . json_encode($missing)));
             DB::beginTransaction();
+            if (isset($data['visit_id'])) {
+                $fv = FacilityVisit::findOrFail($data['visit_id']);
+                $data['facility_id'] = $fv->facility_id;
+            }
             extract($data);
             $assignTo = implode(',', $assign_to);
             $data['created_by'] = $this->user->id;
@@ -146,7 +150,7 @@ class FacilityVisitsController extends Controller
             $ap = ActionPoint::create($data);
             foreach ($assign_to as $userId) {
                 Notification::create([
-                    'user_id' => $userId, 'message' => "You have been assigned an action point(${title})"
+                    'user_id' => $userId, 'message' => "You have been assigned an action point( {$title})"
                 ]);
             }
             DB::commit();
@@ -191,13 +195,14 @@ class FacilityVisitsController extends Controller
         }
     }
 
-    public function markApAsDone($data){
-        try{
+    public function markApAsDone($data)
+    {
+        try {
             $attributes = ['id'];
             $missing = Utility::checkMissingAttributes($data, $attributes);
             throw_if(sizeof($missing) > 0, new \Exception("Missing parameters passed : " . json_encode($missing)));
             $ap = ActionPoint::findOrFail($data['id']);
-            if($ap->status === 'Done') throw new \Exception('This action has already been marked as done.');
+            if ($ap->status === 'Done') throw new \Exception('This action has already been marked as done.');
             $ap->status = "Done";
             $ap->save();
             self::response(SUCCESS_RESPONSE_CODE, "The action point has been marked as done.");
@@ -206,5 +211,4 @@ class FacilityVisitsController extends Controller
             $this->response(PRECONDITION_FAILED_ERROR_CODE, $th->getMessage());
         }
     }
-
 }

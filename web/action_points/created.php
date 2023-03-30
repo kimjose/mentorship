@@ -4,7 +4,7 @@ use Illuminate\Database\Capsule\Manager as DB;
 use Umb\Mentorship\Models\ApComment;
 
 $query = "select ap.*, concat(u.first_name, ' ', u.last_name), q.question, s.abbr as 'section_abbr', s.title as 'section_title', c.abbr 'checklist_abbr', c.title 'checklist_title', fv.visit_date, f.name 'facility_name' from action_points ap left join users u on u.id = ap.created_by LEFT join questions q on q.id = ap.question_id 
-left join sections s on s.id = q.section_id LEFT join checklists c on c.id = s.checklist_id left join facility_visits fv on ap.visit_id = fv.id LEFT join facilities f on f.id = fv.facility_id where ap.created_by = {$currUser->id};";
+left join sections s on s.id = q.section_id LEFT join checklists c on c.id = s.checklist_id left join facility_visits fv on ap.visit_id = fv.id LEFT join facilities f on f.id = ap.facility_id where ap.created_by = {$currUser->id};";
 $actionPoints = DB::select($query);
 
 
@@ -26,9 +26,9 @@ $pendingBadge = "<span class='badge badge-warning rounded-pill'>Pending</span>";
 
 <div class="card shadow mb-4">
     <div class="card-header py-3">
-        <button class="btn btn-primary ml-auto float-right btn-icon-split" data-toggle="modal" data-target="#modalFacility" id="btnAddUser">
+        <button class="btn btn-primary ml-auto float-right btn-icon-split"  id="btnAddActionPoint">
             <span class="icon text-white-50"><i class="fa fa-plus"></i> </span>
-            <span class="text"> Add Facility</span>
+            <span class="text"> New Action Point</span>
         </button>
     </div>
     <div class="card-body">
@@ -162,6 +162,9 @@ $pendingBadge = "<span class='badge badge-warning rounded-pill'>Pending</span>";
             apId = ''
             document.querySelector("#formComment").reset()
         });
+        $('#btnAddActionPoint').click(() => {
+            uni_modal("New Action Point", `action_points/dialog_create_action_point`, "large")
+        })
     }
 
     function addComment(id) {

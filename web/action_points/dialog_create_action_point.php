@@ -76,6 +76,7 @@ $facilities = Facility::all();
                         alert_toast('Data successfully saved.', "success");
                         setTimeout(function() {
                             $('#uni_modal').modal('hide');
+                            location.reload();
                         }, 800)
                     } else {
                         toastr.error(resp.message)

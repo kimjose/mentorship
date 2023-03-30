@@ -20,13 +20,13 @@
         <i class="fas fa-bell fa-fw"></i>
         <!-- Counter - Alerts -->
         <sup>
-        <span class="badge badge-danger badge-counter" id="badgeNotifications">3+</span>
+          <span class="badge badge-danger badge-counter" id="badgeNotifications">3+</span>
         </sup>
       </a>
       <!-- Dropdown - Alerts -->
       <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="alertsDropdown">
         <h6 class="dropdown-header">
-         <b> Notifications Center </b>
+          <b> Notifications Center </b>
         </h6>
         <div id="divNotificationList" style="overflow-y: auto; max-height: 300px">
           <div class="dropdown-item d-flex align-items-center" href="#">

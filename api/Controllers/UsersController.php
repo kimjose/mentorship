@@ -2,9 +2,9 @@
 namespace Umb\Mentorship\Controllers;
 
 use Umb\Mentorship\Models\User;
+use Umb\Mentorship\Models\UserCategory;
 use Umb\Mentorship\Controllers\Controller;
 use Umb\Mentorship\Controllers\Utils\Utility;
-use UserCategory;
 
 class UsersController extends Controller{
 

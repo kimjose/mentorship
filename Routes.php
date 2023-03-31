@@ -82,6 +82,11 @@ $router->post("/api/user_category", function(){
     $data = json_decode(file_get_contents('php://input'), true);
     $controller->createUserCategory($data);
 });
+$router->post("/api/user_category/{id}", function($id){
+    $controller = new UsersController();
+    $data = json_decode(file_get_contents('php://input'), true);
+    $controller->updateUserCategory($id, $data);
+});
 $router->post("/api/user/{id}", function($id){
     $controller = new UsersController();
     $data = json_decode(file_get_contents('php://input'), true);

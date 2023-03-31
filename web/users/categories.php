@@ -15,12 +15,13 @@ $permissions = UserPermission::all();
 			</div>
 		</div>
 		<div class="card-body">
-			<table class="table tabe-hover table-bordered" id="list">
+			<table class="table table-hover table-bordered">
 				<thead>
 					<tr>
 						<th class="text-center">#</th>
 						<th>Name</th>
 						<th>Description</th>
+						<th>Permissions</th>
 						<th>Access Level</th>
 						<th>Actions</th>
 					</tr>
@@ -34,13 +35,25 @@ $permissions = UserPermission::all();
 							<th class="text-center"><?php echo $i++ ?></th>
 							<td><b><?php echo ucwords($category->name) ?></b></td>
 							<td><b><?php echo $category->description ?></b></td>
+							<td>
+								<ul class="list-inline">
+									<?php foreach ($permissions as $permission) :
+										$categoryPermissions = explode(',', $category->permissions);
+										if (in_array($permission->id, $categoryPermissions)) :
+									?>
+											<li class="list-inline-item permission-tag"> <?php echo $permission->name ?></li>
+									<?php
+										endif;
+									endforeach; ?>
+								</ul>
+							</td>
 							<td><b><?php echo $category->access_level ?></b></td>
 							<td class="text-center">
-								
-								
+
+
 								<button data-tooltip="tooltip" title="Edit Category" class="btn btn-light btn-circle btn-sm" onclick='editUserCategory(<?php echo json_encode($category); ?>)' data-toggle="modal" data-target="#modalUserCategory">
-                                    <i class="fa fa-edit text-primary"></i></button>
-                                <button class="btn btn-light btn-circle btn-sm" data-tooltip="tooltip" title="Delete User" onclick='deleteUser(<?php echo json_encode($user); ?>)'><i class="text-danger fa fa-trash"></i></button>
+									<i class="fa fa-edit text-primary"></i></button>
+								<button class="btn btn-light btn-circle btn-sm" data-tooltip="tooltip" title="Delete User" onclick='deleteUser(<?php echo json_encode($user); ?>)'><i class="text-danger fa fa-trash"></i></button>
 
 							</td>
 						</tr>
@@ -72,14 +85,14 @@ $permissions = UserPermission::all();
 
 					<div class="form-group">
 						<label for="inputDescription">Description</label>
-						<input type="number" class="form-control" id="inputDescription" name="description" maxlength="6" placeholder="Category Description" required>
+						<textarea name="description" id="inputDescription" class="form-control" cols="30" rows="5" placeholder="Category Description" required></textarea>
 					</div>
 					<div class="form-group">
 						<label for="">Access Level</label>
 						<select name="access_level" id="selectAccessLevel" class="form-control">
 							<option value="" selected hidden>Select Access Level</option>
-							<option value="program">Program</option>
-							<option value="facility">Facility</option>
+							<option value="Program">Program</option>
+							<option value="Facility">Facility</option>
 						</select>
 					</div>
 
@@ -89,7 +102,7 @@ $permissions = UserPermission::all();
 					<div id="divPermissions">
 						<?php foreach ($permissions as $permission) : ?>
 							<div class="">
-								<input id="<?php echo 'checkbox' . $permission->id ?>" type="checkbox" value="<?php echo $permission->name ?>" data-id="<?php echo $permission->id ?>">
+								<input name="permissions[]" id="<?php echo 'checkbox' . $permission->id ?>" type="checkbox" data-id="<?php echo $permission->id ?>">
 								<label for="<?php echo 'checkbox' . $permission->id ?>"><?php echo $permission->name ?></label>
 							</div>
 						<?php endforeach; ?>
@@ -109,6 +122,22 @@ $permissions = UserPermission::all();
 </div>
 <!-- Categories Dialog end-->
 
+<style>
+	.permission-tag {
+		padding: 4px;
+		background: #b92500;
+		color: #ffffff;
+		border-radius: 4px;
+		margin-bottom: 5px;
+		margin-right: 10px;
+		-webkit-transition: all 200ms ease;
+		-moz-transition: all 200ms ease;
+		-ms-transition: all 200ms ease;
+		-o-transition: all 200ms ease;
+		transition: all 200ms ease;
+	}
+</style>
+
 <script>
 	const formUserCategory = document.getElementById('formUserCategory')
 	const inputName = document.getElementById('inputName')
@@ -116,7 +145,7 @@ $permissions = UserPermission::all();
 	const selectAccessLevel = document.getElementById('selectAccessLevel')
 	const divPermissions = document.getElementById('divPermissions')
 	const btnSaveCategory = document.getElementById('btnSaveCategory')
-
+	const permissions = '<?php echo json_encode($permissions) ?>'
 	let editedId = ''
 
 	function initialize() {
@@ -127,19 +156,60 @@ $permissions = UserPermission::all();
 
 	}
 
-	function editUserCategory(category){
+	function editUserCategory(category) {
 		editedId = category.id
 		let checkBoxes = divPermissions.querySelectorAll('input[type=checkbox]')
-        for (let i = 0; i < checkBoxes.length; i++) {
-            let checkBox = checkBoxes[i]
-            let dataId = checkBox.getAttribute('data-id')
-            if (category.permissions.split(",").includes(dataId)) checkBox.checked = true
-        }
+		inputName.value = category.name
+		inputDescription.value = category.description
+		$(selectAccessLevel).val(category.access_level)
+		for (let i = 0; i < checkBoxes.length; i++) {
+			let checkBox = checkBoxes[i]
+			let dataId = checkBox.getAttribute('data-id')
+			if (category.permissions.split(",").includes(dataId)) checkBox.checked = true
+		}
 
 	}
 
 	function saveUserCategory() {
+		let formData = new FormData(formUserCategory)
+		let categoryData = {};
+		for (let [key, value] of formData.entries()) {
+			categoryData[key] = value
+		}
 
+		let checkBoxes = divPermissions.querySelectorAll('input[type=checkbox]')
+		let permissionIds = []
+		for (let i = 0; i < checkBoxes.length; i++) {
+			let checkBox = checkBoxes[i]
+			if (checkBox.checked) {
+				permissionIds.push(checkBox.getAttribute('data-id'))
+			}
+		}
+		categoryData.permissions = permissionIds.toString();
+
+
+		fetch(editedId == '' ? '../api/user_category' : `../api/user_category/${editedId}`, {
+				method: 'POST',
+				body: JSON.stringify(categoryData),
+				headers: {
+					"content-type": "application/x-www-form-urlencoded"
+				}
+			})
+			.then(response => {
+				return response.json()
+			})
+			.then(response => {
+				if (response.code === 200) {
+					toastr.success(response.message)
+					setTimeout(() => {
+						//window.location.reload();
+					}, 800)
+				} else throw new Error(response.message)
+			})
+			.catch(error => {
+				console.log(error.message);
+				toastr.error(error.message)
+			})
 	}
 
 	initialize()

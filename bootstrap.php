@@ -54,7 +54,13 @@ define("PERM_CREATE_VISIT", 5);
  * @param int $permission
  * @param Umb\Mentorship\Models\User $user
  */
-function hasPermission($permission, $user) : bool
+function hasPermission($permission, $user): bool
 {
+    $category = $user->getCategory();
+    if ($category == null) {
+        return false;
+    }
+    $permissions = explode(',', $category->permissions);
+    if (in_array($permission, $permissions)) return true;
     return false;
 }

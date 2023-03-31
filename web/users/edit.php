@@ -2,6 +2,7 @@
 
 use Umb\Mentorship\Models\Facility;
 use Umb\Mentorship\Models\User;
+use Umb\Mentorship\Models\UserCategory;
 
 $id = '';
 if (isset($_GET['id'])) {
@@ -11,7 +12,15 @@ if (isset($_GET['id'])) {
 
 /** @var Facility[] $facilities */
 $facilities = Facility::where('active', 1)->orderBy('name', 'asc')->get();
+$categories = UserCategory::all();
+if($currUser->getCategory()->access_level == 'Facility'){
+	$categories = UserCategory::where('access_level', 'Facility')->get();
+	foreach($categories as $category){
+		$category
+	}
+} else{
 
+}
 ?>
 <div class="col-lg-12">
 	<div class="card">
@@ -35,10 +44,16 @@ $facilities = Facility::where('active', 1)->orderBy('name', 'asc')->get();
 						</div>
 						<div class="form-group">
 							<label for="">Access Level</label>
-							<select name="access_level" id="selectAccessLevel" class="form-control">
+							<select name="access_level" id="selectAccessLevel" class="form-control" onchange="accessLevelChanged()">
 								<option value="" <?php echo $id == '' ? 'selected' : '' ?> hidden>Select level</option>
 								<option value="Program" <?php echo ($id != '' && $u->access_level == 'Program') ? 'selected' : '' ?>>Program</option>
 								<option value="Facility" <?php echo ($id != '' && $u->access_level == 'Facility') ? 'selected' : '' ?>>Facility</option>
+							</select>
+						</div>
+						<div class="form-group">
+							<label for="selectCategory">User category</label>
+							<select name="category_id" id="selectCategory" class="form-control select2">
+								<option value="" hidden selected>Select access level first</option>
 							</select>
 						</div>
 						<div class="form-group" id="divSelectFacility">
@@ -85,8 +100,12 @@ $facilities = Facility::where('active', 1)->orderBy('name', 'asc')->get();
 </div>
 <script>
 	const formManageUser = document.querySelector('#manage_user')
+	const selectCategory = document.querySelector('#selectCategory')
+	const selectAccessLevel = document.querySelector('#selectAccessLevel')
+	const divSelectFacility = document.querySelector('#divSelectFacility')
 	const btnSave = document.querySelector('#btnSave')
 	const id = '<?php echo $id ?>'
+	const categories = JSON.parse('<?php echo $categories ?>')
 	$('[name="password"],[name="cpass"]').keyup(function() {
 		var pass = $('[name="password"]').val()
 		var cpass = $('[name="cpass"]').val()
@@ -100,6 +119,8 @@ $facilities = Facility::where('active', 1)->orderBy('name', 'asc')->get();
 			}
 		}
 	})
+
+
 
 	function displayImg(input, _this) {
 		if (input.files && input.files[0]) {
@@ -131,26 +152,35 @@ $facilities = Facility::where('active', 1)->orderBy('name', 'asc')->get();
 		}
 
 		fetch(id == '' ? '../api/user' : `../api/user/${id}`, {
-			method: 'POST',
-			body: JSON.stringify(userData),
-			headers: {
+				method: 'POST',
+				body: JSON.stringify(userData),
+				headers: {
 					"content-type": "application/x-www-form-urlencoded"
 				}
-		})
-		.then(response => {
-			return response.json()
-		})
-		.then(response => {
-			if(response.code === 200){
-				toastr.success(response.message)
-				setTimeout(()=>{
-					window.location.replace('index?page=users')
-				}, 800)
-			}else throw new Error(response.message)
-		})
-		.catch(error => {
-			console.log(error.message);
+			})
+			.then(response => {
+				return response.json()
+			})
+			.then(response => {
+				if (response.code === 200) {
+					toastr.success(response.message)
+					setTimeout(() => {
+						window.location.replace('index?page=users')
+					}, 800)
+				} else throw new Error(response.message)
+			})
+			.catch(error => {
+				console.log(error.message);
 				toastr.error(error.message)
-		})
+			})
 	})
+
+	function accessLevelChanged() {
+		let selected = $(selectAccessLevel).val();
+		if (selected === "Program") {
+			divSelectFacility.classList.add("d-none")
+		} else if (selected === "Facility") {
+			if (divSelectFacility.classList.contains('d-none')) divSelectFacility.classList.remove('d-none')
+		}
+	}
 </script>

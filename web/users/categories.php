@@ -202,7 +202,7 @@ $permissions = UserPermission::all();
 				if (response.code === 200) {
 					toastr.success(response.message)
 					setTimeout(() => {
-						//window.location.reload();
+						window.location.reload();
 					}, 800)
 				} else throw new Error(response.message)
 			})

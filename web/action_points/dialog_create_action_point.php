@@ -2,15 +2,22 @@
 require_once __DIR__ . '/../../vendor/autoload.php';
 
 use Umb\Mentorship\Models\User;
+use Umb\Mentorship\Models\Facility;
 
-$questionId = $_GET['question_id'];
-$visitId = $_GET['visit_id'];
 $users = User::all();
+$facilities = Facility::all();
 ?>
 <div class="container-fluid">
     <form action="" id="formActionPoint">
-        <input type="hidden" name="visit_id" value="<?php echo $visitId ?>">
-        <input type="hidden" name="question_id" value="<?php echo $questionId ?>">
+        <div class="form-group">
+            <label for="selectFacility">Facility</label>
+            <select name="facility_id" id="selectFacility" class="form-control select2" required >
+                <option value="" selected hidden>Select facility</option>
+                <?php foreach ($facilities as $facility) : ?>
+                    <option value="<?php echo $facility->id ?>"><?php echo $facility->name ?></option>
+                <?php endforeach; ?>
+            </select>
+        </div>
         <div class="form-group">
             <label for="inputTitle" class="control-label">Title</label>
             <input type="text" name="title" id="inputTitle" class="form-control" required>
@@ -46,9 +53,9 @@ $users = User::all();
             let title = $('#inputTitle').val()
             let dueDate = $('#inputDueDate').val()
             let error = ''
-            if(title.trim() === '') error = 'Title is required.'
+            if (title.trim() === '') error = 'Title is required.'
             if (dueDate.trim() === '') error += "\n The due date is required."
-            if (error !== ''){
+            if (error !== '') {
                 toastr.error(error)
                 return;
             }
@@ -68,7 +75,8 @@ $users = User::all();
                     if (resp.code == 200) {
                         alert_toast('Data successfully saved.', "success");
                         setTimeout(function() {
-                           $('#uni_modal').modal('hide');
+                            $('#uni_modal').modal('hide');
+                            location.reload();
                         }, 800)
                     } else {
                         toastr.error(resp.message)
@@ -82,5 +90,4 @@ $users = User::all();
 
         })
     })
-    
 </script>

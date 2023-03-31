@@ -92,6 +92,21 @@ $router->post("/api/user/{id}", function($id){
     $data = json_decode(file_get_contents('php://input'), true);
     $controller->updateUserCategory($id, $data);
 });
+$router->get('/api/notifications/{id}', function ($id) {
+    $controller = new UsersController();
+    $controller->getNotifications($id);
+});
+$router->post('/api/notification/read', function () {
+    $data = json_decode(file_get_contents('php://input'), true);
+    $controller = new UsersController();
+    $controller->markAsRead($data);
+});
+$router->post('/api/notifications/read', function () {
+    $data = json_decode(file_get_contents('php://input'), true);
+    $controller = new UsersController();
+    $controller->markAllAsRead($data);
+});
+
 
 
 $router->post('/api/facility', function () {

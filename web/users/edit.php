@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * @var Umb\Mentorship\Models\User $currUser
+ */
+
 use Umb\Mentorship\Models\Facility;
 use Umb\Mentorship\Models\User;
 use Umb\Mentorship\Models\UserCategory;
@@ -12,14 +16,30 @@ if (isset($_GET['id'])) {
 
 /** @var Facility[] $facilities */
 $facilities = Facility::where('active', 1)->orderBy('name', 'asc')->get();
-$categories = UserCategory::all();
-if($currUser->getCategory()->access_level == 'Facility'){
-	$categories = UserCategory::where('access_level', 'Facility')->get();
-	foreach($categories as $category){
-		$category
+$categories = [];
+if ($currUser->getCategory()->access_level == 'Facility') {
+	$allCategories = UserCategory::where('access_level', 'Facility')->get();
+	$userPermissions = explode(',', $currUser->getCategory()->permissions);
+	foreach ($allCategories as $category) {
+		$categoryPermissions = explode(',', $category->permissions);
+		$allowed = true;
+		foreach ($categoryPermissions as $categoryPermission) {
+			if (!in_array($categoryPermission, $userPermissions)) $allowed = false;
+		}
+		if ($allowed) $categories[] = $category;
 	}
-} else{
-
+} else {
+	$allCategories = UserCategory::all();
+	$userPermissions = explode(',', $currUser->getCategory()->permissions);
+	// print_r($userPermissions);
+	foreach ($allCategories as $category) {
+		$categoryPermissions = explode(',', $category->permissions);
+		$allowed = true;
+		foreach ($categoryPermissions as $categoryPermission) {
+			if (!in_array($categoryPermission, $userPermissions)) $allowed = false;
+		}
+		if ($allowed) $categories[] = $category;
+	}
 }
 ?>
 <div class="col-lg-12">
@@ -46,17 +66,22 @@ if($currUser->getCategory()->access_level == 'Facility'){
 							<label for="">Access Level</label>
 							<select name="access_level" id="selectAccessLevel" class="form-control" onchange="accessLevelChanged()">
 								<option value="" <?php echo $id == '' ? 'selected' : '' ?> hidden>Select level</option>
-								<option value="Program" <?php echo ($id != '' && $u->access_level == 'Program') ? 'selected' : '' ?>>Program</option>
-								<option value="Facility" <?php echo ($id != '' && $u->access_level == 'Facility') ? 'selected' : '' ?>>Facility</option>
+								<option value="Program" <?php echo ($id != '' && $u->getCategory()->access_level == 'Program') ? 'selected' : '' ?>>Program</option>
+								<option value="Facility" <?php echo ($id != '' && $u->getCategory()->access_level == 'Facility') ? 'selected' : '' ?>>Facility</option>
 							</select>
 						</div>
 						<div class="form-group">
 							<label for="selectCategory">User category</label>
 							<select name="category_id" id="selectCategory" class="form-control select2">
 								<option value="" hidden selected>Select access level first</option>
+								<?php if ($id != '') :
+									foreach ($categories as $category) : ?>
+									<option value="<?php echo $category->id?>" <?php echo $category->id === $u->category_id ? ' selected' : ''?>> <?php echo $category->name ?> </option>
+								<?php endforeach;
+								endif; ?>
 							</select>
 						</div>
-						<div class="form-group" id="divSelectFacility">
+						<div class="form-group <?php echo ($id !== '' && $u->getCategory()->access_level != 'Facility') ? 'd-none' : '' ?>" id="divSelectFacility">
 							<label for="">Facility</label>
 							<select name="facility_id" id="selectFacility" class="form-control">
 								<option value="" <?php echo $id == '' ? 'selected' : '' ?> hidden>Select facility</option>
@@ -105,7 +130,8 @@ if($currUser->getCategory()->access_level == 'Facility'){
 	const divSelectFacility = document.querySelector('#divSelectFacility')
 	const btnSave = document.querySelector('#btnSave')
 	const id = '<?php echo $id ?>'
-	const categories = JSON.parse('<?php echo $categories ?>')
+	const categories = JSON.parse('<?php echo json_encode($categories) ?>')
+	console.log(categories);
 	$('[name="password"],[name="cpass"]').keyup(function() {
 		var pass = $('[name="password"]').val()
 		var cpass = $('[name="cpass"]').val()
@@ -170,6 +196,7 @@ if($currUser->getCategory()->access_level == 'Facility'){
 				} else throw new Error(response.message)
 			})
 			.catch(error => {
+				end_load()
 				console.log(error.message);
 				toastr.error(error.message)
 			})
@@ -177,9 +204,26 @@ if($currUser->getCategory()->access_level == 'Facility'){
 
 	function accessLevelChanged() {
 		let selected = $(selectAccessLevel).val();
+		selectCategory.innerHTML = '<option value="" selected hidden>Select Category</option>';
 		if (selected === "Program") {
 			divSelectFacility.classList.add("d-none")
+			categories.forEach(category => {
+				if (category.access_level === 'Program') {
+					let option = document.createElement('option');
+					option.value = category.id
+					option.innerText = category.name
+					selectCategory.append(option)
+				}
+			})
 		} else if (selected === "Facility") {
+			categories.forEach(category => {
+				if (category.access_level === 'Facility') {
+					let option = document.createElement('option');
+					option.value = category.id
+					option.innerText = category.name
+					selectCategory.append(option)
+				}
+			})
 			if (divSelectFacility.classList.contains('d-none')) divSelectFacility.classList.remove('d-none')
 		}
 	}

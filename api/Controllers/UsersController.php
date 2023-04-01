@@ -20,6 +20,7 @@ class UsersController extends Controller{
             $data['username'] = substr($data['first_name'], 0, 1) . $data['last_name'];
             $data['created_by'] = $this->user->id;
             $data['active'] = 1;
+            $data['facility_id'] = $data['facility_id'] == '' ? null : $data['facility_id'];
             User::create($data);
             self::response(SUCCESS_RESPONSE_CODE, "User created successfully.");
         } catch (\Throwable $th) {
@@ -37,6 +38,7 @@ class UsersController extends Controller{
             if($data['password'] != ''){
                 $data['password'] = md5($data['password']);
             } else unset($data['password']);
+            $data['facility_id'] = $data['facility_id'] == '' ? null : $data['facility_id'];
             $u->update($data);
             self::response(SUCCESS_RESPONSE_CODE, "User updated successfully.");
         } catch (\Throwable $th) {

@@ -8,7 +8,7 @@
       <div class="dropdown-menu">
         <a class="dropdown-item manage_account" href="javascript:void(0)" data-id="<?php echo $currUser->id ?>">Manage Account</a>
         <div class="dropdown-divider"></div>
-        <a class="dropdown-item" href="ajax?action=logout">Logout</a>
+        <a class="dropdown-item" href="javascript:void(0)" onclick="logout()">Logout</a>
       </div>
     </div>
     <div class="sidebar">
@@ -169,4 +169,11 @@
         uni_modal('Manage Account', 'manage_user?id=' + $(this).attr('data-id'))
       })
     })
+
+    const logout = ()=>{
+      fetch('../logout')
+            .then(() => window.location.reload()
+            )
+
+    }
   </script>

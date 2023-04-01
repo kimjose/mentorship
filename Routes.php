@@ -203,5 +203,11 @@ $router->get('/api/visit_sections', function () {
     }
 });
 
+
+$router->all('/logout', function () {
+    session_start();
+    unset($_SESSION[$_ENV['SESSION_APP_NAME']]);
+});
+
 // Thunderbirds are go!
 $router->run();

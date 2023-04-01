@@ -16,7 +16,7 @@ $categories = UserCategory::all();
 if($currUser->getCategory()->access_level == 'Facility'){
 	$categories = UserCategory::where('access_level', 'Facility')->get();
 	foreach($categories as $category){
-		$category
+		#$category
 	}
 } else{
 

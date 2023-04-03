@@ -5,14 +5,21 @@ use Umb\Mentorship\Models\UserPermission;
 
 $categories = UserCategory::all();
 $permissions = UserPermission::all();
+if (hasPermission(PERM_USER_MANAGEMENT, $currUser)) :
 ?>
+	<script>
+		window.location.replace("index")
+	</script>
+<?php endif; ?>
 
 <div class="col-lg-12">
 	<div class="card card-outline card-success">
 		<div class="card-header">
-			<div class="card-tools">
-				<button class="btn btn-block btn-sm btn-default btn-flat border-primary" data-toggle="modal" data-target="#modalUserCategory"><i class="fa fa-plus"></i> Add New Category</button>
-			</div>
+			<?php if (hasPermission(PERM_SYSTEM_ADMINISTRATION, $currUser)) : ?>
+				<div class="card-tools">
+					<button class="btn btn-block btn-sm btn-default btn-flat border-primary" data-toggle="modal" data-target="#modalUserCategory"><i class="fa fa-plus"></i> Add New Category</button>
+				</div>
+			<?php endif; ?>
 		</div>
 		<div class="card-body">
 			<table class="table table-hover table-bordered">
@@ -49,12 +56,12 @@ $permissions = UserPermission::all();
 							</td>
 							<td><b><?php echo $category->access_level ?></b></td>
 							<td class="text-center">
+								<?php if (hasPermission(PERM_SYSTEM_ADMINISTRATION, $currUser)) : ?>
 
-
-								<button data-tooltip="tooltip" title="Edit Category" class="btn btn-light btn-circle btn-sm" onclick='editUserCategory(<?php echo json_encode($category); ?>)' data-toggle="modal" data-target="#modalUserCategory">
-									<i class="fa fa-edit text-primary"></i></button>
-								<button class="btn btn-light btn-circle btn-sm" data-tooltip="tooltip" title="Delete User" onclick='deleteUser(<?php echo json_encode($user); ?>)'><i class="text-danger fa fa-trash"></i></button>
-
+									<button data-tooltip="tooltip" title="Edit Category" class="btn btn-light btn-circle btn-sm" onclick='editUserCategory(<?php echo json_encode($category); ?>)' data-toggle="modal" data-target="#modalUserCategory">
+										<i class="fa fa-edit text-primary"></i></button>
+									<button class="btn btn-light btn-circle btn-sm" data-tooltip="tooltip" title="Delete User" onclick='deleteUser(<?php echo json_encode($user); ?>)'><i class="text-danger fa fa-trash"></i></button>
+								<?php endif; ?>
 							</td>
 						</tr>
 					<?php endforeach; ?>

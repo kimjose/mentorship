@@ -1,13 +1,18 @@
 <?php include 'db_connect.php' ?>
 <?php
-if(isset($_GET['id'])){
-	$type_arr = array('',"Admin","Staff","Subscriber");
-	$qry = $conn->query("SELECT *,concat(last_name,', ',first_name,' ',middle_name) as name FROM users where id = ".$_GET['id'])->fetch_array();
-foreach($qry as $k => $v){
-	$$k = $v;
+if (isset($_GET['id'])) {
+	$type_arr = array('', "Admin", "Staff", "Subscriber");
+	$qry = $conn->query("SELECT *,concat(last_name,', ',first_name,' ',middle_name) as name FROM users where id = " . $_GET['id'])->fetch_array();
+	foreach ($qry as $k => $v) {
+		$$k = $v;
+	}
 }
-}
+if (hasPermission(PERM_USER_MANAGEMENT, $currUser)) :
 ?>
+	<script>
+		window.location.replace("index")
+	</script>
+<?php endif; ?>
 <div class="container-fluid">
 	<table class="table">
 		<tr>
@@ -33,13 +38,14 @@ foreach($qry as $k => $v){
 	</table>
 </div>
 <div class="modal-footer display p-0 m-0">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+	<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
 </div>
 <style>
-	#uni_modal .modal-footer{
+	#uni_modal .modal-footer {
 		display: none
 	}
-	#uni_modal .modal-footer.display{
+
+	#uni_modal .modal-footer.display {
 		display: flex
 	}
 </style>

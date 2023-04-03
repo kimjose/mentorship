@@ -11,6 +11,7 @@ use Illuminate\Database\Capsule\Manager as DB;
 use Umb\Mentorship\Models\ActionPoint;
 use Umb\Mentorship\Models\Facility;
 use Umb\Mentorship\Models\Response;
+use Umb\Mentorship\Models\VisitFinding;
 
 class FacilityVisitsController extends Controller
 {
@@ -136,6 +137,37 @@ class FacilityVisitsController extends Controller
         }
     }
 
+    public function createFinding($data){
+        try {
+            if(!hasPermission(PERM_CREATE_VISIT, $this->user)) throw new \Exception("Forbidden", 403);
+            $attributes = ['visit_id', 'description'];
+            $missing = Utility::checkMissingAttributes($data, $attributes);
+            throw_if(sizeof($missing) > 0, new \Exception("Missing parameters passed : " . json_encode($missing)));
+            $data['created_by'] = $this->user->id;
+            VisitFinding::create($data);
+            self::response(SUCCESS_RESPONSE_CODE, "Finding created successfully...");
+        } catch (\Throwable $th) {
+            Utility::logError($th->getCode(), $th->getMessage());
+            $this->response(PRECONDITION_FAILED_ERROR_CODE, $th->getMessage());
+        }
+    }
+
+    public function updateFinding($id, $data){
+        try {
+            if(!hasPermission(PERM_CREATE_VISIT, $this->user)) throw new \Exception("Forbidden", 403);
+            $attributes = [ 'description'];
+            $missing = Utility::checkMissingAttributes($data, $attributes);
+            throw_if(sizeof($missing) > 0, new \Exception("Missing parameters passed : " . json_encode($missing)));
+            $data['created_by'] = $this->user->id;
+            $finding = VisitFinding::findOrFail($id);
+            $finding->update($data);
+            self::response(SUCCESS_RESPONSE_CODE, "Finding updated successfully...");
+        } catch (\Throwable $th) {
+            Utility::logError($th->getCode(), $th->getMessage());
+            $this->response(PRECONDITION_FAILED_ERROR_CODE, $th->getMessage());
+        }
+    }
+
     public function createActionPoint($data)
     {
         try {
@@ -155,6 +187,12 @@ class FacilityVisitsController extends Controller
             $data['assign_to'] = $assignTo;
             $facility = Facility::findOrFail($data['facility_id']);
             $ap = ActionPoint::create($data);
+            if(isset($data['finding_id'])){
+                $finding = VisitFinding::findOrFail($data['finding_id']);
+                $aps = explode(',', $finding->ap_ids);
+                $aps[] = $ap->id;
+                $finding->ap_ids = implode(',', $aps);
+            }
             foreach ($assign_to as $userId) {
                 Notification::create([
                     'user_id' => $userId, 'message' => "You have been assigned an action point( {$title} - {$facility->name})"

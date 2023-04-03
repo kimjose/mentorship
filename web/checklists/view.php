@@ -72,12 +72,13 @@ endif;
 
 				<div class="row m-1">
 					<h3>Sections</h3>
-
-					<?php if ($checklist->status == 'draft') : ?>
-						<button class="btn btn-primary btn-icon-split ml-auto float-right" data-toggle="modal" data-target="#modalSection">
-							<span class="icon text-white-50"><i class="fa fa-plus"></i> </span>
-							<span class="text"> Add Section</span>
-						</button>
+					<?php if (hasPermission(PERM_CHECKLIST_MANAGEMENT, $currUser)) : ?>
+						<?php if ($checklist->status == 'draft') : ?>
+							<button class="btn btn-primary btn-icon-split ml-auto float-right" data-toggle="modal" data-target="#modalSection">
+								<span class="icon text-white-50"><i class="fa fa-plus"></i> </span>
+								<span class="text"> Add Section</span>
+							</button>
+						<?php endif; ?>
 					<?php endif; ?>
 				</div>
 				<p>To import the questions, add sections and upload an excel file. Use this <a href="../public/templates/questions_import_template.xlsx">template </a> to popuplate your excel.</p>
@@ -97,15 +98,17 @@ endif;
 
 								<div class="row p-2">
 									<h4>Questions</h4>
-									<?php if ($checklist->status == 'draft') : ?>
-										<button class="btn btn-primary btn-icon-split ml-auto float-right" onclick='importQuestions(<?php echo $section->id ?>)'>
-											<span class="icon text-white-50"><i class="fa fa-download"></i> </span>
-											<span class="text"> Import Questions</span>
-										</button>
-										<button class="btn btn-primary btn-icon-split ml-auto float-right" onclick='newQuestion(<?php echo $section->id ?>)'>
-											<span class="icon text-white-50"><i class="fa fa-plus"></i> </span>
-											<span class="text"> Add Question</span>
-										</button>
+									<?php if (hasPermission(PERM_CHECKLIST_MANAGEMENT, $currUser)) : ?>
+										<?php if ($checklist->status == 'draft') : ?>
+											<button class="btn btn-primary btn-icon-split ml-auto float-right" onclick='importQuestions(<?php echo $section->id ?>)'>
+												<span class="icon text-white-50"><i class="fa fa-download"></i> </span>
+												<span class="text"> Import Questions</span>
+											</button>
+											<button class="btn btn-primary btn-icon-split ml-auto float-right" onclick='newQuestion(<?php echo $section->id ?>)'>
+												<span class="icon text-white-50"><i class="fa fa-plus"></i> </span>
+												<span class="text"> Add Question</span>
+											</button>
+										<?php endif; ?>
 									<?php endif; ?>
 								</div>
 								<hr>
@@ -116,17 +119,20 @@ endif;
 									?>
 										<div class="callout callout-info">
 											<div class="row">
-												<?php if ($checklist->status == 'draft') : ?>
-													<div class="col-md-12">
-														<span class="dropleft float-right">
-															<a class="fa fa-ellipsis-v text-dark" href="javascript:void(0)" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></a>
-															<div class="dropdown-menu">
-																<a class="dropdown-item edit_question text-dark" href="javascript:void(0)" data-id="<?php echo $question->id ?>" onclick="editQuestion(<?php echo $section->id . ',' . $question->id ?>)">Edit</a>
-																<div class="dropdown-divider"></div>
-																<a class="dropdown-item delete_question text-dark" href="javascript:void(0)" data-id="<?php echo $question->id ?> " onclick="deleteQuestion(<?php echo $question->id ?>)">Delete</a>
-															</div>
-														</span>
-													</div>
+
+												<?php if (hasPermission(PERM_CHECKLIST_MANAGEMENT, $currUser)) : ?>
+													<?php if ($checklist->status == 'draft') : ?>
+														<div class="col-md-12">
+															<span class="dropleft float-right">
+																<a class="fa fa-ellipsis-v text-dark" href="javascript:void(0)" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></a>
+																<div class="dropdown-menu">
+																	<a class="dropdown-item edit_question text-dark" href="javascript:void(0)" data-id="<?php echo $question->id ?>" onclick="editQuestion(<?php echo $section->id . ',' . $question->id ?>)">Edit</a>
+																	<div class="dropdown-divider"></div>
+																	<a class="dropdown-item delete_question text-dark" href="javascript:void(0)" data-id="<?php echo $question->id ?> " onclick="deleteQuestion(<?php echo $question->id ?>)">Delete</a>
+																</div>
+															</span>
+														</div>
+													<?php endif; ?>
 												<?php endif; ?>
 											</div>
 											<h5><?php echo $question->question ?> <span class='badge badge-secondary rounded-pill'><?php echo $question->frequency()->name; ?></span>
@@ -172,15 +178,17 @@ endif;
 							</div>
 						</div>
 						<div>
-							<?php if ($checklist->status == 'draft') : ?>
-								<div class="btn-group float-right">
-									<button class="btn btn-primary btn-flat" data-toggle="modal" data-target="#modalSection" title="Edit Section" onclick=' editSection(<?php echo $section->id ?>, "<?php echo $section->title ?>", "<?php echo $section->abbr ?>")'>
-										<i class="fas fa-edit"></i>
-									</button>
-									<button type="button" class="btn btn-danger btn-flat delete_survey" data-id="<?php echo $section->id ?>" title="Delete Section">
-										<i class="fas fa-trash"></i>
-									</button>
-								</div>
+							<?php if (hasPermission(PERM_CHECKLIST_MANAGEMENT, $currUser)) : ?>
+								<?php if ($checklist->status == 'draft') : ?>
+									<div class="btn-group float-right">
+										<button class="btn btn-primary btn-flat" data-toggle="modal" data-target="#modalSection" title="Edit Section" onclick=' editSection(<?php echo $section->id ?>, "<?php echo $section->title ?>", "<?php echo $section->abbr ?>")'>
+											<i class="fas fa-edit"></i>
+										</button>
+										<button type="button" class="btn btn-danger btn-flat delete_survey" data-id="<?php echo $section->id ?>" title="Delete Section">
+											<i class="fas fa-trash"></i>
+										</button>
+									</div>
+								<?php endif; ?>
 							<?php endif; ?>
 						</div>
 					</div>

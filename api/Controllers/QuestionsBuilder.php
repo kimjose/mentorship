@@ -41,6 +41,7 @@ class QuestionsBuilder extends Controller
     public function createChecklist($data)
     {
         try {
+            if(!hasPermission(PERM_CHECKLIST_MANAGEMENT, $this->user)) throw new \Exception("Forbidden", 403);
             $attributes = ['title', 'description', 'abbr'];
             $missing = Utility::checkMissingAttributes($data, $attributes);
             throw_if(sizeof($missing) > 0, new \Exception("Missing parameters passed : " . json_encode($missing)));
@@ -56,6 +57,7 @@ class QuestionsBuilder extends Controller
     public function updateChecklist($id, $data)
     {
         try {
+            if(!hasPermission(PERM_CHECKLIST_MANAGEMENT, $this->user)) throw new \Exception("Forbidden", 403);
             $attributes = ['title', 'description', 'abbr'];
             $missing = Utility::checkMissingAttributes($data, $attributes);
             throw_if(sizeof($missing) > 0, new \Exception("Missing parameters passed : " . json_encode($missing)));
@@ -71,6 +73,7 @@ class QuestionsBuilder extends Controller
     public function publishChecklist($data)
     {
         try {
+            if(!hasPermission(PERM_CHECKLIST_MANAGEMENT, $this->user)) throw new \Exception("Forbidden", 403);
             $attributes = ['id'];
             $missing = Utility::checkMissingAttributes($data, $attributes);
             throw_if(sizeof($missing) > 0, new \Exception("Missing parameters passed : " . json_encode($missing)));
@@ -90,6 +93,7 @@ class QuestionsBuilder extends Controller
     public function retireChecklist($data)
     {
         try {
+            if(!hasPermission(PERM_CHECKLIST_MANAGEMENT, $this->user)) throw new \Exception("Forbidden", 403);
             $attributes = ['id', 'recreate'];
             $missing = Utility::checkMissingAttributes($data, $attributes);
             throw_if(sizeof($missing) > 0, new \Exception("Missing parameters passed : " . json_encode($missing)));
@@ -136,6 +140,7 @@ class QuestionsBuilder extends Controller
     public function addSection($data)
     {
         try {
+            if(!hasPermission(PERM_CHECKLIST_MANAGEMENT, $this->user)) throw new \Exception("Forbidden", 403);
             $attributes = ['title', 'abbr', 'checklist_id'];
             $missing = Utility::checkMissingAttributes($data, $attributes);
             throw_if(sizeof($missing) > 0, new \Exception("Missing parameters passed : " . json_encode($missing)));
@@ -151,6 +156,7 @@ class QuestionsBuilder extends Controller
     public function updateSection($id, $data)
     {
         try {
+            if(!hasPermission(PERM_CHECKLIST_MANAGEMENT, $this->user)) throw new \Exception("Forbidden", 403);
             $attributes = ['title', 'abbr', 'checklist_id'];
             $missing = Utility::checkMissingAttributes($data, $attributes);
             throw_if(sizeof($missing) > 0, new \Exception("Missing parameters passed : " . json_encode($missing)));
@@ -166,6 +172,7 @@ class QuestionsBuilder extends Controller
     public function addQuestion($data)
     {
         try {
+            if(!hasPermission(PERM_CHECKLIST_MANAGEMENT, $this->user)) throw new \Exception("Forbidden", 403);
             $attributes = ['question', 'type', 'category'];
             $missing = Utility::checkMissingAttributes($data, $attributes);
             throw_if(sizeof($missing) > 0, new \Exception("Missing parameters passed : " . json_encode($missing)));
@@ -209,6 +216,7 @@ class QuestionsBuilder extends Controller
     public function updateQuestion($id, $data)
     {
         try {
+            if(!hasPermission(PERM_CHECKLIST_MANAGEMENT, $this->user)) throw new \Exception("Forbidden", 403);
             $attributes = ['question', 'type', 'category'];
             $missing = Utility::checkMissingAttributes($data, $attributes);
             throw_if(sizeof($missing) > 0, new \Exception("Missing parameters passed : " . json_encode($missing)));
@@ -246,6 +254,7 @@ class QuestionsBuilder extends Controller
 
     public function deleteQuestion($data){
         try {
+            if(!hasPermission(PERM_CHECKLIST_MANAGEMENT, $this->user)) throw new \Exception("Forbidden", 403);
             $attributes = ['id'];
             $missing = Utility::checkMissingAttributes($data, $attributes);
             throw_if(sizeof($missing) > 0, new \Exception("Missing parameters passed : " . json_encode($missing)));
@@ -265,6 +274,7 @@ class QuestionsBuilder extends Controller
     public function importQuestions()
     {
         try {
+            if(!hasPermission(PERM_CHECKLIST_MANAGEMENT, $this->user)) throw new \Exception("Forbidden", 403);
             $missing = Utility::checkMissingAttributes($_POST, ["section_id"]);
             throw_if(sizeof($missing) > 0, new \Exception("Missing parameters passed : " . json_encode($missing)));
             $missing = Utility::checkMissingAttributes($_FILES, ["upload_file"]);

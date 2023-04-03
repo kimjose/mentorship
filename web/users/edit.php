@@ -3,6 +3,13 @@
 /**
  * @var Umb\Mentorship\Models\User $currUser
  */
+if (!hasPermission(PERM_USER_MANAGEMENT, $currUser)) :
+?>
+	<script>
+		window.location.replace("index")
+	</script>
+<?php
+endif;
 
 use Umb\Mentorship\Models\Facility;
 use Umb\Mentorship\Models\User;
@@ -84,7 +91,7 @@ if ($currUser->getCategory()->access_level == 'Facility') {
 								<option value="" hidden selected>Select access level first</option>
 								<?php if ($id != '') :
 									foreach ($categories as $category) : ?>
-									<option value="<?php echo $category->id?>" <?php echo $category->id === $u->category_id ? ' selected' : ''?>> <?php echo $category->name ?> </option>
+										<option value="<?php echo $category->id ?>" <?php echo $category->id === $u->category_id ? ' selected' : '' ?>> <?php echo $category->name ?> </option>
 								<?php endforeach;
 								endif; ?>
 							</select>

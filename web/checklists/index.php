@@ -76,19 +76,20 @@ $retiredBadge = "<span class='badge badge-secondary rounded-pill'>Retired</span>
                             </td>
                             <td><b><?php echo date("M d, Y", strtotime($checklist->created_at)) ?></b></td>
                             <td class="text-center">
-
                                 <div class="btn-group">
-                                    <?php if ($checklist->status == 'draft') : ?>
-                                        <a href="./index?page=checklists-edit&id=<?php echo $checklist->id ?>" class="btn btn-primary btn-flat">
-                                            <i class="fas fa-edit"></i>
-                                        </a>
-                                    <?php endif; ?>
                                     <a href="./index?page=checklists-view&id=<?php echo $checklist->id ?>" class="btn btn-info btn-flat">
                                         <i class="fas fa-eye"></i>
                                     </a>
-                                    <button type="button" class="btn btn-danger btn-flat delete_survey" data-id="<?php echo $checklist->id ?>">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
+                                    <?php if (hasPermission(PERM_CHECKLIST_MANAGEMENT, $currUser)) : ?>
+                                        <?php if ($checklist->status == 'draft') : ?>
+                                            <a href="./index?page=checklists-edit&id=<?php echo $checklist->id ?>" class="btn btn-primary btn-flat">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                        <?php endif; ?>
+                                        <button type="button" class="btn btn-danger btn-flat delete_survey" data-id="<?php echo $checklist->id ?>">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    <?php endif; ?>
                                 </div>
                             </td>
                         </tr>

@@ -11,6 +11,7 @@ class UsersController extends Controller{
 
     public function createUser($data){
         try {
+            if(!hasPermission(PERM_USER_MANAGEMENT, $this->user)) throw new \Exception("Forbidden", 403);   
             $attributes = ['first_name', 'middle_name', 'last_name', 'email', 'phone_number', 'facility_id'];
             $missing = Utility::checkMissingAttributes($data, $attributes);
             throw_if(sizeof($missing) > 0, new \Exception("Missing parameters passed : " . json_encode($missing)));
@@ -31,6 +32,7 @@ class UsersController extends Controller{
 
     public function updateUser($id, $data){
         try {
+            if(!hasPermission(PERM_USER_MANAGEMENT, $this->user)) throw new \Exception("Forbidden", 403);
             $attributes = ['first_name', 'middle_name', 'last_name', 'email', 'phone_number', 'password', 'facility_id'];
             $missing = Utility::checkMissingAttributes($data, $attributes);
             throw_if(sizeof($missing) > 0, new \Exception("Missing parameters passed : " . json_encode($missing)));
@@ -49,6 +51,7 @@ class UsersController extends Controller{
 
     public function createUserCategory($data){
         try {
+            if(!hasPermission(PERM_SYSTEM_ADMINISTRATION, $this->user)) throw new \Exception("Forbidden", 403);
             $attributes = ["access_level", "name", "description", "permissions"];
             $missing = Utility::checkMissingAttributes($data, $attributes);
             throw_if(sizeof($missing) > 0, new \Exception("Missing parameters passed : " . json_encode($missing)));
@@ -63,6 +66,7 @@ class UsersController extends Controller{
 
     public function updateUserCategory($id, $data){
         try {
+            if(!hasPermission(PERM_SYSTEM_ADMINISTRATION, $this->user)) throw new \Exception("Forbidden", 403);
             $attributes = ["access_level", "name", "description", "permissions"];
             $missing = Utility::checkMissingAttributes($data, $attributes);
             throw_if(sizeof($missing) > 0, new \Exception("Missing parameters passed : " . json_encode($missing)));

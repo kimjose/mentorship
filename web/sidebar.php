@@ -24,35 +24,6 @@
 
           </li>
           <li class="nav-item">
-            <a href="#" class="nav-link nav-edit_user">
-              <i class="nav-icon fas fa-users"></i>
-              <p>
-                Users
-                <i class="right fas fa-angle-left"></i>
-              </p>
-            </a>
-            <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <a href="./index?page=users-edit" class="nav-link nav-users-edit tree-item">
-                  <i class="fas fa-angle-right nav-icon"></i>
-                  <p>Add New</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="./index?page=users" class="nav-link nav-users tree-item">
-                  <i class="fas fa-angle-right nav-icon"></i>
-                  <p>List</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="./index?page=users-categories" class="nav-link nav-users-categories tree-item">
-                  <i class="fas fa-angle-right nav-icon"></i>
-                  <p>Categories</p>
-                </a>
-              </li>
-            </ul>
-          </li>
-          <li class="nav-item">
             <a href="#" class="nav-link nav-is-tree nav-edit_survey nav-view_survey">
               <i class="nav-icon fa fa-poll-h"></i>
               <p>
@@ -75,22 +46,8 @@
               </li>
             </ul>
           </li>
-          <li class="nav-item">
-            <a href="./index?page=checklist_report" class="nav-link nav-checklist_report">
-              <i class="nav-icon fas fa-poll"></i>
-              <p>
-                Checklist Report
-              </p>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a href="./index?page=facilities" class="nav-link nav-facilities">
-              <i class="nav-icon fa fa-building"></i>
-              <p>
-                Facilities
-              </p>
-            </a>
-          </li>
+          
+
           <li class="nav-item">
             <a href="./index?page=visits" class="nav-link nav-visits nav-visits-open">
               <i class="nav-icon fas fa-route"></i>
@@ -100,11 +57,12 @@
             </a>
           </li>
 
+
           <li class="nav-item">
             <a href="#" class="nav-link nav-edit_user">
               <i class="nav-icon fas fa-bullseye"></i>
               <p>
-                My Action Points
+                Action Points
                 <i class="right fas fa-angle-left"></i>
               </p>
             </a>
@@ -123,6 +81,69 @@
               </li>
             </ul>
           </li>
+
+
+          <li class="nav-item">
+            <a href="#" class="nav-link nav-edit_user">
+              <i class="nav-icon fas fa-table"></i>
+              <p>
+                Reports
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="./index?page=checklist_report" class="nav-link nav-checklist_report tree-item">
+                  <i class="nav-icon fas fa-poll"></i>
+                  <p>
+                    Checklist Report
+                  </p>
+                </a>
+              </li>
+            </ul>
+          </li>
+
+          <li class="nav-item">
+            <a href="./index?page=facilities" class="nav-link nav-facilities">
+              <i class="nav-icon fa fa-building"></i>
+              <p>
+                Facilities
+              </p>
+            </a>
+          </li>
+
+          <?php if (hasPermission(PERM_USER_MANAGEMENT, $currUser)) : ?>
+            <li class="nav-item">
+              <a href="#" class="nav-link nav-edit_user">
+                <i class="nav-icon fas fa-users"></i>
+                <p>
+                  Users
+                  <i class="right fas fa-angle-left"></i>
+                </p>
+              </a>
+              <ul class="nav nav-treeview">
+                <li class="nav-item">
+                  <a href="./index?page=users-edit" class="nav-link nav-users-edit tree-item">
+                    <i class="fas fa-angle-right nav-icon"></i>
+                    <p>Add New</p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="./index?page=users" class="nav-link nav-users tree-item">
+                    <i class="fas fa-angle-right nav-icon"></i>
+                    <p>List</p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="./index?page=users-categories" class="nav-link nav-users-categories tree-item">
+                    <i class="fas fa-angle-right nav-icon"></i>
+                    <p>Categories</p>
+                  </a>
+                </li>
+              </ul>
+            </li>
+          <?php endif; ?>
+
           <li class="nav-item">
             <a href="#" class="nav-link nav-edit_user">
               <i class="nav-icon fas fa-users"></i>
@@ -170,10 +191,9 @@
       })
     })
 
-    const logout = ()=>{
+    const logout = () => {
       fetch('../logout')
-            .then(() => window.location.reload()
-            )
+        .then(() => window.location.reload())
 
     }
   </script>

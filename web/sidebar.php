@@ -79,6 +79,12 @@
                   <p>Created</p>
                 </a>
               </li>
+              <li class="nav-item">
+                <a href="./index?page=action_points-all" class="nav-link nav-action_points-all tree-item">
+                  <i class="fas fa-angle-right nav-icon"></i>
+                  <p>All</p>
+                </a>
+              </li>
             </ul>
           </li>
 

@@ -3,7 +3,7 @@
 use Umb\Mentorship\Models\User;
 
 $users = User::all();
-if (hasPermission(PERM_USER_MANAGEMENT, $currUser)) :
+if (!hasPermission(PERM_USER_MANAGEMENT, $currUser)) :
 ?>
 	<script>
 		window.location.replace("index")

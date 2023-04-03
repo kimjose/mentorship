@@ -5,7 +5,7 @@ use Umb\Mentorship\Models\UserPermission;
 
 $categories = UserCategory::all();
 $permissions = UserPermission::all();
-if (hasPermission(PERM_USER_MANAGEMENT, $currUser)) :
+if (!hasPermission(PERM_USER_MANAGEMENT, $currUser)) :
 ?>
 	<script>
 		window.location.replace("index")

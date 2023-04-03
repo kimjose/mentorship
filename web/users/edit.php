@@ -3,7 +3,7 @@
 /**
  * @var Umb\Mentorship\Models\User $currUser
  */
-if (hasPermission(PERM_USER_MANAGEMENT, $currUser)) :
+if (!hasPermission(PERM_USER_MANAGEMENT, $currUser)) :
 ?>
 	<script>
 		window.location.replace("index")

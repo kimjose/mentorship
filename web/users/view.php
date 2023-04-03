@@ -7,7 +7,7 @@ if (isset($_GET['id'])) {
 		$$k = $v;
 	}
 }
-if (hasPermission(PERM_USER_MANAGEMENT, $currUser)) :
+if (!hasPermission(PERM_USER_MANAGEMENT, $currUser)) :
 ?>
 	<script>
 		window.location.replace("index")

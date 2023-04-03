@@ -23,10 +23,12 @@ $inActiveBadge = "<span class='badge badge-warning rounded-pill'>In Active</span
 
 <div class="card shadow mb-4">
     <div class="card-header py-3">
-        <button class="btn btn-primary ml-auto float-right btn-icon-split" data-toggle="modal" data-target="#modalVisit" id="btnAddVisit">
-            <span class="icon text-white-50"><i class="fa fa-plus"></i> </span>
-            <span class="text"> New Visit</span>
-        </button>
+        <?php if (hasPermission(PERM_CREATE_VISIT, $currUser)) : ?>
+            <button class="btn btn-primary ml-auto float-right btn-icon-split" data-toggle="modal" data-target="#modalVisit" id="btnAddVisit">
+                <span class="icon text-white-50"><i class="fa fa-plus"></i> </span>
+                <span class="text"> New Visit</span>
+            </button>
+        <?php endif; ?>
     </div>
     <div class="card-body">
         <div class="table-responsive">
@@ -63,15 +65,17 @@ $inActiveBadge = "<span class='badge badge-warning rounded-pill'>In Active</span
                             </td>
                             <td class="text-center">
                                 <div class="btn-group">
-                                    <button class="btn btn-primary btn-flat" data-tooltip="tooltip" title="Edit Visit" onclick='editVisit(<?php echo json_encode($visit); ?>)' data-toggle="modal" data-target="#modalVisit">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
                                     <a href="index?page=visits-open&id=<?php echo $visit->id ?>" class="btn btn-secondary btn-flat" data-tooltip="tooltip" title="Open Visit">
                                         <i class="fas fa-fw fa-sign-in-alt"></i>
                                     </a>
-                                    <button type="button" class="btn btn-danger btn-flat delete_visit" data-tooltip="tooltip" title="Delete Visit" data-id="<?php echo $visit->id ?>" onclick='deleteVisit(<?php echo json_encode($visit); ?>)'>
-                                        <i class="fas fa-trash"></i>
-                                    </button>
+                                    <?php if (hasPermission(PERM_CREATE_VISIT, $currUser)) : ?>
+                                        <button class="btn btn-primary btn-flat" data-tooltip="tooltip" title="Edit Visit" onclick='editVisit(<?php echo json_encode($visit); ?>)' data-toggle="modal" data-target="#modalVisit">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-danger btn-flat delete_visit" data-tooltip="tooltip" title="Delete Visit" data-id="<?php echo $visit->id ?>" onclick='deleteVisit(<?php echo json_encode($visit); ?>)'>
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    <?php endif; ?>
                                 </div>
                             </td>
                         </tr>
@@ -112,32 +116,32 @@ $inActiveBadge = "<span class='badge badge-warning rounded-pill'>In Active</span
                             <?php endfor; ?>
                         </select>
                     </div>
-                    
+
                     <div class="form-group">
                         <label for="inputVisitDate">Visit Date</label>
                         <input type="date" class="form-control" id="inputVisitDate" name="visit_date" placeholder="Visit Date" required>
                     </div>
                     <div class="row pl-2">
-                                <h5>Location</h5>
-                                <button class="btn btn-info btn-sm col-auto ml-3" onclick="verifyLocation()"><span class="text-dark">Verify Location</span></button>
-                                <small class="text-danger" id="sLocation"></small>
-                            </div>
+                        <h5>Location</h5>
+                        <button class="btn btn-info btn-sm col-auto ml-3" onclick="verifyLocation()"><span class="text-dark">Verify Location</span></button>
+                        <small class="text-danger" id="sLocation"></small>
+                    </div>
 
-                            <div class="row">
-                                <div class="col-lg-4 col-md-6">
-                                    <div class="form-group">
-                                        <label for="inputLat">Latitude</label>
-                                        <input type="number" step="0.00001" class="form-control" min="-90" max="90" id="inputLat" name="latitude">
-                                    </div>
-                                </div>
-                                <div class="col-lg-4 col-md-6">
-                                    <div class="form-group">
-                                        <label for="inputLong">Longitude</label>
-                                        <input class="form-control" type="number" step="0.00001" min="-180" max="180" id="inputLong" name="longitude">
-                                    </div>
-                                </div>
-                                
+                    <div class="row">
+                        <div class="col-lg-4 col-md-6">
+                            <div class="form-group">
+                                <label for="inputLat">Latitude</label>
+                                <input type="number" step="0.00001" class="form-control" min="-90" max="90" id="inputLat" name="latitude">
                             </div>
+                        </div>
+                        <div class="col-lg-4 col-md-6">
+                            <div class="form-group">
+                                <label for="inputLong">Longitude</label>
+                                <input class="form-control" type="number" step="0.00001" min="-180" max="180" id="inputLong" name="longitude">
+                            </div>
+                        </div>
+
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
@@ -232,25 +236,25 @@ $inActiveBadge = "<span class='badge badge-warning rounded-pill'>In Active</span
     }
 
     function verifyLocation() {
-            toastr.info("Getting Location...")
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(showPosition, (error) => {
-                    toastr.error(error.message)
-                    inputLat.value = 0.00
-                    inputLong.value = 0.00
-                }, {
-                    timeout: 10000
-                });
-            } else {
-                sLocation.innerHTML = "Geolocation is not supported by this browser.";
-            }
+        toastr.info("Getting Location...")
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(showPosition, (error) => {
+                toastr.error(error.message)
+                inputLat.value = 0.00
+                inputLong.value = 0.00
+            }, {
+                timeout: 10000
+            });
+        } else {
+            sLocation.innerHTML = "Geolocation is not supported by this browser.";
         }
+    }
 
-        function showPosition(position) {
-            inputLat.value = position.coords.latitude
-            inputLong.value = position.coords.longitude
-            inputDistance.value = getDistanceFromCoordinates([position.coords.latitude, position.coords.longitude], [venue.latitude, venue.longitude]).toFixed(2)
-        }
+    function showPosition(position) {
+        inputLat.value = position.coords.latitude
+        inputLong.value = position.coords.longitude
+        inputDistance.value = getDistanceFromCoordinates([position.coords.latitude, position.coords.longitude], [venue.latitude, venue.longitude]).toFixed(2)
+    }
 
     function deleteVisit(visit) {
         // TODO

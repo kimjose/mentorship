@@ -7,7 +7,7 @@ use Umb\Mentorship\Models\Section;
 use Umb\Mentorship\Models\User;
 use Umb\Mentorship\Models\VisitSection;
 
-if (!isset($_GET['id'])) :
+if (!isset($_GET['id']) || !hasPermission(PERM_CREATE_VISIT, $currUser)) :
 ?>
     <script>
         window.location.replace('index?page=visits');

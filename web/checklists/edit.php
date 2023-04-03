@@ -8,20 +8,25 @@ if (isset($_GET['id'])) {
 	$checklist = Checklist::find($id);
 	if ($checklist == null) $id = '';
 }
+if (!hasPermission(PERM_CHECKLIST_MANAGEMENT, $currUser)) :
 ?>
+	<script>
+		window.location.replace("index")
+	</script>
+<?php endif; ?>
 
 
 <!-- Page Heading -->
 <div class="d-sm-flex align-items-center justify-content-between">
-    <ol class="breadcrumb mb-4 transparent">
-        <li class="breadcrumb-item">
-            <a href="index">Home</a>
-        </li>
+	<ol class="breadcrumb mb-4 transparent">
 		<li class="breadcrumb-item">
-            <a href="index?page=checklists">Checklists</a>
-        </li>
-        <li class="breadcrumb-item active"> Edit </li>
-    </ol>
+			<a href="index">Home</a>
+		</li>
+		<li class="breadcrumb-item">
+			<a href="index?page=checklists">Checklists</a>
+		</li>
+		<li class="breadcrumb-item active"> Edit </li>
+	</ol>
 
 </div>
 

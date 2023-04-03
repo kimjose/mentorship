@@ -10,8 +10,12 @@ if (isset($_GET['id'])) {
     $t = Team::findOrFail($id);
 }
 $users = User::all();
+if (!hasPermission(PERM_USER_MANAGEMENT, $currUser)) :
 ?>
-
+    <script>
+        window.location.replace("index")
+    </script>
+<?php endif; ?>
 <div class="col-lg-12">
     <div class="card">
         <div class="card-body p-2">

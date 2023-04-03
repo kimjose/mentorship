@@ -28,6 +28,7 @@ class FacilityVisitsController extends Controller
     public function createVisit($data)
     {
         try {
+            if(!hasPermission(PERM_CREATE_VISIT, $this->user)) throw new \Exception("Forbidden", 403);
             $attributes = ['facility_id', 'visit_date', 'latitude', 'longitude'];
             $missing = Utility::checkMissingAttributes($data, $attributes);
             throw_if(sizeof($missing) > 0, new \Exception("Missing parameters passed : " . json_encode($missing)));
@@ -47,6 +48,7 @@ class FacilityVisitsController extends Controller
     public function updateVisit($id, $data)
     {
         try {
+            if(!hasPermission(PERM_CREATE_VISIT, $this->user)) throw new \Exception("Forbidden", 403);
             $attributes = ['facility_id', 'visit_date', 'latitude', 'longitude'];
             $missing = Utility::checkMissingAttributes($data, $attributes);
             throw_if(sizeof($missing) > 0, new \Exception("Missing parameters passed : " . json_encode($missing)));
@@ -66,6 +68,7 @@ class FacilityVisitsController extends Controller
     public function openVisitSection($data)
     {
         try {
+            if(!hasPermission(PERM_CREATE_VISIT, $this->user)) throw new \Exception("Forbidden", 403);
             $attributes = ['visit_id', 'section_id'];
             $missing = Utility::checkMissingAttributes($data, $attributes);
             throw_if(sizeof($missing) > 0, new \Exception("Missing parameters passed : " . json_encode($missing)));
@@ -92,6 +95,7 @@ class FacilityVisitsController extends Controller
     public function submitResponse($data)
     {
         try {
+            if(!hasPermission(PERM_CREATE_VISIT, $this->user)) throw new \Exception("Forbidden", 403);
             extract($data);
             DB::beginTransaction();
             foreach ($qid as $k => $v) {
@@ -135,6 +139,7 @@ class FacilityVisitsController extends Controller
     public function createActionPoint($data)
     {
         try {
+            if(!hasPermission(PERM_CREATE_VISIT, $this->user)) throw new \Exception("Forbidden", 403);
             $assign_to = [];
             $attributes = ['title', 'description', 'due_date'];
             $missing = Utility::checkMissingAttributes($data, $attributes);
@@ -167,6 +172,7 @@ class FacilityVisitsController extends Controller
     public function updateActionPoint($id, $data)
     {
         try {
+            if(!hasPermission(PERM_CREATE_VISIT, $this->user)) throw new \Exception("Forbidden", 403);
             $attributes = ['visit_id', 'question_id', 'title', 'description', 'due_date'];
             $missing = Utility::checkMissingAttributes($data, $attributes);
             throw_if(sizeof($missing) > 0, new \Exception("Missing parameters passed : " . json_encode($missing)));
@@ -200,6 +206,7 @@ class FacilityVisitsController extends Controller
     public function markApAsDone($data)
     {
         try {
+            if(!hasPermission(PERM_CREATE_VISIT, $this->user)) throw new \Exception("Forbidden", 403);
             $attributes = ['id'];
             $missing = Utility::checkMissingAttributes($data, $attributes);
             throw_if(sizeof($missing) > 0, new \Exception("Missing parameters passed : " . json_encode($missing)));

@@ -18,7 +18,7 @@ $sectionId = $_GET['section'];
 $visit = FacilityVisit::find($visitId);
 $vs = VisitSection::where('visit_id', $visitId)->where('section_id', $sectionId)->first();
 $visitDate = $visit->visit_date;
-if ($vs == null || $vs->user_id != $currUser->id) :
+if ($vs == null || $vs->user_id != $currUser->id || !hasPermission(PERM_CREATE_VISIT, $currUser)) :
 ?>
     <script>
         window.location.replace('index?page=visits')

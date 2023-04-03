@@ -5,14 +5,18 @@ use Umb\Mentorship\Models\ApComment;
 use Illuminate\Database\Capsule\Manager as DB;
 
 $query = "select ap.*, concat(u.first_name, ' ', u.last_name), q.question, s.abbr as 'section_abbr', s.title as 'section_title', c.abbr 'checklist_abbr', c.title 'checklist_title', fv.visit_date, f.name 'facility_name' from action_points ap left join users u on u.id = ap.created_by LEFT join questions q on q.id = ap.question_id 
-left join sections s on s.id = q.section_id LEFT join checklists c on c.id = s.checklist_id left join facility_visits fv on ap.visit_id = fv.id LEFT join facilities f on f.id = ap.facility_id where ap.created_by = {$currUser->id};";
+left join sections s on s.id = q.section_id LEFT join checklists c on c.id = s.checklist_id left join facility_visits fv on ap.visit_id = fv.id LEFT join facilities f on f.id = ap.facility_id;";
 $actionPoints = DB::select($query);
 
 
 $doneBadge = "<span class='badge badge-success rounded-pill'>Done</span>";
 $pendingBadge = "<span class='badge badge-warning rounded-pill'>Pending</span>";
+if (!hasPermission(PERM_ALL_APS, $currUser)) :
 ?>
-
+    <script>
+        window.location.replace('index')
+    </script>
+<?php endif; ?>
 <!-- Page Heading -->
 <div class="d-sm-flex align-items-center justify-content-between">
     <ol class="breadcrumb mb-4 transparent">
@@ -98,6 +102,7 @@ $pendingBadge = "<span class='badge badge-warning rounded-pill'>Pending</span>";
                                     <?php endforeach; ?>
                                 </ul>
                             </td>
+
                             <td>
                                 <?php
                                 /** @var ApComment[] $comments */

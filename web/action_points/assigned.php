@@ -34,7 +34,7 @@ $pendingBadge = "<span class='badge badge-warning rounded-pill'>Pending</span>";
                 <thead>
                 <tr>
                     <th>#</th>
-                    <th>Visit Details</th>
+                    <th>Facility/Visit Details</th>
                     <th>Title</th>
                     <th>Description</th>
                     <th>Date Due</th>
@@ -49,7 +49,7 @@ $pendingBadge = "<span class='badge badge-warning rounded-pill'>Pending</span>";
                 <tfoot>
                 <tr>
                     <th>#</th>
-                    <th>Visit Details</th>
+                    <th>Facility/Visit Details</th>
                     <th>Title</th>
                     <th>Description</th>
                     <th>Date Due</th>

@@ -10,6 +10,17 @@ $actionPoints = DB::select($query);
 
 $doneBadge = "<span class='badge badge-success rounded-pill'>Done</span>";
 $pendingBadge = "<span class='badge badge-warning rounded-pill'>Pending</span>";
+$overdueBadge = "<span class='badge badge-danger rounded-pill'>Overdue</span>";
+function badge($actionPoint){
+    global $doneBadge, $overdueBadge, $pendingBadge;
+    if($actionPoint->status === 'Done') return $doneBadge;
+    $dueDate = date_create(date($actionPoint->due_date . ' 23:59:59'));
+    $today =date_create(date('Y-m-d G:i:s'));
+    // $diff = date_diff($today, $dueDate)->format("%r%a");
+    // return $diff;
+    if($dueDate < $today) return $overdueBadge;
+    else return $pendingBadge;
+}
 ?>
 
 <!-- Page Heading -->
@@ -95,7 +106,7 @@ $pendingBadge = "<span class='badge badge-warning rounded-pill'>Pending</span>";
                         </td>
                         <td>
                             <?php
-                            echo $ap->status === 'Done' ? $doneBadge : $pendingBadge;
+                            echo badge($ap);
                             ?>
                         </td>
                         <td class="text-center">

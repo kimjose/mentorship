@@ -80,14 +80,51 @@ $submittedBadge = "<span class='badge badge-success rounded-pill'>Submitted</spa
             <div class="tab-pane fade show active" id="tabContentFindings" role="tabpanel" aria-labelledby="custom-tabs-four-home-tab">
 
                 <h3>Findings</h3>
-                <ul style="list-style: lower-greek;">
-<li>
-    <div class="border-primary">
-        <p>Hello there</p>
-    </div>
-</li>
+                <ul id="listFindings" style="list-style: lower-greek;">
+                    <li>
+                        <div class="card shadow h-100 py-2 mt-2">
+                            <div style="float:right">
+
+                                <div class="btn-group " style="float: right;">
+                                    <button class="btn btn-primary btn-flat" data-tooltip="tooltip" title="Edit Visit">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-danger btn-flat delete_visit" data-tooltip="tooltip" title="Delete Visit">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                                <h6 class="ml-2">This User</h6>
+                            </div>
+                            <div class="card-body">
+                                <p>Hello there</p>
+                                <div>
+                                    <h6>Action points</h6> <span class="link" > 3</span>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+
+                    <li>
+                        <div class="card border-left-warning shadow h-100 py-2 mt-2">
+                            <div style="float:right">
+
+                                <div class="btn-group " style="float: right;">
+                                    <button class="btn btn-primary btn-flat" data-tooltip="tooltip" title="Edit Visit">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-danger btn-flat delete_visit" data-tooltip="tooltip" title="Delete Visit">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                                <h6 class="ml-2">This User</h6>
+                            </div>
+                            <div class="card-body">
+                                <p>Hello there</p>
+                            </div>
+                        </div>
+                    </li>
                 </ul>
-            
+
             </div>
 
             <div class="tab-pane fade show " id="tabContentSections" role="tabpanel" aria-labelledby="custom-tabs-four-home-tab">
@@ -259,6 +296,12 @@ $submittedBadge = "<span class='badge badge-success rounded-pill'>Submitted</spa
 </div>
 <!-- Section Dialog end-->
 
+<style>
+#listFindings li{
+    border-left: #000FAD 10px !important;
+}
+
+</style>
 
 <script>
     const visitId = '<?php echo $id ?>'

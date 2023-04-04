@@ -62,7 +62,10 @@ $submittedBadge = "<span class='badge badge-success rounded-pill'>Submitted</spa
     <div class="card-body">
         <ul class="nav nav-tabs" role="tablist">
             <li class="nav-item">
-                <a class="nav-link  active" id="tabSections" data-toggle="tab" href="#tabContentSections" role="tab" aria-controls="tabContentVisit" aria-selected="true">Checklists</a>
+                <a class="nav-link  active" id="tabFindings" data-toggle="tab" href="#tabContentFindings" role="tab" aria-controls="tabContentVisit" aria-selected="true">Findings/Summary</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="tabSections" data-toggle="tab" href="#tabContentSections" role="tab" aria-controls="tabContentVisit" aria-selected="true">Checklists</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" id="tabChartAbstractions" data-toggle="tab" href="#tabContentChartAbstractions" role="tab" aria-controls="#tabContentChartAbstractions" aria-selected="false">Chart Abstraction</a>
@@ -73,7 +76,21 @@ $submittedBadge = "<span class='badge badge-success rounded-pill'>Submitted</spa
 
         </ul>
         <div class="tab-content" id="tabContentVisit">
-            <div class="tab-pane fade show active" id="tabContentSections" role="tabpanel" aria-labelledby="custom-tabs-four-home-tab">
+            <!-- Tab content summary -->
+            <div class="tab-pane fade show active" id="tabContentFindings" role="tabpanel" aria-labelledby="custom-tabs-four-home-tab">
+
+                <h3>Findings</h3>
+                <ul style="list-style: lower-greek;">
+<li>
+    <div class="border-primary">
+        <p>Hello there</p>
+    </div>
+</li>
+                </ul>
+            
+            </div>
+
+            <div class="tab-pane fade show " id="tabContentSections" role="tabpanel" aria-labelledby="custom-tabs-four-home-tab">
                 <h3>Checklists</h3>
 
                 <?php foreach ($checklists as $checklist) :

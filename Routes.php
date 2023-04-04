@@ -168,6 +168,16 @@ $router->post('/api/response/submit', function () {
     $_POST['submitted'] = 1;
     $controller->submitResponse($_POST);
 });
+$router->post('/api/visit_finding', function () {
+    $data = json_decode(file_get_contents('php://input'), true);
+    $controller = new FacilityVisitsController();
+    $controller->createFinding($data);
+});
+$router->post('/api/visit_finding/{id}', function ($id) {
+    $data = json_decode(file_get_contents('php://input'), true);
+    $controller = new FacilityVisitsController();
+    $controller->updateFinding($id, $data);
+});
 $router->post('/api/action_point', function(){
     $controller = new FacilityVisitsController();
     $controller->createActionPoint($_POST);

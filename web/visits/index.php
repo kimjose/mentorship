@@ -61,7 +61,7 @@ $inActiveBadge = "<span class='badge badge-warning rounded-pill'>In Active</span
                             <td><?php echo $i ?></td>
                             <td><?php echo $visit->getFacility()->name ?></td>
                             <td><?php echo $visit->visit_date  ?></td>
-                            <td><?php echo $creator->first_name . ' ' . $crearor->last_name ?></php>
+                            <td><?php echo $creator->first_name . ' ' . $creator->last_name ?></php>
                             </td>
                             <td class="text-center">
                                 <div class="btn-group">

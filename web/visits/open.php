@@ -5,6 +5,7 @@ use Umb\Mentorship\Models\Checklist;
 use Umb\Mentorship\Models\FacilityVisit;
 use Umb\Mentorship\Models\Section;
 use Umb\Mentorship\Models\User;
+use Umb\Mentorship\Models\VisitFinding;
 use Umb\Mentorship\Models\VisitSection;
 
 if (!isset($_GET['id']) || !hasPermission(PERM_CREATE_VISIT, $currUser)) :
@@ -21,6 +22,8 @@ $visit = FacilityVisit::find($id);
 if ($visit == null) return;
 $visitSections = VisitSection::where('visit_id', $id)->get();
 $checklists = Checklist::where('status', 'published')->get();
+/** @var Umb\Mentorship\Models\VisitFinding[] */
+$findings = VisitFinding::where('visit_id', $id)->get();
 
 
 $openedBadge = "<span class='badge badge-primary rounded-pill'>Draft</span>";
@@ -79,50 +82,46 @@ $submittedBadge = "<span class='badge badge-success rounded-pill'>Submitted</spa
             <!-- Tab content summary -->
             <div class="tab-pane fade show active" id="tabContentFindings" role="tabpanel" aria-labelledby="custom-tabs-four-home-tab">
 
-                <h3>Findings</h3>
+
+                <div class="card-header py-3">
+                    <div class="row">
+                        <div class="col-6">
+                            <h5>Findings</h5>
+                        </div>
+                        <button class="btn btn-primary ml-auto float-right btn-icon-split" id="btnAddFinding" onclick="newFinding()">
+                            <span class="icon text-white-50"><i class="fa fa-plus"></i> </span>
+                            <span class="text"> New Finding</span>
+                        </button>
+                    </div>
+                </div>
                 <ul id="listFindings" style="list-style: lower-greek;">
-                    <li>
-                        <div class="card shadow h-100 py-2 mt-2">
-                            <div style="float:right">
+                    <?php foreach ($findings as $finding) : ?>
+                        <li>
+                            <div class="card shadow h-100 py-2 mt-2">
+                                <div style="float:right">
 
-                                <div class="btn-group " style="float: right;">
-                                    <button class="btn btn-primary btn-flat" data-tooltip="tooltip" title="Edit Visit">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-danger btn-flat delete_visit" data-tooltip="tooltip" title="Delete Visit">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
+                                    <div class="btn-group " style="float: right;">
+                                        <button class="btn btn-info btn-flat" data-tooltip="tooltip" title="Add Action Point">
+                                            <i class="fas fa-plus"></i>
+                                        </button>
+                                        <button class="btn btn-secondary btn-flat" data-tooltip="tooltip" title="Edit Finding" onclick="editFinding(<?php echo $finding->id ?>)">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-danger btn-flat delete_visit" data-tooltip="tooltip" title="Delete Finding">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                    <h6 class="ml-2 text-info"><?php $finding->createdBy()->getNames(); ?></h6>
                                 </div>
-                                <h6 class="ml-2">This User</h6>
-                            </div>
-                            <div class="card-body">
-                                <p>Hello there</p>
-                                <div>
-                                    <h6>Action points</h6> <span class="link" > 3</span>
+                                <div class="card-body">
+                                    <p> <?php echo $finding->description ?> </p>
+                                    <div>
+                                        <h6 class="action-points"> <span> 3</span> Action point(s) </h6>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </li>
-
-                    <li>
-                        <div class="card border-left-warning shadow h-100 py-2 mt-2">
-                            <div style="float:right">
-
-                                <div class="btn-group " style="float: right;">
-                                    <button class="btn btn-primary btn-flat" data-tooltip="tooltip" title="Edit Visit">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-danger btn-flat delete_visit" data-tooltip="tooltip" title="Delete Visit">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </div>
-                                <h6 class="ml-2">This User</h6>
-                            </div>
-                            <div class="card-body">
-                                <p>Hello there</p>
-                            </div>
-                        </div>
-                    </li>
+                        </li>
+                    <?php endforeach; ?>
                 </ul>
 
             </div>
@@ -297,10 +296,18 @@ $submittedBadge = "<span class='badge badge-success rounded-pill'>Submitted</spa
 <!-- Section Dialog end-->
 
 <style>
-#listFindings li{
-    border-left: #000FAD 10px !important;
-}
+    #listFindings li {
+        border-left: #000FAD 10px !important;
+    }
 
+    .action-points {
+        color: #000FAD;
+    }
+
+    .action-points:hover {
+        cursor: pointer;
+        text-decoration-style: dotted;
+    }
 </style>
 
 <script>
@@ -313,6 +320,14 @@ $submittedBadge = "<span class='badge badge-success rounded-pill'>Submitted</spa
 
     function viewResponse(sectionId) {
         view_modal("View Response", `visits/dialog_view_response.php?section_id=${sectionId}&visit_id=${visitId}`, "large")
+    }
+
+    function newFinding() {
+        uni_modal("Add Finding", `visits/dialog_create_finding?visit_id=${visitId}`, "large")
+    }
+
+    function editFinding(findingId) {
+        uni_modal("Add Finding", `visits/dialog_create_finding?visit_id=${visitId}&finding_id=${findingId}`, "large")
     }
 
     function openSection(sectionId) {

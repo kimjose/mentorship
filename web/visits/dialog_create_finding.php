@@ -6,7 +6,7 @@ use Umb\Mentorship\Models\VisitFinding;
 
 $visitId = $_GET['visit_id'];
 $findingId = '';
-if(isset($_GET['finding_id'])){
+if (isset($_GET['finding_id'])) {
     $findingId = $_GET['finding_id'];
     $finding = VisitFinding::findOrFail($findingId);
 }
@@ -18,9 +18,7 @@ $users = User::all();
 
         <div class="form-group">
             <label for="inputDescription" class="control-label">Description</label>
-            <textarea name="description" id="inputDescription" cols="30" rows="4" class="form-control" required>
-                <?php echo $findingId == '' ? '' : $finding->description; ?>
-            </textarea>
+            <textarea name="description" id="inputDescription" cols="30" rows="4" class="form-control" required><?php echo $findingId == '' ? '' : $finding->description; ?></textarea>
         </div>
     </form>
 </div>
@@ -49,28 +47,28 @@ $users = User::all();
             start_load()
 
             fetch(findingId === '' ? '../api/visit_finding' : `../api/visit_finding/${findingId}`, {
-                method: 'POST',
-                body: JSON.stringify(finding),
-                headers: {
-                    "content-type": "application/x-www-form-urlencoded"
-                }
-            })
-            .then(response => {
-                return response.json()
-            })
-            .then(response => {
-                if(response.code === 200){
-                    alert_toast(response.message, "success");
-                    end_load()
-                    setTimeout(function() {
+                    method: 'POST',
+                    body: JSON.stringify(finding),
+                    headers: {
+                        "content-type": "application/x-www-form-urlencoded"
+                    }
+                })
+                .then(response => {
+                    return response.json()
+                })
+                .then(response => {
+                    if (response.code === 200) {
+                        alert_toast(response.message, "success");
+                        end_load()
+                        setTimeout(function() {
                             $('#uni_modal').modal('hide');
                         }, 800)
-                } else throw new Error(response.message)
-            })
-            .catch(err => {
-                end_load()
-                alert_toast(err.message)
-            })
+                    } else throw new Error(response.message)
+                })
+                .catch(err => {
+                    end_load()
+                    alert_toast(err.message)
+                })
 
         })
     })

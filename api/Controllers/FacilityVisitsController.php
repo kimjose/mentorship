@@ -186,12 +186,21 @@ class FacilityVisitsController extends Controller
             $data['created_by'] = $this->user->id;
             $data['assign_to'] = $assignTo;
             $facility = Facility::findOrFail($data['facility_id']);
-            $ap = ActionPoint::create($data);
+            $ap = ActionPoint::create([
+                'visit_id' => $data['visit_id'],
+                'question_id' => $data['question_id'] == '' ? null : $data['question_id'],
+                'title' => $data['title'],
+                'description' => $data['description'],
+                'assign_to' => $data['assign_to'],
+                'due_date' => $data['due_date'],
+                'created_by' => $data['created_by'],
+            ]);
             if(isset($data['finding_id'])){
                 $finding = VisitFinding::findOrFail($data['finding_id']);
-                $aps = explode(',', $finding->ap_ids);
+                $aps = ($finding->ap_ids === null || $finding->ap_ids === '') ? [] : explode(',', $finding->ap_ids);
                 $aps[] = $ap->id;
                 $finding->ap_ids = implode(',', $aps);
+                $finding->save();
             }
             foreach ($assign_to as $userId) {
                 Notification::create([

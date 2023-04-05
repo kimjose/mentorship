@@ -101,7 +101,7 @@ $submittedBadge = "<span class='badge badge-success rounded-pill'>Submitted</spa
                                 <div style="float:right">
 
                                     <div class="btn-group " style="float: right;">
-                                        <button class="btn btn-info btn-flat" data-tooltip="tooltip" title="Add Action Point">
+                                        <button class="btn btn-info btn-flat" data-tooltip="tooltip" title="Add Action Point" onclick="addFindingActionPoint(<?php echo $finding->id ?>)">
                                             <i class="fas fa-plus"></i>
                                         </button>
                                         <button class="btn btn-secondary btn-flat" data-tooltip="tooltip" title="Edit Finding" onclick="editFinding(<?php echo $finding->id ?>)">
@@ -111,12 +111,12 @@ $submittedBadge = "<span class='badge badge-success rounded-pill'>Submitted</spa
                                             <i class="fas fa-trash"></i>
                                         </button>
                                     </div>
-                                    <h6 class="ml-2 text-info"><?php $finding->createdBy()->getNames(); ?></h6>
+                                    <h6 class="ml-2 text-info"><?php echo $finding->createdBy()->getNames(); ?></h6>
                                 </div>
                                 <div class="card-body">
                                     <p> <?php echo $finding->description ?> </p>
                                     <div>
-                                        <h6 class="action-points"> <span> 3</span> Action point(s) </h6>
+                                        <h6 onclick="viewActionPoints('<?php echo $finding->ap_ids ?>')" class="action-points"> <span> <?php echo sizeof(($finding->ap_ids === null || $finding->ap_ids === '') ? [] : explode(',', $finding->ap_ids)) ?></span> Action point(s) </h6>
                                     </div>
                                 </div>
                             </div>
@@ -235,9 +235,6 @@ $submittedBadge = "<span class='badge badge-success rounded-pill'>Submitted</spa
                 <div class="table-responsive">
                     <table class="table table-striped">
                         <thead>
-                            <th>Checklist</th>
-                            <th>Section</th>
-                            <th>Question</th>
                             <th>Action Point</th>
                             <th>Description</th>
                             <th>Assigned To</th>
@@ -251,9 +248,6 @@ $submittedBadge = "<span class='badge badge-success rounded-pill'>Submitted</spa
                             foreach ($aps as $ap) :
                             ?>
                                 <tr>
-                                    <td><?php echo $ap->question()->section()->checklist()->title ?></td>
-                                    <td><?php echo $ap->question()->section()->title ?></td>
-                                    <td><?php echo $ap->question()->question ?></td>
                                     <td><?php echo $ap->title ?></td>
                                     <td><?php echo $ap->description ?></td>
                                     <td></td>
@@ -319,7 +313,12 @@ $submittedBadge = "<span class='badge badge-success rounded-pill'>Submitted</spa
     })
 
     function viewResponse(sectionId) {
-        view_modal("View Response", `visits/dialog_view_response.php?section_id=${sectionId}&visit_id=${visitId}`, "large")
+        view_modal("View Response", `visits/dialog_view_response?section_id=${sectionId}&visit_id=${visitId}`, "large")
+    }
+
+    function viewActionPoints(apIds){
+        if(apIds === '') return;
+        view_modal("View Action Points", `visits/dialog_view_aps?ids=${apIds}`, "large")
     }
 
     function newFinding() {
@@ -328,6 +327,10 @@ $submittedBadge = "<span class='badge badge-success rounded-pill'>Submitted</spa
 
     function editFinding(findingId) {
         uni_modal("Add Finding", `visits/dialog_create_finding?visit_id=${visitId}&finding_id=${findingId}`, "large")
+    }
+
+    function addFindingActionPoint(findingId) {
+        uni_modal("Add Action Point", `visits/dialog_create_action_point?visit_id=${visitId}&finding_id=${findingId}&question_id=`, "large")
     }
 
     function openSection(sectionId) {

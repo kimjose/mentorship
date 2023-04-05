@@ -116,7 +116,7 @@ $submittedBadge = "<span class='badge badge-success rounded-pill'>Submitted</spa
                                 <div class="card-body">
                                     <p> <?php echo $finding->description ?> </p>
                                     <div>
-                                        <h6 class="action-points"> <span> 3</span> Action point(s) </h6>
+                                        <h6 onclick="viewActionPoints('<?php echo $finding->ap_ids ?>')" class="action-points"> <span> <?php echo sizeof(($finding->ap_ids === null || $finding->ap_ids === '') ? [] : explode(',', $finding->ap_ids)) ?></span> Action point(s) </h6>
                                     </div>
                                 </div>
                             </div>
@@ -313,7 +313,12 @@ $submittedBadge = "<span class='badge badge-success rounded-pill'>Submitted</spa
     })
 
     function viewResponse(sectionId) {
-        view_modal("View Response", `visits/dialog_view_response.php?section_id=${sectionId}&visit_id=${visitId}`, "large")
+        view_modal("View Response", `visits/dialog_view_response?section_id=${sectionId}&visit_id=${visitId}`, "large")
+    }
+
+    function viewActionPoints(apIds){
+        if(apIds === '') return;
+        view_modal("View Action Points", `visits/dialog_view_aps?ids=${apIds}`, "large")
     }
 
     function newFinding() {

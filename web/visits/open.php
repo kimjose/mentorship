@@ -65,13 +65,13 @@ $submittedBadge = "<span class='badge badge-success rounded-pill'>Submitted</spa
     <div class="card-body">
         <ul class="nav nav-tabs" role="tablist">
             <li class="nav-item">
-                <a class="nav-link  active" id="tabFindings" data-toggle="tab" href="#tabContentFindings" role="tab" aria-controls="tabContentVisit" aria-selected="true">Findings/Summary</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" id="tabSections" data-toggle="tab" href="#tabContentSections" role="tab" aria-controls="tabContentVisit" aria-selected="true">Checklists</a>
+                <a class="nav-link active" id="tabSections" data-toggle="tab" href="#tabContentSections" role="tab" aria-controls="tabContentVisit" aria-selected="true">Checklists</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" id="tabChartAbstractions" data-toggle="tab" href="#tabContentChartAbstractions" role="tab" aria-controls="#tabContentChartAbstractions" aria-selected="false">Chart Abstraction</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="tabFindings" data-toggle="tab" href="#tabContentFindings" role="tab" aria-controls="tabContentVisit" aria-selected="false">Findings/Summary</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" id="tabActionPoints" data-toggle="tab" href="#tabContentActionPoints" role="tab" aria-controls="#tabContentActionPoints" aria-selected="false">Action Points</a>
@@ -79,54 +79,8 @@ $submittedBadge = "<span class='badge badge-success rounded-pill'>Submitted</spa
 
         </ul>
         <div class="tab-content" id="tabContentVisit">
-            <!-- Tab content summary -->
-            <div class="tab-pane fade show active" id="tabContentFindings" role="tabpanel" aria-labelledby="custom-tabs-four-home-tab">
 
-
-                <div class="card-header py-3">
-                    <div class="row">
-                        <div class="col-6">
-                            <h5>Findings</h5>
-                        </div>
-                        <button class="btn btn-primary ml-auto float-right btn-icon-split" id="btnAddFinding" onclick="newFinding()">
-                            <span class="icon text-white-50"><i class="fa fa-plus"></i> </span>
-                            <span class="text"> New Finding</span>
-                        </button>
-                    </div>
-                </div>
-                <ul id="listFindings" style="list-style: lower-greek;">
-                    <?php foreach ($findings as $finding) : ?>
-                        <li>
-                            <div class="card shadow h-100 py-2 mt-2">
-                                <div style="float:right">
-
-                                    <div class="btn-group " style="float: right;">
-                                        <button class="btn btn-info btn-flat" data-tooltip="tooltip" title="Add Action Point" onclick="addFindingActionPoint(<?php echo $finding->id ?>)">
-                                            <i class="fas fa-plus"></i>
-                                        </button>
-                                        <button class="btn btn-secondary btn-flat" data-tooltip="tooltip" title="Edit Finding" onclick="editFinding(<?php echo $finding->id ?>)">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-                                        <button type="button" class="btn btn-danger btn-flat delete_visit" data-tooltip="tooltip" title="Delete Finding">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </div>
-                                    <h6 class="ml-2 text-info"><?php echo $finding->createdBy()->getNames(); ?></h6>
-                                </div>
-                                <div class="card-body">
-                                    <p> <?php echo $finding->description ?> </p>
-                                    <div>
-                                        <h6 onclick="viewActionPoints('<?php echo $finding->ap_ids ?>')" class="action-points"> <span> <?php echo sizeof(($finding->ap_ids === null || $finding->ap_ids === '') ? [] : explode(',', $finding->ap_ids)) ?></span> Action point(s) </h6>
-                                    </div>
-                                </div>
-                            </div>
-                        </li>
-                    <?php endforeach; ?>
-                </ul>
-
-            </div>
-
-            <div class="tab-pane fade show " id="tabContentSections" role="tabpanel" aria-labelledby="custom-tabs-four-home-tab">
+            <div class="tab-pane fade show active" id="tabContentSections" role="tabpanel" aria-labelledby="custom-tabs-four-home-tab">
                 <h3>Checklists</h3>
 
                 <?php foreach ($checklists as $checklist) :
@@ -230,6 +184,54 @@ $submittedBadge = "<span class='badge badge-success rounded-pill'>Submitted</spa
                 </div>
             </div>
             <!-- Tab Chart Abstraction end -->
+            <!-- Tab content summary -->
+            <div class="tab-pane fade show " id="tabContentFindings" role="tabpanel" aria-labelledby="custom-tabs-four-home-tab">
+
+
+                <div class="card-header py-3">
+                    <div class="row">
+                        <div class="col-6">
+                            <h5>Findings</h5>
+                        </div>
+                        <button class="btn btn-primary ml-auto float-right btn-icon-split" id="btnAddFinding" onclick="newFinding()">
+                            <span class="icon text-white-50"><i class="fa fa-plus"></i> </span>
+                            <span class="text"> New Finding</span>
+                        </button>
+                    </div>
+                </div>
+                <ul id="listFindings" style="list-style: lower-greek;">
+                    <?php foreach ($findings as $finding) : ?>
+                        <li>
+                            <div class="card shadow h-100 py-2 mt-2">
+                                <div style="float:right">
+
+                                    <div class="btn-group " style="float: right;">
+                                        <button class="btn btn-info btn-flat" data-tooltip="tooltip" title="Add Action Point" onclick="addFindingActionPoint(<?php echo $finding->id ?>)">
+                                            <i class="fas fa-plus"></i>
+                                        </button>
+                                        <button class="btn btn-secondary btn-flat" data-tooltip="tooltip" title="Edit Finding" onclick="editFinding(<?php echo $finding->id ?>)">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-danger btn-flat delete_visit" data-tooltip="tooltip" title="Delete Finding">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                    <h6 class="ml-2 text-info"><?php echo $finding->createdBy()->getNames(); ?></h6>
+                                </div>
+                                <div class="card-body">
+                                    <p> <?php echo $finding->description ?> </p>
+                                    <div>
+                                        <h6 onclick="viewActionPoints('<?php echo $finding->ap_ids ?>')" class="action-points"> <span> <?php echo sizeof(($finding->ap_ids === null || $finding->ap_ids === '') ? [] : explode(',', $finding->ap_ids)) ?></span> Action point(s) </h6>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    <?php endforeach; ?>
+                </ul>
+
+            </div>
+            <!-- Tab content summary -->
+
             <!-- Tab Action points -->
             <div class="tab-pane fade show" id="tabContentActionPoints" role="tabpanel" aria-labelledby="custom-tabs-four-home-tab">
                 <div class="table-responsive">
@@ -316,8 +318,8 @@ $submittedBadge = "<span class='badge badge-success rounded-pill'>Submitted</spa
         view_modal("View Response", `visits/dialog_view_response?section_id=${sectionId}&visit_id=${visitId}`, "large")
     }
 
-    function viewActionPoints(apIds){
-        if(apIds === '') return;
+    function viewActionPoints(apIds) {
+        if (apIds === '') return;
         view_modal("View Action Points", `visits/dialog_view_aps?ids=${apIds}`, "large")
     }
 

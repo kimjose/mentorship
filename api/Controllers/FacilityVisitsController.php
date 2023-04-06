@@ -168,6 +168,19 @@ class FacilityVisitsController extends Controller
         }
     }
 
+    public function createChartAbstraction($data){
+        try{
+            if(!hasPermission(PERM_CREATE_VISIT, $this->user)) throw new \Exception("Forbidden", 403);
+            $attributes = ['visit_id', 'created_by', 'ccc_number', 'age'];
+            $attributes = [ 'description'];
+            $missing = Utility::checkMissingAttributes($data, $attributes);
+            throw_if(sizeof($missing) > 0, new \Exception("Missing parameters passed : " . json_encode($missing)));
+        } catch(\Throwable $th){
+            Utility::logError($th->getCode(), $th->getMessage());
+            $this->response(PRECONDITION_FAILED_ERROR_CODE, $th->getMessage());
+        }
+    }
+
     public function createActionPoint($data)
     {
         try {

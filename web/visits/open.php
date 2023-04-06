@@ -149,6 +149,18 @@ $submittedBadge = "<span class='badge badge-success rounded-pill'>Submitted</spa
             </div>
             <!-- Tab Chart Abstraction -->
             <div class="tab-pane fade show" id="tabContentChartAbstractions" role="tabpanel" aria-labelledby="custom-tabs-four-home-tab">
+
+                <div class="card-header py-3">
+                    <div class="row">
+                        <div class="col-6">
+                            <h5>Chart Abstractions</h5>
+                        </div>
+                        <button class="btn btn-primary ml-auto float-right btn-icon-split" id="btnAddAbstraction" onclick="newAbstraction()">
+                            <span class="icon text-white-50"><i class="fa fa-plus"></i> </span>
+                            <span class="text"> New </span>
+                        </button>
+                    </div>
+                </div>
                 <div class="table-responsive">
                     <!-- Dynamic table can be long based on user data elements
                              of interest (artstartdate, TPT,VL,CACX,NCDs,weight,height etc.) -->
@@ -329,6 +341,10 @@ $submittedBadge = "<span class='badge badge-success rounded-pill'>Submitted</spa
 
     function editFinding(findingId) {
         uni_modal("Add Finding", `visits/dialog_create_finding?visit_id=${visitId}&finding_id=${findingId}`, "large")
+    }
+
+    function newAbstraction(){
+        uni_modal("Add Abstraction", `visits/dialog_create_abstraction?visit_id=${visitId}`, "large")
     }
 
     function addFindingActionPoint(findingId) {

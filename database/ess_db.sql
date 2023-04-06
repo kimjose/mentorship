@@ -498,7 +498,7 @@ CREATE TABLE `teams` (
   UNIQUE KEY `unique_team_name` (`name`),
   KEY `fk_team_lead` (`team_lead`),
   CONSTRAINT `fk_team_lead` FOREIGN KEY (`team_lead`) REFERENCES `users` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --

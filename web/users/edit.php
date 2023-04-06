@@ -23,13 +23,6 @@ if (isset($_GET['id'])) {
 
 /** @var Facility[] $facilities */
 $facilities = Facility::where('active', 1)->orderBy('name', 'asc')->get();
-<<<<<<< HEAD
-$categories = UserCategory::all();
-if($currUser->getCategory()->access_level == 'Facility'){
-	$categories = UserCategory::where('access_level', 'Facility')->get();
-	foreach($categories as $category){
-		#$category
-=======
 $categories = [];
 if ($currUser->getCategory()->access_level == 'Facility') {
 	$allCategories = UserCategory::where('access_level', 'Facility')->get();
@@ -53,7 +46,6 @@ if ($currUser->getCategory()->access_level == 'Facility') {
 			if (!in_array($categoryPermission, $userPermissions)) $allowed = false;
 		}
 		if ($allowed) $categories[] = $category;
->>>>>>> 4ad07f080069cf1c65e1925e9b964bd5107a6a96
 	}
 }
 ?>

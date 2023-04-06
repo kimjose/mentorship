@@ -195,7 +195,7 @@ class FacilityVisitsController extends Controller
                 'due_date' => $data['due_date'],
                 'created_by' => $data['created_by'],
             ]);
-            if(isset($data['finding_id'])){
+            if(isset($data['finding_id']) && $data['finding_id'] != ''){
                 $finding = VisitFinding::findOrFail($data['finding_id']);
                 $aps = ($finding->ap_ids === null || $finding->ap_ids === '') ? [] : explode(',', $finding->ap_ids);
                 $aps[] = $ap->id;

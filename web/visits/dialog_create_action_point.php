@@ -6,6 +6,7 @@ use Umb\Mentorship\Models\User;
 $questionId = $_GET['question_id'];
 $visitId = $_GET['visit_id'];
 $findingId = $_GET['finding_id'];
+$abstractionId = $_GET['abstraction_id'] ?? '';
 $users = User::all();
 ?>
 <div class="container-fluid">
@@ -13,6 +14,7 @@ $users = User::all();
         <input type="hidden" name="visit_id" value="<?php echo $visitId ?>">
         <input type="hidden" name="question_id" value="<?php echo $questionId ?>">
         <input type="hidden" name="finding_id" value="<?php echo $findingId ?? '' ?>">
+        <input type="hidden" name="abstraction_id" value="<?php echo $abstractionId ?>">
         <div class="form-group">
             <label for="inputTitle" class="control-label">Title</label>
             <input type="text" name="title" id="inputTitle" class="form-control" required>

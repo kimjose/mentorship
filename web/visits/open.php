@@ -1,6 +1,7 @@
 <?php
 
 use Umb\Mentorship\Models\ActionPoint;
+use Umb\Mentorship\Models\ChartAbstraction;
 use Umb\Mentorship\Models\Checklist;
 use Umb\Mentorship\Models\FacilityVisit;
 use Umb\Mentorship\Models\Section;
@@ -24,7 +25,8 @@ $visitSections = VisitSection::where('visit_id', $id)->get();
 $checklists = Checklist::where('status', 'published')->get();
 /** @var Umb\Mentorship\Models\VisitFinding[] */
 $findings = VisitFinding::where('visit_id', $id)->get();
-
+/** @var Umb\Mentorship\Models\ChartAbstraction[] */
+$abstractions = ChartAbstraction::where('visit_id', $id)->get();
 
 $openedBadge = "<span class='badge badge-primary rounded-pill'>Draft</span>";
 $notOpenedBadge = "<span class='badge badge-warning rounded-pill'>Not Opened</span>";
@@ -166,29 +168,38 @@ $submittedBadge = "<span class='badge badge-success rounded-pill'>Submitted</spa
                              of interest (artstartdate, TPT,VL,CACX,NCDs,weight,height etc.) -->
                     <table class="table table-striped">
                         <thead>
-                            <th>#</th>
-                            <th>CCCNumber</th>
-                            <th>Section</th>
-                            <th>AgeGroup</th>
-                            <th>Gaps Identified</th>
-                            <th>Assigned To</th>
                             <th>Reviewed By</th>
+                            <th>CCCNumber</th>
+                            <th>Age</th>
+                            <th>Gaps Identified</th>
+                            <th>Action Points</th>
                         </thead>
 
                         <tbody>
-                            <?php
-                            /** @var ActionPoint[] $aps */
-                            $aps = ActionPoint::where('visit_id', $visit->id)->get();
-                            foreach ($aps as $ap) :
-                            ?> //
+                            <?php foreach ($abstractions as $abstraction) :
+
+                            ?>
                                 <tr>
-                                    <td><?php echo $c ?></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
+                                    <td><?php echo $abstraction->creator()->getNames() ?></td>
+                                    <td><?php echo $abstraction->ccc_number; ?></td>
+                                    <td><?php echo $abstraction->age ?></td>
+                                    <td class="">
+                                        <ul style="list-style:disc">
+                                            <?php foreach ($abstraction->gaps() as $gap) : ?>
+                                                <li><?php echo $gap->gap ?></li>
+                                            <?php endforeach; ?>
+                                        </ul>
+                                    </td>
+                                    <td class="text-center">
+                                        <div>
+                                            <h6 onclick="viewActionPoints('<?php echo $abstraction->ap_ids ?>')" class="action-points"> <span> <?php echo sizeof(($abstraction->ap_ids === null || $abstraction->ap_ids === '') ? [] : explode(',', $abstraction->ap_ids)) ?></span> Action point(s) </h6>
+                                        </div>
+                                        <div class="btn-group">
+                                            <button class="btn btn-outline-info btn-flat" data-tooltip="tooltip" title="Add Action point" onclick='addAbstractionActionPoint(<?php echo $abstraction->id ?>)' >
+                                                <i class="fas fa-plus"></i>
+                                            </button>
+                                        </div>
+                                    </td>
                                 </tr>
                             <?php endforeach; ?>
                         </tbody>
@@ -343,12 +354,16 @@ $submittedBadge = "<span class='badge badge-success rounded-pill'>Submitted</spa
         uni_modal("Add Finding", `visits/dialog_create_finding?visit_id=${visitId}&finding_id=${findingId}`, "large")
     }
 
-    function newAbstraction(){
+    function newAbstraction() {
         uni_modal("Add Abstraction", `visits/dialog_create_abstraction?visit_id=${visitId}`, "large")
     }
 
     function addFindingActionPoint(findingId) {
         uni_modal("Add Action Point", `visits/dialog_create_action_point?visit_id=${visitId}&finding_id=${findingId}&question_id=`, "large")
+    }
+
+    function addAbstractionActionPoint(abstractionId){
+        uni_modal("Add Action Point", `visits/dialog_create_action_point?visit_id=${visitId}&abstraction_id=${abstractionId}&question_id=`, "large")
     }
 
     function openSection(sectionId) {

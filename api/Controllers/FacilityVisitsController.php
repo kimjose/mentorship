@@ -232,6 +232,13 @@ class FacilityVisitsController extends Controller
                 $finding->ap_ids = implode(',', $aps);
                 $finding->save();
             }
+            if(isset($data['abstraction_id']) && $data['abstraction_id'] != ''){
+                $chartAbstraction = ChartAbstraction::findOrFail($data['abstraction_id']);
+                $aps = ($chartAbstraction->ap_ids === null || $chartAbstraction->ap_ids === '') ? [] : explode(',', $chartAbstraction->ap_ids);
+                $aps[] = $ap->id;
+                $chartAbstraction->ap_ids = implode(',', $aps);
+                $chartAbstraction->save();
+            }
             foreach ($assign_to as $userId) {
                 Notification::create([
                     'user_id' => $userId, 'message' => "You have been assigned an action point( {$title} - {$facility->name})"

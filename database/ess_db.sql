@@ -45,7 +45,7 @@ CREATE TABLE `action_points` (
   CONSTRAINT `fk_ap_creator` FOREIGN KEY (`created_by`) REFERENCES `users` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
   CONSTRAINT `fk_ap_question` FOREIGN KEY (`question_id`) REFERENCES `questions` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
   CONSTRAINT `fk_ap_visit` FOREIGN KEY (`visit_id`) REFERENCES `facility_visits` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -498,7 +498,7 @@ CREATE TABLE `teams` (
   UNIQUE KEY `unique_team_name` (`name`),
   KEY `fk_team_lead` (`team_lead`),
   CONSTRAINT `fk_team_lead` FOREIGN KEY (`team_lead`) REFERENCES `users` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -610,6 +610,39 @@ INSERT INTO `users` VALUES (1,1,'admin@admin.com','0735377609','Admin','Admin','
 UNLOCK TABLES;
 
 --
+-- Table structure for table `visit_findings`
+--
+
+DROP TABLE IF EXISTS `visit_findings`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `visit_findings` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `visit_id` int NOT NULL,
+  `description` varchar(300) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '',
+  `ap_ids` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+  `created_by` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `fk_finding_visit` (`visit_id`),
+  KEY `fk_finding_user` (`created_by`),
+  CONSTRAINT `fk_finding_user` FOREIGN KEY (`created_by`) REFERENCES `users` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT `fk_finding_visit` FOREIGN KEY (`visit_id`) REFERENCES `facility_visits` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `visit_findings`
+--
+
+LOCK TABLES `visit_findings` WRITE;
+/*!40000 ALTER TABLE `visit_findings` DISABLE KEYS */;
+INSERT INTO `visit_findings` VALUES (1,5,'When you look at it\nlife can be a piece of shit\ni wish my self the best\nfor this stuff can be a beasts\n','15,16,17,18',1,'2023-04-05 07:24:31','2023-04-05 09:04:06'),(2,5,'Water source failure',NULL,1,'2023-04-05 10:15:35','2023-04-05 10:15:35');
+/*!40000 ALTER TABLE `visit_findings` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `visit_sections`
 --
 
@@ -651,4 +684,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-04-05 17:01:19
+-- Dump completed on 2023-04-06 17:29:56

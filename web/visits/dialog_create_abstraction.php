@@ -63,7 +63,8 @@ if (isset($_GET['abstraction_id'])) {
 <script>
     const divGaps = document.getElementById('divGaps');
     const divGapSample = document.getElementById('divGapSample');
-
+    const formAbstraction = document.getElementById('formAbstraction');
+    
     function newGap() {
         let i = divGaps.children.length;
         let divId = `divGap_${i}`
@@ -94,13 +95,14 @@ if (isset($_GET['abstraction_id'])) {
 
             $.ajax({
                 url:  '../api/chart_abstraction',
-                data: new FormData($('#formAbstraction')),
+                data: new FormData(formAbstraction),
                 cache: false,
                 contentType: false,
                 processData: false,
                 method: 'POST',
                 type: 'POST',
                 success: function(resp) {
+                    end_load()
                     if (resp.code == 200) {
                         alert_toast(resp.message, "success");
                         setTimeout(function() {

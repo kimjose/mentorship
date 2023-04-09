@@ -178,6 +178,10 @@ $router->post('/api/visit_finding/{id}', function ($id) {
     $controller = new FacilityVisitsController();
     $controller->updateFinding($id, $data);
 });
+$router->post('/api/chart_abstraction', function(){
+    $controller = new FacilityVisitsController();
+    $controller->createChartAbstraction($_POST);
+});
 $router->post('/api/action_point', function(){
     $controller = new FacilityVisitsController();
     $controller->createActionPoint($_POST);

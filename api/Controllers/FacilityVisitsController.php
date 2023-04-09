@@ -9,6 +9,8 @@ use Umb\Mentorship\Models\Notification;
 use Umb\Mentorship\Models\VisitSection;
 use Illuminate\Database\Capsule\Manager as DB;
 use Umb\Mentorship\Models\ActionPoint;
+use Umb\Mentorship\Models\ChartAbstraction;
+use Umb\Mentorship\Models\ChartAbstractionGap;
 use Umb\Mentorship\Models\Facility;
 use Umb\Mentorship\Models\Response;
 use Umb\Mentorship\Models\VisitFinding;
@@ -171,11 +173,26 @@ class FacilityVisitsController extends Controller
     public function createChartAbstraction($data){
         try{
             if(!hasPermission(PERM_CREATE_VISIT, $this->user)) throw new \Exception("Forbidden", 403);
-            $attributes = ['visit_id', 'created_by', 'ccc_number', 'age'];
-            $attributes = [ 'description'];
+            $attributes = ['visit_id', 'ccc_number', 'age'];
             $missing = Utility::checkMissingAttributes($data, $attributes);
             throw_if(sizeof($missing) > 0, new \Exception("Missing parameters passed : " . json_encode($missing)));
+            extract($data);
+            DB::beginTransaction();
+            $ca = ChartAbstraction::create([
+                'visit_id' => $visit_id,
+                'ccc_number' => $ccc_number,
+                'age' => $age,
+                'created_by' => $this->user->id
+            ]);
+            foreach($gaps as $gap){
+                ChartAbstractionGap::create([
+                    'gap' => $gap, 'abstraction_id' => $ca->id
+                ]);
+            }
+            DB::commit();
+            self::response(SUCCESS_RESPONSE_CODE, 'Abstraction created ');
         } catch(\Throwable $th){
+            DB::rollback();
             Utility::logError($th->getCode(), $th->getMessage());
             $this->response(PRECONDITION_FAILED_ERROR_CODE, $th->getMessage());
         }

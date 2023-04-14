@@ -49,14 +49,14 @@ endif;
 					<div class="col-md-6 border-right">
 						<div class="form-group">
 							<label for="" class="control-label">Title</label>
-							<input type="text" name="title" class="form-control form-control-sm" required value="<?php echo $id != '' ? $checklist->title : ''  ?> readonly">
+							<input type="text" name="title" class="form-control form-control-sm" required value="<?php echo $id != '' ? $checklist->title : ''  ?> " readonly>
 						</div>
 					</div>
 
 					<div class="col-md-6">
 						<div class="form-group">
 							<label for="" class="control-label">Abbreviation</label>
-							<input type="text" name="abbr" class="form-control form-control-sm" required value="<?php echo $id != '' ? $checklist->abbr : '' ?> readonly">
+							<input type="text" name="abbr" class="form-control form-control-sm" required value="<?php echo $id != '' ? $checklist->abbr : '' ?> " readonly>
 						</div>
 					</div>
 				</div>

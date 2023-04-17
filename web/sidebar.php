@@ -32,12 +32,14 @@
               </p>
             </a>
             <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <a href="./index?page=checklists-edit" class="nav-link nav-checklists-edit tree-item">
-                  <i class="fas fa-angle-right nav-icon"></i>
-                  <p>Add New</p>
-                </a>
-              </li>
+              <?php if (hasPermission(PERM_CHECKLIST_MANAGEMENT, $currUser)) : ?>
+                <li class="nav-item">
+                  <a href="./index?page=checklists-edit" class="nav-link nav-checklists-edit tree-item">
+                    <i class="fas fa-angle-right nav-icon"></i>
+                    <p>Add New</p>
+                  </a>
+                </li>
+              <?php endif; ?>
               <li class="nav-item">
                 <a href="./index?page=checklists" class="nav-link nav-checklists tree-item">
                   <i class="fas fa-angle-right nav-icon"></i>
@@ -46,7 +48,7 @@
               </li>
             </ul>
           </li>
-          
+
 
           <li class="nav-item">
             <a href="./index?page=visits" class="nav-link nav-visits nav-visits-open">
@@ -108,15 +110,16 @@
               </li>
             </ul>
           </li>
-
-          <li class="nav-item">
-            <a href="./index?page=facilities" class="nav-link nav-facilities">
-              <i class="nav-icon fa fa-building"></i>
-              <p>
-                Facilities
-              </p>
-            </a>
-          </li>
+          <?php if ($currUser->getCategory()->access_level === 'Program') : ?>
+            <li class="nav-item">
+              <a href="./index?page=facilities" class="nav-link nav-facilities">
+                <i class="nav-icon fa fa-building"></i>
+                <p>
+                  Facilities
+                </p>
+              </a>
+            </li>
+          <?php endif; ?>
 
           <?php if (hasPermission(PERM_USER_MANAGEMENT, $currUser)) : ?>
             <li class="nav-item">

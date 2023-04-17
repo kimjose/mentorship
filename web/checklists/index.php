@@ -26,7 +26,9 @@ $retiredBadge = "<span class='badge badge-secondary rounded-pill'>Retired</span>
     <div class="card card-outline card-primary">
         <div class="card-header">
             <div class="card-tools">
-                <a class="btn btn-block btn-sm btn-default btn-flat border-primary" href="./index?page=checklists-edit"><i class="fa fa-plus"></i> Add New Checklist</a>
+                <?php if (hasPermission(PERM_CHECKLIST_MANAGEMENT, $currUser)) : ?>
+                    <a class="btn btn-block btn-sm btn-default btn-flat border-primary" href="./index?page=checklists-edit"><i class="fa fa-plus"></i> Add New Checklist</a>
+                <?php endif; ?>
             </div>
         </div>
         <div class="card-body">

@@ -199,10 +199,12 @@ endif;
 	</div>
 	<div class="card-footer">
 		<div class="col-auto">
-			<?php if ($checklist->status == 'draft') : ?>
-				<button class="btn btn-primary" id="btnPublishChecklist">
-					<span class="text">Publish</span>
-				</button>
+			<?php if (hasPermission(PERM_CHECKLIST_MANAGEMENT, $currUser)) : ?>
+				<?php if ($checklist->status == 'draft') : ?>
+					<button class="btn btn-primary" id="btnPublishChecklist">
+						<span class="text">Publish</span>
+					</button>
+				<?php endif; ?>
 			<?php endif; ?>
 		</div>
 	</div>

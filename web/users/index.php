@@ -2,13 +2,20 @@
 
 use Umb\Mentorship\Models\User;
 
-$users = User::all();
 if (!hasPermission(PERM_USER_MANAGEMENT, $currUser)) :
 ?>
 	<script>
 		window.location.replace("index")
 	</script>
-<?php endif; ?>
+<?php endif;
+
+$users = [];
+if ($currUser->getCategory()->access_level == 'Facility') {
+	$users = User::where('facility_id', $currUser->facility_id)->get();
+} else {
+	$users = User::all();
+}
+?>
 <div class="col-lg-12">
 	<div class="card card-outline card-success">
 		<div class="card-header">

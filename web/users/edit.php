@@ -22,9 +22,10 @@ if (isset($_GET['id'])) {
 }
 
 /** @var Facility[] $facilities */
-$facilities = Facility::where('active', 1)->orderBy('name', 'asc')->get();
+$facilities = [];
 $categories = [];
 if ($currUser->getCategory()->access_level == 'Facility') {
+	$facilities = Facility::where('id', $currUser->facility_id)->get();
 	$allCategories = UserCategory::where('access_level', 'Facility')->get();
 	$userPermissions = explode(',', $currUser->getCategory()->permissions);
 	foreach ($allCategories as $category) {
@@ -36,6 +37,7 @@ if ($currUser->getCategory()->access_level == 'Facility') {
 		if ($allowed) $categories[] = $category;
 	}
 } else {
+	$facilities = Facility::where('active', 1)->orderBy('name', 'asc')->get();
 	$allCategories = UserCategory::all();
 	$userPermissions = explode(',', $currUser->getCategory()->permissions);
 	// print_r($userPermissions);
@@ -73,7 +75,9 @@ if ($currUser->getCategory()->access_level == 'Facility') {
 							<label for="">Access Level</label>
 							<select name="access_level" id="selectAccessLevel" class="form-control" onchange="accessLevelChanged()">
 								<option value="" <?php echo $id == '' ? 'selected' : '' ?> hidden>Select level</option>
-								<option value="Program" <?php echo ($id != '' && $u->getCategory()->access_level == 'Program') ? 'selected' : '' ?>>Program</option>
+								<?php if ($currUser->getCategory()->access_level === 'Program') : ?>
+									<option value="Program" <?php echo ($id != '' && $u->getCategory()->access_level == 'Program') ? 'selected' : '' ?>>Program</option>
+								<?php endif; ?>
 								<option value="Facility" <?php echo ($id != '' && $u->getCategory()->access_level == 'Facility') ? 'selected' : '' ?>>Facility</option>
 							</select>
 						</div>

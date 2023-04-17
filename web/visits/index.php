@@ -5,7 +5,12 @@
 use Umb\Mentorship\Models\FacilityVisit;
 
 
-$visits = FacilityVisit::all();
+$visits = [];
+if ($currUser->getCategory()->access_level == 'Facility') {
+	$visits = FacilityVisit::where('facility_id', $currUser->facility_id)->get();
+} else {
+	$visits = FacilityVisit::all();
+}
 $activeBadge = "<span class='badge badge-primary rounded-pill'>Active</span>";
 $inActiveBadge = "<span class='badge badge-warning rounded-pill'>In Active</span>";
 ?>

@@ -29,7 +29,11 @@ include_once __DIR__ . "/auth.php";
         <div class="container-fluid">
           <?php
 
-          $page = $_GET['page'] ?? 'home';
+          if ($currUser->getCategory()->access_level === 'Facility') {
+            $page = $_GET['page'] ?? 'home_facility';
+          } else {
+            $page = $_GET['page'] ?? 'home';
+          }
           $page = str_replace('-', '/', $page);
           if (!file_exists($page . ".php") && !is_dir($page)) {
             include '../404.html';
@@ -77,20 +81,20 @@ include_once __DIR__ . "/auth.php";
         </div>
       </div>
 
-        <div class="modal fade" id="view_modal" role='dialog'>
-            <div class="modal-dialog modal-md" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title"></h5>
-                    </div>
-                    <div class="modal-body">
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    </div>
-                </div>
+      <div class="modal fade" id="view_modal" role='dialog'>
+        <div class="modal-dialog modal-md" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title"></h5>
             </div>
+            <div class="modal-body">
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+          </div>
         </div>
+      </div>
       <div class="modal fade" id="uni_modal_right" role='dialog'>
         <div class="modal-dialog modal-full-height  modal-md" role="document">
           <div class="modal-content">

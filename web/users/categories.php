@@ -3,15 +3,21 @@
 use Umb\Mentorship\Models\UserCategory;
 use Umb\Mentorship\Models\UserPermission;
 
-$categories = UserCategory::all();
-$permissions = UserPermission::all();
 if (!hasPermission(PERM_USER_MANAGEMENT, $currUser)) :
 ?>
 	<script>
 		window.location.replace("index")
 	</script>
 <?php endif; ?>
-
+<?php
+$permissions = UserPermission::all();
+$categories = [];
+if ($currUser->getCategory()->access_level == 'Facility') {
+	$categories = UserCategory::where('access_level', 'Facility')->get();
+} else {
+	$categories = UserCategory::all();
+}
+?>
 <div class="col-lg-12">
 	<div class="card card-outline card-success">
 		<div class="card-header">

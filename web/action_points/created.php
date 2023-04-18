@@ -200,6 +200,8 @@ function badge($actionPoint){
     const inputComment = document.querySelector('#inputComment')
     const btnSaveComment = document.querySelector('#btnSaveComment')
     let apId = ''
+    const access_level = '<?php echo $currUser->getCategory()->access_level; ?>'
+    const facility_id = '<?php echo $currUser->facility_id ?>'
 
     function initialize() {
         $("#modalComment").on("hide.bs.modal", () => {
@@ -207,7 +209,7 @@ function badge($actionPoint){
             document.querySelector("#formComment").reset()
         });
         $('#btnAddActionPoint').click(() => {
-            uni_modal("New Action Point", `action_points/dialog_create_action_point`, "large")
+            uni_modal("New Action Point", `action_points/dialog_create_action_point?access_level=${access_level}&facility_id=${facility_id}`, "large")
         })
     }
 

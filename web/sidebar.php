@@ -153,29 +153,31 @@
             </li>
           <?php endif; ?>
 
-          <li class="nav-item">
-            <a href="#" class="nav-link nav-edit_user">
-              <i class="nav-icon fas fa-users"></i>
-              <p>
-                Teams
-                <i class="right fas fa-angle-left"></i>
-              </p>
-            </a>
-            <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <a href="./index?page=teams-edit" class="nav-link nav-teams-edit tree-item">
-                  <i class="fas fa-angle-right nav-icon"></i>
-                  <p>Create </p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="./index?page=teams" class="nav-link nav-teams tree-item">
-                  <i class="fas fa-angle-right nav-icon"></i>
-                  <p>List</p>
-                </a>
-              </li>
-            </ul>
-          </li>
+          <?php if (hasPermission(PERM_SYSTEM_ADMINISTRATION, $currUser) && $currUser->getCategory()->access_level === 'Program') : ?>
+            <li class="nav-item">
+              <a href="#" class="nav-link nav-edit_user">
+                <i class="nav-icon fas fa-users"></i>
+                <p>
+                  Teams
+                  <i class="right fas fa-angle-left"></i>
+                </p>
+              </a>
+              <ul class="nav nav-treeview">
+                <li class="nav-item">
+                  <a href="./index?page=teams-edit" class="nav-link nav-teams-edit tree-item">
+                    <i class="fas fa-angle-right nav-icon"></i>
+                    <p>Create </p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="./index?page=teams" class="nav-link nav-teams tree-item">
+                    <i class="fas fa-angle-right nav-icon"></i>
+                    <p>List</p>
+                  </a>
+                </li>
+              </ul>
+            </li>
+          <?php endif; ?>
         </ul>
       </nav>
     </div>

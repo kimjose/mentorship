@@ -16,6 +16,7 @@ $url.= $_SERVER['REQUEST_URI'];
 $pos = strpos($url, 'web');
 $len = strlen($url);
 $redirect = substr($url, $pos+strlen('web/'), $len);
+$redirect = str_replace('?', '&', $redirect);
 if (!isset($_SESSION[$_ENV['SESSION_APP_NAME']])) {
     http_response_code(401);
     Utility::logError(401, "User not authenticated,..");

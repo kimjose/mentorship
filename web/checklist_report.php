@@ -17,8 +17,13 @@ use Umb\Mentorship\Models\Checklist;
 use Umb\Mentorship\Models\Facility;
 use Umb\Mentorship\Models\FacilityVisit;
 use Umb\Mentorship\Models\Response;
-
-$facilities = Facility::all();
+/** @var Facility[] $facilities */
+$facilities = [];
+if ($currUser->getCategory()->access_level == 'Facility') {
+	$facilities = Facility::where('id', $currUser->facility_id)->get();
+} else {
+	$facilities = Facility::where('active', 1)->orderBy('name', 'asc')->get();
+}
 /** @var Checklist[] */
 $checklists = Checklist::where('status', 'NOT LIKE', 'draft')->get();
 

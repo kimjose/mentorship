@@ -1,6 +1,7 @@
 <?php
 
 use Bramus\Router\Router;
+use Umb\Mentorship\Controllers\AnalyticsController;
 use Umb\Mentorship\Controllers\Controller;
 use Umb\Mentorship\Controllers\QuestionsBuilder;
 use Umb\Mentorship\Controllers\FacilitiesController;
@@ -63,31 +64,31 @@ $router->post("/api/delete_question", function () {
     $data = json_decode(file_get_contents('php://input'), true);
     $builder->deleteQuestion($data);
 });
-$router->post("/api/import_questions", function(){
+$router->post("/api/import_questions", function () {
     $builder = new QuestionsBuilder();
     $builder->importQuestions();
 });
-$router->post("/api/user", function(){
+$router->post("/api/user", function () {
     $controller = new UsersController();
     $data = json_decode(file_get_contents('php://input'), true);
     $controller->createUser($data);
 });
-$router->post("/api/user/{id}", function($id){
+$router->post("/api/user/{id}", function ($id) {
     $controller = new UsersController();
     $data = json_decode(file_get_contents('php://input'), true);
     $controller->updateUser($id, $data);
 });
-$router->post("/api/user_category", function(){
+$router->post("/api/user_category", function () {
     $controller = new UsersController();
     $data = json_decode(file_get_contents('php://input'), true);
     $controller->createUserCategory($data);
 });
-$router->post("/api/user_category/{id}", function($id){
+$router->post("/api/user_category/{id}", function ($id) {
     $controller = new UsersController();
     $data = json_decode(file_get_contents('php://input'), true);
     $controller->updateUserCategory($id, $data);
 });
-$router->post("/api/user/{id}", function($id){
+$router->post("/api/user/{id}", function ($id) {
     $controller = new UsersController();
     $data = json_decode(file_get_contents('php://input'), true);
     $controller->updateUserCategory($id, $data);
@@ -119,21 +120,21 @@ $router->post('/api/facility/{id}', function ($id) {
     $controller = new FacilitiesController();
     $controller->updateFacility($id, $data);
 });
-$router->post('/api/team', function (){
+$router->post('/api/team', function () {
     $data = json_decode(file_get_contents('php://input'), true);
     $controller = new FacilitiesController();
     $controller->createTeam($data);
 });
-$router->post('/api/team/{id}', function ($id){
+$router->post('/api/team/{id}', function ($id) {
     $data = json_decode(file_get_contents('php://input'), true);
     $controller = new FacilitiesController();
     $controller->updateTeam($id, $data);
 });
-$router->post('/api/add_facilities_to_team', function (){
+$router->post('/api/add_facilities_to_team', function () {
     $controller = new FacilitiesController();
     $controller->addFacilitiesToTeam($_POST);
 });
-$router->post('/api/remove_facility_from_team', function (){
+$router->post('/api/remove_facility_from_team', function () {
     $data = json_decode(file_get_contents('php://input'), true);
     $controller = new FacilitiesController();
     $controller->removeFacilityFromTeam($data);
@@ -178,24 +179,24 @@ $router->post('/api/visit_finding/{id}', function ($id) {
     $controller = new FacilityVisitsController();
     $controller->updateFinding($id, $data);
 });
-$router->post('/api/chart_abstraction', function(){
+$router->post('/api/chart_abstraction', function () {
     $controller = new FacilityVisitsController();
     $controller->createChartAbstraction($_POST);
 });
-$router->post('/api/action_point', function(){
+$router->post('/api/action_point', function () {
     $controller = new FacilityVisitsController();
     $controller->createActionPoint($_POST);
 });
-$router->post('/api/action_point/{id}', function($id){
+$router->post('/api/action_point/{id}', function ($id) {
     $controller = new FacilityVisitsController();
     $controller->updateActionPoint($id, $_POST);
 });
-$router->post('/api/ap_comment', function(){
+$router->post('/api/ap_comment', function () {
     $data = json_decode(file_get_contents('php://input'), true);
     $controller = new FacilityVisitsController();
     $controller->addApComment($data);
 });
-$router->post('/api/mark_as_done', function(){
+$router->post('/api/mark_as_done', function () {
     $data = json_decode(file_get_contents('php://input'), true);
     $controller = new FacilityVisitsController();
     $controller->markApAsDone($data);
@@ -215,6 +216,23 @@ $router->get('/api/visit_sections', function () {
     } catch (\Throwable $th) {
         echo $th->getMessage();
     }
+});
+
+$router->mount('/api/analytics', function () use ($router) {
+    $controller =  new AnalyticsController();
+
+    //GET
+    $router->get('/', function () use ($controller) {
+        $controller->getAnalytics();
+    });
+    //POST
+    $data = json_decode(file_get_contents('php://input'), true);
+    $router->post('/create', function() use($controller, $data) {
+        $controller->createAnalytic($data);
+    });
+    $router->post('/update/{id}', function($id) use($controller, $data) {
+        $controller->updateAnalytic($id, $data);
+    });
 });
 
 

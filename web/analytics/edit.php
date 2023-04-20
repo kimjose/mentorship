@@ -184,8 +184,9 @@ $questions = DB::select("select q.id, q.question, q.category, q.frequency_id, q.
             })
             .then(response => {
                 if (response.code === 200) {
+                    alert_toast(response.message,'success')
                     window.location.replace('index?page=analytics')
-                }
+                } else throw new Error(response.message)
             })
             .catch(err => {
                 btnSave.removeAttribute('disabled')

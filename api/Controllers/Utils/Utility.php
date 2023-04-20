@@ -202,7 +202,7 @@ class Utility
      * This function takes an integer number $num and generates a string similar to columns in a spreadsheet.
      * ie A, B, ...... AA, AB, ..... BA, and so on.
      * given a number 0 = A, 1 = B and so on...
-     * @param Integer $num
+     * @param int $num
      *
      *
      * @return String corresponding column string

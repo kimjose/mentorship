@@ -50,14 +50,23 @@ $analytics = Analytic::all();
                     </tr>
                 </tfoot>
                 <tbody>
-                    <?php foreach($analytics as $analytic): ?>
+                    <?php foreach ($analytics as $analytic) : ?>
                         <tr>
-                        <td></td>
-                        <td><?php echo $analytic->name; ?></td>
-                        <td><?php echo $analytic->description; ?></td>
-                        <td><?php echo $analytic->creator()->getNames(); ?></td>
-                        <td><?php echo $analytic->analytic_type ?></td>
-                        <td class="text-center"></td>
+                            <td></td>
+                            <td><?php echo $analytic->name; ?></td>
+                            <td><?php echo $analytic->description; ?></td>
+                            <td><?php echo $analytic->creator()->getNames(); ?></td>
+                            <td><?php echo $analytic->analytic_type ?></td>
+                            <td class="text-center">
+                                <div class="btn-group">
+                                    <button class="btn btn-primary btn-flat" data-tooltip="tooltip" title="View Analytic" onclick='viewAnalytic(<?php echo $analytic->id; ?>)'>
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-primary btn-flat" data-tooltip="tooltip" title="Run Analytic" data-id="<?php echo $analytic->id ?>" onclick='runAnalytic(<?php echo $analytic->id; ?>)'>
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
                         </tr>
                     <?php endforeach; ?>
                 </tbody>
@@ -65,3 +74,13 @@ $analytics = Analytic::all();
         </div>
     </div>
 </div>
+<script>
+    function viewAnalytic(analyticId){
+
+    }
+
+    function runAnalytic(analyticId){
+        
+    }
+
+</script>

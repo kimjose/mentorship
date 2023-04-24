@@ -25,7 +25,7 @@ $analyticQuestions = AnalyticQuestion::where('analytic_id', $analytic->id)->get(
         <li class="breadcrumb-item">
             <a href="index?page=analytics">Analytics</a>
         </li>
-        <li class="breadcrumb-item active"> Edit </li>
+        <li class="breadcrumb-item active"> View </li>
     </ol>
 
 </div>

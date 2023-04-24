@@ -1,0 +1,7 @@
+/vendor/
+composer.lock
+.htaccess
+.env
+.idea/
+public/logs/
+public/temp/

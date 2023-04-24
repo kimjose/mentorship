@@ -2,6 +2,8 @@
 
 use Umb\Mentorship\Models\Analytic;
 use Umb\Mentorship\Models\AnalyticQuestion;
+use Umb\Mentorship\Models\AnalyticRun;
+use Umb\Mentorship\Models\Facility;
 
 if (!isset($_GET['id'])) :
 ?>
@@ -13,7 +15,10 @@ endif;
 $id = $_GET['id'];
 $analytic = Analytic::find($id);
 if ($analytic == null) return;
-$analyticQuestions = AnalyticQuestion::where('analytic_id', $analytic->id)->get()
+$analyticQuestions = AnalyticQuestion::where('analytic_id', $analytic->id)->get();
+
+/** @var AnalyticRun[] */
+$runs = AnalyticRun::where('analytic_id', $id)->get();
 ?>
 
 <!-- Page Heading -->
@@ -75,18 +80,52 @@ $analyticQuestions = AnalyticQuestion::where('analytic_id', $analytic->id)->get(
             </button>
         </div>
         <div class="card-body">
-            <table>
-                <thead></thead>
-                <tbody></tbody>
-                <tfoot></tfoot>
-            </table>
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>Facility(s)</th>
+                            <th>Created By</th>
+                            <th>Start Date</th>
+                            <th>End Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($runs as $run) :
+                            $facilities = Facility::whereIn('id', explode(",", $run->facility_ids))->get();
+                            $facilitiesNames = "";
+                            foreach($facilities as $facility){
+                                $facilitiesNames .= $facilitiesNames == "" ? "" : ", ";
+                                $facilitiesNames .= $facility->name;
+                            }
+                             ?>
+                            <tr>
+                                <td><?php echo $facilitiesNames ?></td>
+                                <td><?php echo $run->creator()->getNames() ?></td>
+                                <td><?php echo $run->start_date ?></td>
+                                <td><?php echo $run->end_date ?></td>
+                                <td class="text-center"></td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <th>Facility(s)</th>
+                            <th>Created By</th>
+                            <th>Start Date</th>
+                            <th>End Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
         </div>
     </div>
 </div>
 
 <script>
-
-    function runAnalytic(id){
+    function runAnalytic(id) {
         uni_modal("Run Analytic", `analytics/dialog_run_analytic?id=${id}`, "large")
     }
 </script>

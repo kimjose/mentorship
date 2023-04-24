@@ -62,7 +62,7 @@ $analytics = Analytic::all();
                                     <button class="btn btn-primary btn-flat" data-tooltip="tooltip" title="View Analytic" onclick='viewAnalytic(<?php echo $analytic->id; ?>)'>
                                         <i class="fas fa-eye"></i>
                                     </button>
-                                    <button type="button" class="btn btn-primary btn-flat" data-tooltip="tooltip" title="Run Analytic" data-id="<?php echo $analytic->id ?>" onclick='runAnalytic(<?php echo $analytic->id; ?>)'>
+                                    <button type="button" class="btn btn-danger btn-flat" data-tooltip="tooltip" title="Run Analytic" data-id="<?php echo $analytic->id ?>" onclick='runAnalytic(<?php echo $analytic->id; ?>)'>
                                         <i class="fas fa-trash"></i>
                                     </button>
                                 </div>
@@ -76,7 +76,7 @@ $analytics = Analytic::all();
 </div>
 <script>
     function viewAnalytic(analyticId){
-
+        window.location.replace(`index?page=analytics-view&id=${analyticId}`)
     }
 
     function runAnalytic(analyticId){

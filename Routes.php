@@ -233,6 +233,9 @@ $router->mount('/api/analytics', function () use ($router) {
     $router->post('/update/{id}', function($id) use($controller, $data) {
         $controller->updateAnalytic($id, $data);
     });
+    $router->post('/run', function() use ($controller){
+        $controller->runAnalytic($_POST);
+    });
 });
 
 

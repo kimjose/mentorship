@@ -10,4 +10,12 @@ class AnalyticQuestion extends Model{
 
     public $timestamps = false;
 
+    /**
+     * 
+     * @return Question
+     */
+    public function question(){
+        return Question::find($this->question_id);
+    }
+
 }

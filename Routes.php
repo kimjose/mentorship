@@ -236,6 +236,9 @@ $router->mount('/api/analytics', function () use ($router) {
     $router->post('/run', function() use ($controller){
         $controller->runAnalytic($_POST);
     });
+    $router->post('/delete-run', function() use ($controller, $data){
+        $controller->deleteAnalyticRun($data);
+    });
 });
 
 

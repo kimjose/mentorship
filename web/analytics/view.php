@@ -110,7 +110,7 @@ $runs = AnalyticRun::where('analytic_id', $id)->get();
                                         <button class="btn btn-primary btn-flat" data-tooltip="tooltip" title="View Analytic" onclick='viewRun(<?php echo $run->id; ?>)'>
                                             <i class="fas fa-eye"></i>
                                         </button>
-                                        <button type="button" class="btn btn-danger btn-flat" data-tooltip="tooltip" title="Run Analytic" data-id="<?php echo $analytic->id ?>" onclick='runAnalytic(<?php echo $analytic->id; ?>)'>
+                                        <button type="button" class="btn btn-danger btn-flat" data-tooltip="tooltip" title="Delete" data-id="<?php echo $analytic->id ?>" onclick='deleteRun(<?php echo $run->id; ?>)'>
                                             <i class="fas fa-trash"></i>
                                         </button>
                                     </div>
@@ -137,7 +137,39 @@ $runs = AnalyticRun::where('analytic_id', $id)->get();
     function runAnalytic(id) {
         uni_modal("Run Analytic", `analytics/dialog_run_analytic?id=${id}`, "large")
     }
-    function viewRun(id){
+
+    function viewRun(id) {
         view_modal("View Analysis Output", `analytics/dialog_view_run_results?id=${id}`, "large")
+    }
+
+    function deleteRun(id) {
+        customConfirm("Confirm delete", "Are you sure you want to delete this analysis?", () => {
+            start_load()
+
+            fetch("../api/analytics/delete-run", {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        id: id
+                    }),
+                    headers: {
+                        "content-type": "application/x-www-form-urlencoded"
+                    }
+                })
+                .then(response => {
+                    return response.json()
+                })
+                .then(response => {
+                    if (response.code === 200) {
+                        alert_toast(response.message, 'success')
+                        window.location.reload()
+                    } else throw new Error(response.message)
+                })
+                .catch(err => {
+                    toastr.error(err.message)
+                    end_load()
+                })
+        }, () => {
+            console.log("Oooh how lucky i am..🤸..");
+        })
     }
 </script>

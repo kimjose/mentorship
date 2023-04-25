@@ -95,17 +95,26 @@ $runs = AnalyticRun::where('analytic_id', $id)->get();
                         <?php foreach ($runs as $run) :
                             $facilities = Facility::whereIn('id', explode(",", $run->facility_ids))->get();
                             $facilitiesNames = "";
-                            foreach($facilities as $facility){
+                            foreach ($facilities as $facility) {
                                 $facilitiesNames .= $facilitiesNames == "" ? "" : ", ";
                                 $facilitiesNames .= $facility->name;
                             }
-                             ?>
+                        ?>
                             <tr>
                                 <td><?php echo $facilitiesNames ?></td>
                                 <td><?php echo $run->creator()->getNames() ?></td>
                                 <td><?php echo $run->start_date ?></td>
                                 <td><?php echo $run->end_date ?></td>
-                                <td class="text-center"></td>
+                                <td class="text-center">
+                                    <div class="btn-group">
+                                        <button class="btn btn-primary btn-flat" data-tooltip="tooltip" title="View Analytic" onclick='viewRun(<?php echo $run->id; ?>)'>
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-danger btn-flat" data-tooltip="tooltip" title="Run Analytic" data-id="<?php echo $analytic->id ?>" onclick='runAnalytic(<?php echo $analytic->id; ?>)'>
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
                             </tr>
                         <?php endforeach; ?>
                     </tbody>
@@ -127,5 +136,8 @@ $runs = AnalyticRun::where('analytic_id', $id)->get();
 <script>
     function runAnalytic(id) {
         uni_modal("Run Analytic", `analytics/dialog_run_analytic?id=${id}`, "large")
+    }
+    function viewRun(id){
+        view_modal("View Analysis Output", `analytics/dialog_view_run_results?id=${id}`, "large")
     }
 </script>

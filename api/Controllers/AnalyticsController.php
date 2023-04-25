@@ -108,7 +108,7 @@ class AnalyticsController extends Controller
                 $analyticQuestions = AnalyticQuestion::where('analytic_id', $analytic_id)->get();
                 foreach ($analyticQuestions as $analyticQuestion) {
                     $question = $analyticQuestion->question();
-                    $query = "select r.*, fv.facility_id, fv.visit_date, fv.facility_id from responses r left join facility_visits fv on fv.id = r.visit_id where r.question_id = {$question->id} and fv.visit_date BETWEEN '{$start_date}' and '{$end_date}';";
+                    $query = "select r.*, fv.facility_id, fv.visit_date, fv.facility_id from responses r left join facility_visits fv on fv.id = r.visit_id where r.question_id = {$question->id} and fv.visit_date BETWEEN '{$start_date}' and '{$end_date}' and fv.facility_id in ({$facilityIds});";
                     // echo $query;
                     $responses = DB::select($query);
                     // print_r($responses);

@@ -38,7 +38,7 @@ $questions = Question::where('section_id', $sectionId)->get();
             <input type="hidden" name="section_id" value="<?php echo $sectionId ?>">
             <?php foreach ($questions as $question) :
                 $response = Response::where('question_id', $question->id)->where('visit_id', $visitId)->first();
-                $query = "select r.*, fv.visit_date from responses r left join facility_visits fv on fv.id = r.visit_id where question_id = {$question->id} and visit_date < '{$visit->visit_date}' order by visit_date desc";
+                $query = "select r.*, fv.visit_date from responses r left join facility_visits fv on fv.id = r.visit_id where question_id = {$question->id} and visit_date < '{$visit->visit_date}' and fv.facility_id = {$visit->facility_id} order by visit_date desc";
                 // echo $query;
                 $prevResponses = DB::select($query);
                 $prevResponse = $prevResponses[0];

@@ -32,12 +32,14 @@
               </p>
             </a>
             <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <a href="./index?page=checklists-edit" class="nav-link nav-checklists-edit tree-item">
-                  <i class="fas fa-angle-right nav-icon"></i>
-                  <p>Add New</p>
-                </a>
-              </li>
+              <?php if (hasPermission(PERM_CHECKLIST_MANAGEMENT, $currUser)) : ?>
+                <li class="nav-item">
+                  <a href="./index?page=checklists-edit" class="nav-link nav-checklists-edit tree-item">
+                    <i class="fas fa-angle-right nav-icon"></i>
+                    <p>Add New</p>
+                  </a>
+                </li>
+              <?php endif; ?>
               <li class="nav-item">
                 <a href="./index?page=checklists" class="nav-link nav-checklists tree-item">
                   <i class="fas fa-angle-right nav-icon"></i>
@@ -46,7 +48,7 @@
               </li>
             </ul>
           </li>
-          
+
 
           <li class="nav-item">
             <a href="./index?page=visits" class="nav-link nav-visits nav-visits-open">
@@ -108,15 +110,16 @@
               </li>
             </ul>
           </li>
-
-          <li class="nav-item">
-            <a href="./index?page=facilities" class="nav-link nav-facilities">
-              <i class="nav-icon fa fa-building"></i>
-              <p>
-                Facilities
-              </p>
-            </a>
-          </li>
+          <?php if ($currUser->getCategory()->access_level === 'Program') : ?>
+            <li class="nav-item">
+              <a href="./index?page=facilities" class="nav-link nav-facilities">
+                <i class="nav-icon fa fa-building"></i>
+                <p>
+                  Facilities
+                </p>
+              </a>
+            </li>
+          <?php endif; ?>
 
           <?php if (hasPermission(PERM_USER_MANAGEMENT, $currUser)) : ?>
             <li class="nav-item">
@@ -150,23 +153,49 @@
             </li>
           <?php endif; ?>
 
+          <?php if (hasPermission(PERM_SYSTEM_ADMINISTRATION, $currUser) && $currUser->getCategory()->access_level === 'Program') : ?>
+            <li class="nav-item">
+              <a href="#" class="nav-link nav-edit_user">
+                <i class="nav-icon fas fa-users"></i>
+                <p>
+                  Teams
+                  <i class="right fas fa-angle-left"></i>
+                </p>
+              </a>
+              <ul class="nav nav-treeview">
+                <li class="nav-item">
+                  <a href="./index?page=teams-edit" class="nav-link nav-teams-edit tree-item">
+                    <i class="fas fa-angle-right nav-icon"></i>
+                    <p>Create </p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="./index?page=teams" class="nav-link nav-teams tree-item">
+                    <i class="fas fa-angle-right nav-icon"></i>
+                    <p>List</p>
+                  </a>
+                </li>
+              </ul>
+            </li>
+          <?php endif; ?>
+
           <li class="nav-item">
             <a href="#" class="nav-link nav-edit_user">
-              <i class="nav-icon fas fa-users"></i>
+              <i class="nav-icon fas fa-chart-line"></i>
               <p>
-                Teams
+                Analytics
                 <i class="right fas fa-angle-left"></i>
               </p>
             </a>
             <ul class="nav nav-treeview">
               <li class="nav-item">
-                <a href="./index?page=teams-edit" class="nav-link nav-teams-edit tree-item">
+                <a href="./index?page=analytics-edit" class="nav-link nav-analytics-edit tree-item">
                   <i class="fas fa-angle-right nav-icon"></i>
-                  <p>Create </p>
+                  <p>Add New</p>
                 </a>
               </li>
               <li class="nav-item">
-                <a href="./index?page=teams" class="nav-link nav-teams tree-item">
+                <a href="./index?page=analytics" class="nav-link nav-analytics tree-item">
                   <i class="fas fa-angle-right nav-icon"></i>
                   <p>List</p>
                 </a>

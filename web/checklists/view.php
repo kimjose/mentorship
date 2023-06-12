@@ -49,14 +49,14 @@ endif;
 					<div class="col-md-6 border-right">
 						<div class="form-group">
 							<label for="" class="control-label">Title</label>
-							<input type="text" name="title" class="form-control form-control-sm" required value="<?php echo $id != '' ? $checklist->title : ''  ?> readonly">
+							<input type="text" name="title" class="form-control form-control-sm" required value="<?php echo $id != '' ? $checklist->title : ''  ?> " readonly>
 						</div>
 					</div>
 
 					<div class="col-md-6">
 						<div class="form-group">
 							<label for="" class="control-label">Abbreviation</label>
-							<input type="text" name="abbr" class="form-control form-control-sm" required value="<?php echo $id != '' ? $checklist->abbr : '' ?> readonly">
+							<input type="text" name="abbr" class="form-control form-control-sm" required value="<?php echo $id != '' ? $checklist->abbr : '' ?> " readonly>
 						</div>
 					</div>
 				</div>
@@ -199,10 +199,12 @@ endif;
 	</div>
 	<div class="card-footer">
 		<div class="col-auto">
-			<?php if ($checklist->status == 'draft') : ?>
-				<button class="btn btn-primary" id="btnPublishChecklist">
-					<span class="text">Publish</span>
-				</button>
+			<?php if (hasPermission(PERM_CHECKLIST_MANAGEMENT, $currUser)) : ?>
+				<?php if ($checklist->status == 'draft') : ?>
+					<button class="btn btn-primary" id="btnPublishChecklist">
+						<span class="text">Publish</span>
+					</button>
+				<?php endif; ?>
 			<?php endif; ?>
 		</div>
 	</div>

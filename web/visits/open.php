@@ -9,7 +9,7 @@ use Umb\Mentorship\Models\User;
 use Umb\Mentorship\Models\VisitFinding;
 use Umb\Mentorship\Models\VisitSection;
 
-if (!isset($_GET['id']) || !hasPermission(PERM_CREATE_VISIT, $currUser)) :
+if (!isset($_GET['id'])) :
 ?>
     <script>
         window.location.replace('index?page=visits');
@@ -125,11 +125,13 @@ $submittedBadge = "<span class='badge badge-success rounded-pill'>Submitted</spa
                                                     </td>
                                                     <td class="text-center">
                                                         <div class="btn-group">
-                                                            <?php if ($openedSection == null || !$openedSection->submitted) : ?>
-                                                                <button class="btn btn-primary btn-flat" data-tooltip="tooltip" title="Edit Section" onclick='openSection("<?php echo $section->id; ?>")'>
-                                                                    <i class="fas fa-edit"></i>
-                                                                </button>
-                                                            <?php else : ?>
+                                                            <?php if ($openedSection == null || !$openedSection->submitted) :
+                                                                if (hasPermission(PERM_CREATE_VISIT, $currUser)) : ?>
+                                                                    <button class="btn btn-primary btn-flat" data-tooltip="tooltip" title="Edit Section" onclick='openSection("<?php echo $section->id; ?>")'>
+                                                                        <i class="fas fa-edit"></i>
+                                                                    </button>
+                                                                <?php endif;
+                                                            else : ?>
                                                                 <button class="btn btn-secondary btn-flat" data-tooltip="tooltip" title="View Response" onclick='viewResponse(<?php echo $section->id; ?>)'>
                                                                     <i class="fas fa-eye"></i>
                                                                 </button>
@@ -157,10 +159,12 @@ $submittedBadge = "<span class='badge badge-success rounded-pill'>Submitted</spa
                         <div class="col-6">
                             <h5>Chart Abstractions</h5>
                         </div>
-                        <button class="btn btn-primary ml-auto float-right btn-icon-split" id="btnAddAbstraction" onclick="newAbstraction()">
-                            <span class="icon text-white-50"><i class="fa fa-plus"></i> </span>
-                            <span class="text"> New </span>
-                        </button>
+                        <?php if (hasPermission(PERM_CREATE_VISIT, $currUser)) : ?>
+                            <button class="btn btn-primary ml-auto float-right btn-icon-split" id="btnAddAbstraction" onclick="newAbstraction()">
+                                <span class="icon text-white-50"><i class="fa fa-plus"></i> </span>
+                                <span class="text"> New </span>
+                            </button>
+                        <?php endif; ?>
                     </div>
                 </div>
                 <div class="table-responsive">
@@ -194,11 +198,13 @@ $submittedBadge = "<span class='badge badge-success rounded-pill'>Submitted</spa
                                         <div>
                                             <h6 onclick="viewActionPoints('<?php echo $abstraction->ap_ids ?>')" class="action-points"> <span> <?php echo sizeof(($abstraction->ap_ids === null || $abstraction->ap_ids === '') ? [] : explode(',', $abstraction->ap_ids)) ?></span> Action point(s) </h6>
                                         </div>
-                                        <div class="btn-group">
-                                            <button class="btn btn-outline-info btn-flat" data-tooltip="tooltip" title="Add Action point" onclick='addAbstractionActionPoint(<?php echo $abstraction->id ?>)' >
-                                                <i class="fas fa-plus"></i>
-                                            </button>
-                                        </div>
+                                        <?php if (hasPermission(PERM_CREATE_VISIT, $currUser)) : ?>
+                                            <div class="btn-group">
+                                                <button class="btn btn-outline-info btn-flat" data-tooltip="tooltip" title="Add Action point" onclick='addAbstractionActionPoint(<?php echo $abstraction->id ?>)'>
+                                                    <i class="fas fa-plus"></i>
+                                                </button>
+                                            </div>
+                                        <?php endif; ?>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>
@@ -216,10 +222,12 @@ $submittedBadge = "<span class='badge badge-success rounded-pill'>Submitted</spa
                         <div class="col-6">
                             <h5>Findings</h5>
                         </div>
-                        <button class="btn btn-primary ml-auto float-right btn-icon-split" id="btnAddFinding" onclick="newFinding()">
-                            <span class="icon text-white-50"><i class="fa fa-plus"></i> </span>
-                            <span class="text"> New Finding</span>
-                        </button>
+                        <?php if (hasPermission(PERM_CREATE_VISIT, $currUser)) : ?>
+                            <button class="btn btn-primary ml-auto float-right btn-icon-split" id="btnAddFinding" onclick="newFinding()">
+                                <span class="icon text-white-50"><i class="fa fa-plus"></i> </span>
+                                <span class="text"> New Finding</span>
+                            </button>
+                        <?php endif; ?>
                     </div>
                 </div>
                 <ul id="listFindings" style="list-style: lower-greek;">
@@ -228,17 +236,19 @@ $submittedBadge = "<span class='badge badge-success rounded-pill'>Submitted</spa
                             <div class="card shadow h-100 py-2 mt-2">
                                 <div style="float:right">
 
-                                    <div class="btn-group " style="float: right;">
-                                        <button class="btn btn-info btn-flat" data-tooltip="tooltip" title="Add Action Point" onclick="addFindingActionPoint(<?php echo $finding->id ?>)">
-                                            <i class="fas fa-plus"></i>
-                                        </button>
-                                        <button class="btn btn-secondary btn-flat" data-tooltip="tooltip" title="Edit Finding" onclick="editFinding(<?php echo $finding->id ?>)">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-                                        <button type="button" class="btn btn-danger btn-flat delete_visit" data-tooltip="tooltip" title="Delete Finding">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </div>
+                                    <?php if (hasPermission(PERM_CREATE_VISIT, $currUser)) : ?>
+                                        <div class="btn-group " style="float: right;">
+                                            <button class="btn btn-info btn-flat" data-tooltip="tooltip" title="Add Action Point" onclick="addFindingActionPoint(<?php echo $finding->id ?>)">
+                                                <i class="fas fa-plus"></i>
+                                            </button>
+                                            <button class="btn btn-secondary btn-flat" data-tooltip="tooltip" title="Edit Finding" onclick="editFinding(<?php echo $finding->id ?>)">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-danger btn-flat delete_visit" data-tooltip="tooltip" title="Delete Finding">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    <?php endif; ?>
                                     <h6 class="ml-2 text-info"><?php echo $finding->createdBy()->getNames(); ?></h6>
                                 </div>
                                 <div class="card-body">
@@ -362,7 +372,7 @@ $submittedBadge = "<span class='badge badge-success rounded-pill'>Submitted</spa
         uni_modal("Add Action Point", `visits/dialog_create_action_point?visit_id=${visitId}&finding_id=${findingId}&question_id=`, "large")
     }
 
-    function addAbstractionActionPoint(abstractionId){
+    function addAbstractionActionPoint(abstractionId) {
         uni_modal("Add Action Point", `visits/dialog_create_action_point?visit_id=${visitId}&abstraction_id=${abstractionId}&question_id=`, "large")
     }
 

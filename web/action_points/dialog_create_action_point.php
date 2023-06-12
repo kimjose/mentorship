@@ -4,8 +4,17 @@ require_once __DIR__ . '/../../vendor/autoload.php';
 use Umb\Mentorship\Models\User;
 use Umb\Mentorship\Models\Facility;
 
-$users = User::all();
-$facilities = Facility::all();
+$facilities = [];
+$access_level = $_GET['access_level'] ?? 'Program';
+$facility_id = $_GET['facility_id'] ?? '';
+$users = [];
+if ($access_level == 'Facility') {
+	$users = User::where('facility_id', $facility_id)->get();
+    $facilities = Facility::where('id', $facility_id)->get();
+} else {
+	$users = User::all();
+    $facilities = Facility::all();
+}
 ?>
 <div class="container-fluid">
     <form action="" id="formActionPoint">

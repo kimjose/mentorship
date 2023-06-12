@@ -95,7 +95,7 @@
 
   function loadNotifications(notifications) {
     badgeNotifications.innerText = notifications.length
-    if (notifications.length > 0) {
+    if (notifications.length > 0 && Math.random() >= .5) {
       toastr.info(`You have ${notifications.length} unread notifications.`)
     }
     divNotificationList.innerHTML = ""

@@ -49,6 +49,24 @@ class UsersController extends Controller{
         }
     }
 
+    public function updateProfile($id, $data){
+        try {
+            $attributes = ['first_name', 'middle_name', 'last_name', 'email', 'phone_number', 'password'];
+            $missing = Utility::checkMissingAttributes($data, $attributes);
+            throw_if(sizeof($missing) > 0, new \Exception("Missing parameters passed : " . json_encode($missing)));
+            $u = User::findOrFail($id);
+            if($data['password'] != ''){
+                $data['password'] = md5($data['password']);
+            } else unset($data['password']);
+            $data['facility_id'] = $data['facility_id'] == '' ? null : $data['facility_id'];
+            $u->update($data);
+            self::response(SUCCESS_RESPONSE_CODE, "User updated successfully.");
+        } catch (\Throwable $th) {
+            Utility::logError($th->getCode(), $th->getMessage());
+            $this->response(PRECONDITION_FAILED_ERROR_CODE, $th->getMessage());
+        }
+    }
+
     public function createUserCategory($data){
         try {
             if(!hasPermission(PERM_SYSTEM_ADMINISTRATION, $this->user)) throw new \Exception("Forbidden", 403);

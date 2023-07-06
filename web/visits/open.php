@@ -73,12 +73,14 @@ $submittedBadge = "<span class='badge badge-success rounded-pill'>Submitted</spa
                 <a class="nav-link" id="tabChartAbstractions" data-toggle="tab" href="#tabContentChartAbstractions" role="tab" aria-controls="#tabContentChartAbstractions" aria-selected="false">Chart Abstraction</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" id="tabFindings" data-toggle="tab" href="#tabContentFindings" role="tab" aria-controls="tabContentVisit" aria-selected="false">Findings/Summary</a>
+                <a class="nav-link" id="tabFindings" data-toggle="tab" href="#tabContentFindings" role="tab" aria-controls="tabContentVisit" aria-selected="false">Findings</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" id="tabActionPoints" data-toggle="tab" href="#tabContentActionPoints" role="tab" aria-controls="#tabContentActionPoints" aria-selected="false">Action Points</a>
             </li>
-
+            <li class="nav-item">
+                <a class="nav-link" id="tabSummary" data-toggle="tab" href="#tabContentSummary" role="tab" aria-controls="tabContentSummary" aria-selected="false">Visit Summary</a>
+            </li>
         </ul>
         <div class="tab-content" id="tabContentVisit">
 
@@ -213,7 +215,7 @@ $submittedBadge = "<span class='badge badge-success rounded-pill'>Submitted</spa
                 </div>
             </div>
             <!-- Tab Chart Abstraction end -->
-            <!-- Tab content summary -->
+            <!-- Tab content findings -->
             <div class="tab-pane fade show " id="tabContentFindings" role="tabpanel" aria-labelledby="custom-tabs-four-home-tab">
 
 
@@ -263,7 +265,7 @@ $submittedBadge = "<span class='badge badge-success rounded-pill'>Submitted</spa
                 </ul>
 
             </div>
-            <!-- Tab content summary -->
+            <!-- Tab content findings -->
 
             <!-- Tab Action points -->
             <div class="tab-pane fade show" id="tabContentActionPoints" role="tabpanel" aria-labelledby="custom-tabs-four-home-tab">
@@ -302,6 +304,11 @@ $submittedBadge = "<span class='badge badge-success rounded-pill'>Submitted</spa
                 </div>
             </div>
             <!-- Tab Action points end -->
+
+            <!-- Tab Visit summary -->
+            <div class="tab-pane fade show" id="tabContentSummary" role="tabpanel" aria-labelledby="custom-tabs-four-home-tab">
+            </div>
+            <!-- Tab Visit Summary end -->
         </div>
     </div>
 </div>
@@ -352,7 +359,7 @@ $submittedBadge = "<span class='badge badge-success rounded-pill'>Submitted</spa
     const tableResponsive = document.getElementById('tableResponsive')
 
     $(function() {
-
+        loadVisitSummary()
     })
 
     function viewResponse(sectionId) {
@@ -402,6 +409,20 @@ $submittedBadge = "<span class='badge badge-success rounded-pill'>Submitted</spa
                 } else {
                     throw new Error(response.message)
                 }
+            })
+            .catch(err => {
+                toastr.error(err.message)
+            })
+    }
+
+    function loadVisitSummary() {
+        fetch(`./visits/summary?visit_id=${visitId}`)
+            .then(response => {
+                return response.text()
+            })
+            .then(response => {
+                let tabContentSummary = document.getElementById('tabContentSummary')
+                tabContentSummary.innerHTML = response
             })
             .catch(err => {
                 toastr.error(err.message)

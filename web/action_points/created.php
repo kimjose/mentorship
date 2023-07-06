@@ -180,22 +180,6 @@ function badge($actionPoint){
 </div>
 <!-- Add comment dialog  -->
 
-<style>
-	.assigned-tag {
-		padding: 4px;
-		background: #009FED;
-		color: #ffffff;
-		border-radius: 4px;
-		margin-bottom: 5px;
-		margin-right: 10px;
-		-webkit-transition: all 200ms ease;
-		-moz-transition: all 200ms ease;
-		-ms-transition: all 200ms ease;
-		-o-transition: all 200ms ease;
-		transition: all 200ms ease;
-	}
-</style>
-
 <script>
     const inputComment = document.querySelector('#inputComment')
     const btnSaveComment = document.querySelector('#btnSaveComment')

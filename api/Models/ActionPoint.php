@@ -19,4 +19,11 @@ class ActionPoint extends Model{
         return User::find($this->created_by);
     }
 
+    /**
+     * @return User[]
+     */
+    public function assignedTo(){
+        return User::whereIn('id', explode(',', $this->assign_to))->get();
+    }
+
 }

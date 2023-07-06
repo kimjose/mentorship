@@ -281,19 +281,16 @@ $submittedBadge = "<span class='badge badge-success rounded-pill'>Submitted</spa
                             /** @var ActionPoint[] $aps */
                             $aps = ActionPoint::where('visit_id', $visit->id)->get();
                             foreach ($aps as $ap) :
-                                
-                            $a = explode(',', $ap->assign_to);
-                            /** @var User[] $assigned */
-                            $assigned = User::whereIn('id', $a)->get();
+                                $assigned = $ap->assignedTo();
                             ?>
                                 <tr>
                                     <td><?php echo $ap->title ?></td>
                                     <td><?php echo $ap->description ?></td>
                                     <td>
                                         <ul class="list-inline">
-                                             <?php foreach ($assigned as $u) :
-                                             ?>
-                                        <li class="list-inline-item assigned-tag"> <?php echo $u->getNames(); ?></li>
+                                            <?php foreach ($assigned as $u) :
+                                            ?>
+                                                <li class="list-inline-item assigned-tag"> <?php echo $u->getNames(); ?></li>
                                             <?php endforeach; ?>
                                         </ul>
                                     </td>

@@ -78,6 +78,11 @@ $router->post("/api/user/{id}", function ($id) {
     $data = json_decode(file_get_contents('php://input'), true);
     $controller->updateUser($id, $data);
 });
+$router->post("/api/user_profile_update/{id}", function($id){
+    $controller = new UsersController();
+    $data = json_decode(file_get_contents('php://input'), true);
+    $controller->updateProfile($id, $data);
+});
 $router->post("/api/user_category", function () {
     $controller = new UsersController();
     $data = json_decode(file_get_contents('php://input'), true);

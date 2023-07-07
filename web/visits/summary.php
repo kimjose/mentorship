@@ -22,7 +22,84 @@ $baseUrl = $_ENV['APP_URL'];
     </div>
     <hr>
     <div class="body">
+        <div id="divChecklists">
+            <h4>Departments</h4>
+            <div class="row mt-3">
+                <div class="col-6">
+                    <ol>
+                        <li>
+                            <div width="100%" class="divListItem">
+                                .
+                            </div>
+                        </li>
+                        <li>
+                            <div width="100%" class="divListItem">
+                                .
+                            </div>
+                        </li>
+                        <li>
+                            <div width="100%" class="divListItem">
+                                .
+                            </div>
+                        </li>
+                        <li>
+                            <div width="100%" class="divListItem">
+                                .
+                            </div>
+                        </li>
+                        <li>
+                            <div width="100%" class="divListItem">
+                                .
+                            </div>
+                        </li>
+                    </ol>
+                </div>
+                <div class="col-6">
+                    <ol>
+                        <li>
+                            <div width="100%" class="divListItem">
+                                .
+                            </div>
+                        </li>
+                        <li>
+                            <div width="100%" class="divListItem">
+                                .
+                            </div>
+                        </li>
+                        <li>
+                            <div width="100%" class="divListItem">
+                                .
+                            </div>
+                        </li>
+                        <li>
+                            <div width="100%" class="divListItem">
+                                .
+                            </div>
+                        </li>
+                        <li>
+                            <div width="100%" class="divListItem">
+                                .
+                            </div>
+                        </li>
+                    </ol>
+                </div>
+            </div>
+        </div>
 
+        <div id="divSummaryFindings">
+            <div >
+                <h4>Findings</h4>
+                <div class="mt-3">
+                    <ol>
+                        <li>
+                            <div width="100%" class="divListItem">
+                                .
+                            </div>
+                        </li>
+                    </ol>
+                </div>
+            </div>
+        </div>
     </div>
 
 </section>
@@ -30,13 +107,22 @@ $baseUrl = $_ENV['APP_URL'];
 <style>
     #sectionVisitSummary {
         padding: 8px;
-        background-color: FFFEF2;
+        background-color: FFFEF2 !important;
         background-blend-mode: luminosity;
         margin: 10px;
     }
 
     .logo {
         height: 80px;
-        width: 80px:;
+        width: 80px;
+    }
+
+    #divChecklists ol,
+    #divSummaryFindings ol {
+        list-style: disc;
+    }
+
+    #divChecklists .divListItem, #divSummaryFindings .divListItem {
+        border-bottom: #000F00 1px solid;
     }
 </style>

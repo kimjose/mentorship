@@ -96,6 +96,16 @@ $baseUrl = $_ENV['APP_URL'];
                                 .
                             </div>
                         </li>
+                        <li>
+                            <div width="100%" class="divListItem">
+                                .
+                            </div>
+                        </li>
+                        <li>
+                            <div width="100%" class="divListItem">
+                                .
+                            </div>
+                        </li>
                     </ol>
                 </div>
             </div>

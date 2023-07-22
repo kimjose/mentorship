@@ -66,6 +66,28 @@ class Controller{
         ]);
     }
 
+    public function returnFile($fileName)
+    {
+        if (file_exists($fileName)) {
+
+            //Define header information
+            header('Content-Description: File Transfer');
+            header('Content-Type: application/octet-stream');
+            header("Cache-Control: no-cache, must-revalidate");
+            header("Expires: 0");
+            header('Content-Disposition: attachment; filename="' . basename($fileName) . '"');
+            header('Content-Length: ' . filesize($fileName));
+            header('Pragma: public');
+
+            //Clear system output buffer
+            flush();
+
+            //Read the size of the file
+            readfile($fileName);
+            unlink($fileName);
+        }
+    }
+
 
 }
 

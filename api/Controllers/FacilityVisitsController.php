@@ -218,6 +218,7 @@ class FacilityVisitsController extends Controller
             $facility = Facility::findOrFail($data['facility_id']);
             $ap = ActionPoint::create([
                 'visit_id' => $data['visit_id'],
+                'facility_id' => $data['facility_id'],
                 'question_id' => $data['question_id'] == '' ? null : $data['question_id'],
                 'title' => $data['title'],
                 'description' => $data['description'],

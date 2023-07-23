@@ -438,7 +438,51 @@ class QuestionsBuilder extends Controller
     public function importChecklistFromJson()
     {
         try {
+            $tempDir = $_ENV['TEMP_DIR'];
+            if (!is_dir($tempDir)) {
+                mkdir($tempDir);
+            }
+            $uploaded = Utility::uploadFile("", $tempDir);
+            if ($uploaded === null) throw new \Exception("Could not upload file");
+            $handle = fopen($tempDir . $uploaded, 'r');
+            $data = fread($handle, filesize($tempDir . $uploaded));
+            $checklistData = json_decode($data, false);
+            DB::beginTransaction();
+            // create checklist
+            $checklist = Checklist::create([
+                "title" => $checklistData->title,
+                "abbr" => $checklistData->abbr,
+                "description" => $checklistData->description,
+                "created_by" => $this->user->id
+            ]);
+            // create sections
+            $sections = $checklistData->sections;
+            foreach ($sections as $sectionData) {
+                $section = Section::create([
+                    "title" => $sectionData->title,
+                    "abbr" => $sectionData->abbr,
+                    "created_by" => $this->user->id,
+                    "checklist_id" => $checklist->id
+                ]);
+                // Create questions
+                $questions = $sectionData->questions;
+                foreach($questions as $questionData){
+                    $question = Question::create([
+                        "question" => $questionData->question,
+                        "category" => $questionData->category,
+                        "frequency_id" => $questionData->frequency_id,
+                        "type" => $questionData->type,
+                        "order_by" => $questionData->order_by,
+                        "frm_option" => $questionData->frm_option,
+                        "created_by" => $this->user->id,
+                        "section_id" => $section->id
+                    ]);
+                }
+            }
+            DB::commit();
+            self::response(SUCCESS_RESPONSE_CODE, "Checklist inported successfully");
         } catch (\Throwable $th) {
+            DB::rollback();
             Utility::logError($th->getCode(), $th->getMessage());
             self::response(PRECONDITION_FAILED_ERROR_CODE, $th->getMessage());
         }

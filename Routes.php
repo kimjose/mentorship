@@ -72,6 +72,10 @@ $router->get("/api/export_checklist_to_json/{id}", function ($id) {
     $builder = new QuestionsBuilder();
     $builder->exportChecklistToJson($id);
 });
+$router->post("/api/import_checklist", function () {
+    $builder = new QuestionsBuilder();
+    $builder->importChecklistFromJson();
+});
 $router->post("/api/user", function () {
     $controller = new UsersController();
     $data = json_decode(file_get_contents('php://input'), true);

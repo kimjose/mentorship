@@ -91,6 +91,9 @@ $retiredBadge = "<span class='badge badge-secondary rounded-pill'>Retired</span>
                                         <button type="button" class="btn btn-danger btn-flat delete_survey" data-id="<?php echo $checklist->id ?>">
                                             <i class="fas fa-trash"></i>
                                         </button>
+                                        <a href="../api/export_checklist_to_json/<?php echo $checklist->id ?>" class="btn btn-secondary btn-flat" title="Export Checklist">
+                                            <i class="fas fa-file-export"></i>
+                                        </a>
                                     <?php endif; ?>
                                 </div>
                             </td>

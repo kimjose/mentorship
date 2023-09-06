@@ -13,6 +13,7 @@ if ($currUser->getCategory()->access_level == 'Facility') {
 }
 $activeBadge = "<span class='badge badge-primary rounded-pill'>Active</span>";
 $inActiveBadge = "<span class='badge badge-warning rounded-pill'>In Active</span>";
+$todaysDate = date("Y-m-d")
 ?>
 
 <!-- Page Heading -->
@@ -124,7 +125,7 @@ $inActiveBadge = "<span class='badge badge-warning rounded-pill'>In Active</span
 
                     <div class="form-group">
                         <label for="inputVisitDate">Visit Date</label>
-                        <input type="date" class="form-control" id="inputVisitDate" name="visit_date" placeholder="Visit Date" required>
+                        <input type="date" class="form-control" id="inputVisitDate" name="visit_date" max="<?php echo $todaysDate ?>" placeholder="Visit Date" required>
                     </div>
                     <div class="row pl-2">
                         <h5>Location</h5>

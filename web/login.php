@@ -52,14 +52,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit'])) {
 	<meta content="width=device-width, initial-scale=1.0" name="viewport">
 
 	<title>Login | eSupport Supervision</title>
+	<link rel="icon" href="../favicon.ico">
 
 
 	<?php include('./header.php'); ?>
 	<!-- <?php
-	// if (isset($_SESSION['login_id']))
-		// header("location:index.php?page=home");
+			// if (isset($_SESSION['login_id']))
+			// header("location:index.php?page=home");
 
-	?> -->
+			?> -->
 
 </head>
 <style>
@@ -84,8 +85,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit'])) {
 
 	<main id="main">
 
-		<div class="align-self-center w-100">
-			<h4 class="text-white text-center"><b>eSupport Supervision</b></h4>
+		<div class="align-self-top w-100">
+			<marquee behavior="alternate" direction="right">
+				<img src="assets/img/ess_logo.png" alt="">
+			</marquee>
 			<div id="login-center" class="bg-dark row justify-content-center">
 				<div class="card col-md-4">
 					<div class="card-body">
@@ -100,6 +103,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit'])) {
 							</div>
 							<center><input class="btn-sm btn-block btn-wave col-md-4 btn-primary" name="submit" type="submit" value="Login"></center>
 						</form>
+						<hr>
+						<hr>
+						<div class="text-center">
+							<a class="small" href="forgot_password.php">Forgot Password?</a>
+						</div>
+
 					</div>
 				</div>
 			</div>

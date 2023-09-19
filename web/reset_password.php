@@ -7,12 +7,11 @@ use Umb\Mentorship\Models\User;
 
 require_once __DIR__ . "/../vendor/autoload.php";
 
-$token = $_GET[$t];
+$token = $_GET['t'];
 $allow = true;
-
 if ($token == null || $token == '') $allow = false;
 else {
-	$passwordReset = PasswordReset::where('token', $token)->first();
+	$passwordReset = PasswordReset::where('token', $token)->where('is_used', 0)->where('expires_at', '>', date('Y-m-d G:i:s'))->first();
 	if ($passwordReset == null) $allow = false;
 	else {
 		$user = User::find($passwordReset->user_id);
@@ -67,7 +66,8 @@ else {
 				<div id="login-center" class="bg-dark row justify-content-center">
 					<div class="card col-md-4">
 						<div class="card-body">
-							<form id="formResetPassword" action="login" method="POST">
+							<h4 class="text-dark">Hi, <?php echo $user->first_name ?>. Set your new password</h4>
+							<form id="formResetPassword" action="" method="POST">
 
 								<div class="form-group">
 									<label for="password" class="control-label text-dark">Password</label>
@@ -89,8 +89,11 @@ else {
 		</main>
 
 		<a href="#" class="back-to-top"><i class="icofont-simple-up"></i></a>
+	<!-- Toastr -->
+	<script src="assets/plugins/toastr/toastr.min.js"></script>
 
 		<script>
+			const token = '<?php echo $token; ?>'
 			const inputPassword = document.getElementById('inputPassword')
 			const inputPasswordConfirm = document.getElementById('inputPasswordConfirm')
 			const formResetPassword = document.getElementById('formResetPassword')
@@ -112,13 +115,47 @@ else {
 				})
 
 
-				formResetPassword.addEventListener('submit', () => {
+				formResetPassword.addEventListener('submit', e => {
+					e.preventDefault()
 					let password = inputPassword.value.trim()
 					let passwordConfirm = inputPasswordConfirm.value.trim()
-					if (password === passwordConfirm) {
+					if (password !== passwordConfirm) {
 						toastr.error('Passwords do not match...')
 						return;
 					}
+					if (password.length < 6) {
+						toastr.error('Password too short')
+						return
+					}
+
+					///api/reset-password
+					fetch("../api/reset-password", {
+							method: 'POST',
+							headers: {
+								"content-type": "application/x-www-form-urlencoded"
+							},
+							body: JSON.stringify({
+								token: token,
+								password: password
+							})
+						})
+						.then(response => {
+							return response.json()
+						})
+						.then(response => {
+							let code = response.code
+							if (code === 200) {
+								toastr.success(response.message)
+								setTimeout(() => {
+									location.replace('login')
+								}, 2000)
+							} else {
+								throw new Error(response.message)
+							}
+						})
+						.catch(err => {
+							toastr.error(err.message)
+						})
 				})
 
 
@@ -126,7 +163,7 @@ else {
 		</script>
 
 	<?php else : ?>
-		<h2 class="text-danger">Operation not allowed...</h2>
+		<h2 class="text-danger">Operation not allowed. The link is likely to have expired. Request a new link...</h2>
 	<?php endif; ?>
 </body>
 

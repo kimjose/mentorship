@@ -143,7 +143,7 @@ class UsersController extends Controller
         }
     }
 
-    public function requestResetPassword($data)
+    public static function requestResetPassword($data)
     {
         try {
             $attributes = ['email'];
@@ -155,7 +155,7 @@ class UsersController extends Controller
             if ($passwordReset == null) {
                 $token = md5(uniqid(json_encode($user), true));
                 $currTime = new \DateTime();
-                $currTime->add(new \DateInterval('PT' . 1440 . 'M'));
+                $currTime->add(new \DateInterval('PT' . 60 . 'M'));
                 $expiresAt = $currTime->format('Y-m-d H:i:s');
                 $passwordReset = PasswordReset::create([
                     'user_id' => $user->id,
@@ -169,15 +169,17 @@ class UsersController extends Controller
             $recipients[] = $receipient;
             $link = $_ENV['APP_URL'] . 'web/reset_password?t=' . $passwordReset->token;
             $message = " Hi {$user->first_name}, A password reset was requested for your account. Ignore this email if you did not make the request.
-            Use this link to reset your account password <a href='$link'>Reset Password</a> ";
-            Utility::sendMail($recipients, "Password Reset", $message);
+            Use this link to reset your account password <a href='$link' target='_blank'>Reset Password</a> ";
+            $sent = Utility::sendMail($recipients, "Password Reset", $message);
+            if(!$sent) throw new \Exception("Error sending mail", 1);
+            self::response(SUCCESS_RESPONSE_CODE, "Reset link sent successfully.");
         } catch (\Throwable $th) {
             Utility::logError($th->getCode(), $th->getMessage());
-            $this->response(PRECONDITION_FAILED_ERROR_CODE, $th->getMessage());
+            self::response(PRECONDITION_FAILED_ERROR_CODE, $th->getMessage());
         }
     }
 
-    public function resetPassword($data)
+    public static function resetPassword($data)
     {
         try {
             $attributes = ['token', 'password'];
@@ -190,10 +192,10 @@ class UsersController extends Controller
             $user->save();
             $passwordReset->is_used = 1;
             $passwordReset->save();
-            $this->response(SUCCESS_RESPONSE_CODE, "Password reset successful...");
+            self::response(SUCCESS_RESPONSE_CODE, "Password reset successful...");
         } catch (\Throwable $th) {
             Utility::logError($th->getCode(), $th->getMessage());
-            $this->response(PRECONDITION_FAILED_ERROR_CODE, $th->getMessage());
+            self::response(PRECONDITION_FAILED_ERROR_CODE, $th->getMessage());
         }
     }
 }

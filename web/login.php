@@ -104,7 +104,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit'])) {
 							<center><input class="btn-sm btn-block btn-wave col-md-4 btn-primary" name="submit" type="submit" value="Login"></center>
 						</form>
 						<hr>
-						<hr>
 						<div class="text-center">
 							<a class="small" href="forgot_password.php">Forgot Password?</a>
 						</div>

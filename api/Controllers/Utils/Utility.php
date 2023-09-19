@@ -149,13 +149,14 @@ class Utility
      * @param string $subject The subject message
      * @param string $body The body oof the email. Supports html
      * @param array $attachments An array of attachments  [['path', 'name'], [...]...]. This field is not required.
-     * @return void
+     * @return bool true if message sent successfully and vice versa
      */
-    public static function sendMail(array $recipients, string $subject, string $body, array $attachments = [])
+    public static function sendMail(array $recipients, string $subject, string $body, array $attachments = []) : bool
     {
         //Create an instance; passing `true` enables exceptions
         $mail = new PHPMailer(true);
-        $footer = "<hr> <h4>Click <a href='http://psms.mgickenya.org:81/event-management/admin/'>here</a> to open event management application. </h4>";
+        $appUrl = $_ENV['APP_URL'];
+        $footer = "<hr> <h4>Click <a href='{$appUrl}'>here</a> to open electronic support supervision tool. </h4>";
         $body .= $footer;
         try {
             //Server settings
@@ -191,10 +192,12 @@ class Utility
             //            $mail->AltBody = 'This is the body in plain text for non-HTML mail clients';
 
             $mail->send();
+            return true;
 //            echo 'Message has been sent';
         } catch (\Exception $e) {
             echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
             self::logError($e->getCode(), $e->getMessage());
+            return false;
         }
     }
 

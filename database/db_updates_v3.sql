@@ -1,8 +1,8 @@
 create table password_resets(
     id int not null AUTO_INCREMENT PRIMARY KEY,
-    user_id not null,
+    user_id int not null,
     token VARCHAR(200) not null,
-    is_used TINYINT not null default = 0,
+    is_used TINYINT not null default 0,
     expires_at TIMESTAMP not null,
     created_at TIMESTAMP null DEFAULT CURRENT_TIMESTAMP(),
     updated_at TIMESTAMP null DEFAULT CURRENT_TIMESTAMP,

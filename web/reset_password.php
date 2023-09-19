@@ -25,7 +25,7 @@ else {
 	<meta charset="utf-8">
 	<meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-	<title>Login | eSupport Supervision</title>
+	<title>Reset | eSupport Supervision</title>
 	<link rel="icon" href="../favicon.ico">
 
 

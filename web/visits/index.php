@@ -9,7 +9,7 @@ $visits = [];
 if ($currUser->getCategory()->access_level == 'Facility') {
 	$visits = FacilityVisit::where('facility_id', $currUser->facility_id)->get();
 } else {
-	$visits = FacilityVisit::all();
+	$visits = FacilityVisit::orderBy('id', 'desc')->get();
 }
 $activeBadge = "<span class='badge badge-primary rounded-pill'>Active</span>";
 $inActiveBadge = "<span class='badge badge-warning rounded-pill'>In Active</span>";

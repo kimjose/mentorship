@@ -12,6 +12,9 @@ class FacilityVisit extends Model{
         return User::find($this->created_by);
     }
 
+    /**
+     * @return Facility
+     */
     public function getFacility(){
         return Facility::find($this->facility_id);
     }

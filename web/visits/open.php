@@ -362,6 +362,25 @@ $submittedBadge = "<span class='badge badge-success rounded-pill'>Submitted</spa
         loadVisitSummary()
     })
 
+
+    const printPdfSummary = () => {
+    console.log("Here");
+    let _el = $('<div>')
+    let p = sectionVisitSummary.cloneNode(true)
+    _el.append(p)
+    var nw = window.open("", "", "width=1200,height=900,left=250,location=no,titlebar=yes")
+    nw.document.write(_el.html())
+    nw.document.close()
+    setTimeout(() => {
+        nw.print()
+        setTimeout(() => {
+            nw.close()
+            // end_loader()
+        }, 200);
+    }, 500);
+
+    }
+
     function viewResponse(sectionId) {
         view_modal("View Response", `visits/dialog_view_response?section_id=${sectionId}&visit_id=${visitId}`, "large")
     }
@@ -423,6 +442,8 @@ $submittedBadge = "<span class='badge badge-success rounded-pill'>Submitted</spa
             .then(response => {
                 let tabContentSummary = document.getElementById('tabContentSummary')
                 tabContentSummary.innerHTML = response
+                const sectionVisitSummary = document.getElementById('sectionVisitSummary')
+                const btnPdfSummary = document.getElementById('btnPdfSummary')
             })
             .catch(err => {
                 toastr.error(err.message)

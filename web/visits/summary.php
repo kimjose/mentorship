@@ -3,7 +3,10 @@ require_once __DIR__ . "/../../vendor/autoload.php";
 $baseUrl = $_ENV['APP_URL'];
 
 use Umb\Mentorship\Models\ActionPoint;
+use Umb\Mentorship\Models\ChartAbstraction;
 use Umb\Mentorship\Models\FacilityVisit;
+use Umb\Mentorship\Models\Response;
+use Umb\Mentorship\Models\User;
 use Umb\Mentorship\Models\VisitFinding;
 
 $visitId = $_GET['visit_id'];
@@ -12,6 +15,21 @@ $visit = FacilityVisit::find($visitId);
 $facility = $visit->getFacility();
 /** @var VisitFinding[]  $findings */
 $findings = VisitFinding::where('visit_id', $visitId)->get();
+$userIds = [];
+$responseUsers = Response::where('visit_id', $visitId)->get(['created_by']);
+foreach($responseUsers as $responseUser){
+    array_push($userIds, $responseUser['created_by']);
+}
+$abstractionUsers = ChartAbstraction::where('visit_id', $visitId)->get(['created_by']);
+foreach($abstractionUsers as $abstractionUser){
+    array_push($userIds, $abstractionUser['created_by']);
+}
+$findingUsers = VisitFinding::where('visit_id', $visitId)->get(['created_by']);
+foreach($findingUsers as $findingUser){
+    array_push($userIds, $findingUser['created_by']);
+}
+$users = User::whereIn('id', $userIds)->get();
+
 ?>
 <div>
     <section class="" id="sectionVisitSummary">
@@ -20,7 +38,7 @@ $findings = VisitFinding::where('visit_id', $visitId)->get();
 
             <div class="row">
                 <div class="col-3">
-                    <img class="logo" src="<?php echo $baseUrl ?>web/assets/img/visit.png" alt="MOH Logo" srcset="">
+                    <img src="<?php echo $baseUrl ?>web/assets/img/visit.png" alt="MOH Logo" style="width: 80px; height: 80px" srcset="">
                 </div>
                 <div class="col-6">
                     <h3 class="text-center">TA Visit Summary</h3>
@@ -28,7 +46,7 @@ $findings = VisitFinding::where('visit_id', $visitId)->get();
                     <h4 class="text-center"><span class="text-primary"> <?php echo $visit->visit_date ?> </span> </h4>
                 </div>
                 <div class="col-3">
-                    <img class="logo" src="<?php echo $baseUrl ?>web/assets/img/visit.png" alt="CIHEB Logo" srcset="">
+                    <img style="width: 80px; height: 80px" src="<?php echo $baseUrl ?>web/assets/img/visit.png" alt="CIHEB Logo" srcset="">
                 </div>
             </div>
         </div>
@@ -120,7 +138,7 @@ $findings = VisitFinding::where('visit_id', $visitId)->get();
             <div class="tab-pane fade show" id="divSummaryActionPoint" role="tabpanel" aria-labelledby="custom-tabs-four-home-tab">
                 <div class="table-responsive">
                     <h4 class="section-header">Recommendation: Action Points</h4>
-                    <table class="table table-striped">
+                    <table class="table table-bordered table-striped">
                         <thead>
                             <th>Action Point</th>
                             <th>Description</th>
@@ -161,26 +179,24 @@ $findings = VisitFinding::where('visit_id', $visitId)->get();
             <div class="tab-pane fade show" id="divSummarySupervisionTeam" role="tabpanel" aria-labelledby="custom-tabs-four-home-tab">
                 <div class="table-responsive">
                     <h4 class="section-header">Supervision Team</h4>
-                    <table class="table table-striped">
+                    <table class="table table-bordered table-striped">
                         <thead>
                             <th>Name</th>
-                            <th>Designation</th>
-                            <th>Organization</th>
-                            <th>Signature</th>
+                            <th>Phone Number</th>
+                            <th>Email</th>
                         </thead>
 
                         <tbody>
                             <?php
                             /** @var ActionPoint[] $aps */
                             $aps = ActionPoint::where('visit_id', $visit->id)->get();
-                            foreach ($aps as $ap) :
+                            foreach ($users as $user) :
                                 $assigned = $ap->assignedTo();
                             ?>
                                 <tr>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td><?php echo $ap->creator()->first_name . ' ' . $ap->creator()->last_name ?></td>
+                                    <td><?php echo $user->getNames(); ?></td>
+                                    <td><?php echo $user->phone_number ?></td>
+                                    <td><?php echo $user->email ?></td>
                                 </tr>
                             <?php endforeach; ?>
                         </tbody>
@@ -215,7 +231,7 @@ $findings = VisitFinding::where('visit_id', $visitId)->get();
 
     </section>
 
-    <button class="btn btn-success m-2 btn-icon-split" id="btnPdfParticipants" onclick="">
+    <button class="btn btn-success m-2 btn-icon-split" id="btnPdfSummary" onclick="printPdfSummary()">
         <span class="icon"><i class="fa fa-file-pdf" aria-hidden="true"></i></span>
         <span class="text">Export to pdf</span>
     </button>
@@ -254,3 +270,4 @@ $findings = VisitFinding::where('visit_id', $visitId)->get();
         border-bottom: #000F00 1px solid;
     }
 </style>
+

@@ -364,20 +364,23 @@ $submittedBadge = "<span class='badge badge-success rounded-pill'>Submitted</spa
 
 
     const printPdfSummary = () => {
-    console.log("Here");
-    let _el = $('<div>')
-    let p = sectionVisitSummary.cloneNode(true)
-    _el.append(p)
-    var nw = window.open("", "", "width=1200,height=900,left=250,location=no,titlebar=yes")
-    nw.document.write(_el.html())
-    nw.document.close()
-    setTimeout(() => {
-        nw.print()
+        console.log("Here");
+        let _el = $('<div>')
+        var _head = $('head').clone()
+        _head.find('title').text("Visit summary")
+        _el.append(_head)
+        let p = sectionVisitSummary.cloneNode(true)
+        _el.append(p)
+        var nw = window.open("", "", "width=1200,height=900,left=250,location=yes,titlebar=yes")
+        nw.document.write(_el.html())
+        nw.document.close()
         setTimeout(() => {
-            nw.close()
-            // end_loader()
-        }, 200);
-    }, 500);
+            nw.print()
+            setTimeout(() => {
+                nw.close()
+                // end_loader()
+            }, 200);
+        }, 500);
 
     }
 

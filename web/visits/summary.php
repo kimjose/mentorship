@@ -8,6 +8,7 @@ use Umb\Mentorship\Models\FacilityVisit;
 use Umb\Mentorship\Models\Response;
 use Umb\Mentorship\Models\User;
 use Umb\Mentorship\Models\VisitFinding;
+use Illuminate\Database\Capsule\Manager as DB;
 
 $visitId = $_GET['visit_id'];
 /** @var FacilityVisit $visit */
@@ -17,18 +18,19 @@ $facility = $visit->getFacility();
 $findings = VisitFinding::where('visit_id', $visitId)->get();
 $userIds = [];
 $responseUsers = Response::where('visit_id', $visitId)->get(['created_by']);
-foreach($responseUsers as $responseUser){
+foreach ($responseUsers as $responseUser) {
     array_push($userIds, $responseUser['created_by']);
 }
 $abstractionUsers = ChartAbstraction::where('visit_id', $visitId)->get(['created_by']);
-foreach($abstractionUsers as $abstractionUser){
+foreach ($abstractionUsers as $abstractionUser) {
     array_push($userIds, $abstractionUser['created_by']);
 }
 $findingUsers = VisitFinding::where('visit_id', $visitId)->get(['created_by']);
-foreach($findingUsers as $findingUser){
+foreach ($findingUsers as $findingUser) {
     array_push($userIds, $findingUser['created_by']);
 }
 $users = User::whereIn('id', $userIds)->get();
+$checklists = DB::select("SELECT DISTINCT(c.id), c.title from responses r left join questions q on q.id = r.question_id left join sections s on s.id = q.section_id left join checklists c on c.id = s.checklist_id where visit_id = {$visitId};");
 
 ?>
 <div>
@@ -56,61 +58,31 @@ $users = User::whereIn('id', $userIds)->get();
                 <h4 class="section-header">Program/Areas Supervised</h4>
                 <div class="row mt-3">
                     <div class="col-6">
-                        <ol>
-                            <li>
-                                <div width="100%" class="divListItem">
-                                    .
-                                </div>
-                            </li>
-                            <li>
-                                <div width="100%" class="divListItem">
-                                    .
-                                </div>
-                            </li>
-                            <li>
-                                <div width="100%" class="divListItem">
-                                    .
-                                </div>
-                            </li>
-                            <li>
-                                <div width="100%" class="divListItem">
-                                    .
-                                </div>
-                            </li>
-                            <li>
-                                <div width="100%" class="divListItem">
-                                    .
-                                </div>
-                            </li>
+                        <ol style="list-style: none;">
+                            <?php for ($i = 0; $i < 4; $i++) : ?>
+                                <li>
+                                    <div width="100%" class="divListItem">
+                                        <?php
+                                        $checklist = $checklists[$i];
+                                        echo $checklist ? $checklist->title : '.'; ?>
+                                    </div>
+                                </li>
+                            <?php endfor; ?>
+
                         </ol>
                     </div>
                     <div class="col-6">
-                        <ol>
-                            <li>
-                                <div width="100%" class="divListItem">
-                                    .
-                                </div>
-                            </li>
-                            <li>
-                                <div width="100%" class="divListItem">
-                                    .
-                                </div>
-                            </li>
-                            <li>
-                                <div width="100%" class="divListItem">
-                                    .
-                                </div>
-                            </li>
-                            <li>
-                                <div width="100%" class="divListItem">
-                                    .
-                                </div>
-                            </li>
-                            <li>
-                                <div width="100%" class="divListItem">
-                                    .
-                                </div>
-                            </li>
+                        <ol style="list-style: none;">
+                            <?php for ($i = 4; $i < 8; $i++) : ?>
+                                <li>
+                                    <div width="100%" class="divListItem">
+                                        <?php
+                                        $checklist = $checklists[$i];
+                                        echo $checklist ? $checklist->title : '.'; ?>
+                                    </div>
+                                </li>
+                            <?php endfor; ?>
+                          
                         </ol>
                     </div>
                 </div>
@@ -270,4 +242,3 @@ $users = User::whereIn('id', $userIds)->get();
         border-bottom: #000F00 1px solid;
     }
 </style>
-

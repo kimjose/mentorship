@@ -128,7 +128,7 @@ $submittedBadge = "<span class='badge badge-success rounded-pill'>Submitted</spa
                                                     <td class="text-center">
                                                         <div class="btn-group">
                                                             <?php if ($openedSection == null || !$openedSection->submitted) :
-                                                                if (hasPermission(PERM_CREATE_VISIT, $currUser)) : ?>
+                                                                if (hasPermission(PERM_CREATE_VISIT, $currUser) && !$visit->approved) : ?>
                                                                     <button class="btn btn-primary btn-flat" data-tooltip="tooltip" title="Edit Section" onclick='openSection("<?php echo $section->id; ?>")'>
                                                                         <i class="fas fa-edit"></i>
                                                                     </button>
@@ -161,7 +161,7 @@ $submittedBadge = "<span class='badge badge-success rounded-pill'>Submitted</spa
                         <div class="col-6">
                             <h5>Chart Abstractions</h5>
                         </div>
-                        <?php if (hasPermission(PERM_CREATE_VISIT, $currUser)) : ?>
+                        <?php if (hasPermission(PERM_CREATE_VISIT, $currUser) && !$visit->approved) : ?>
                             <button class="btn btn-primary ml-auto float-right btn-icon-split" id="btnAddAbstraction" onclick="newAbstraction()">
                                 <span class="icon text-white-50"><i class="fa fa-plus"></i> </span>
                                 <span class="text"> New </span>
@@ -224,7 +224,7 @@ $submittedBadge = "<span class='badge badge-success rounded-pill'>Submitted</spa
                         <div class="col-6">
                             <h5>Findings</h5>
                         </div>
-                        <?php if (hasPermission(PERM_CREATE_VISIT, $currUser)) : ?>
+                        <?php if (hasPermission(PERM_CREATE_VISIT, $currUser)  && !$visit->approved) : ?>
                             <button class="btn btn-primary ml-auto float-right btn-icon-split" id="btnAddFinding" onclick="newFinding()">
                                 <span class="icon text-white-50"><i class="fa fa-plus"></i> </span>
                                 <span class="text"> New Finding</span>

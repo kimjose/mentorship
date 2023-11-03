@@ -19,4 +19,11 @@ class FacilityVisit extends Model{
         return Facility::find($this->facility_id);
     }
 
+    /**
+     * @return User 
+     */
+    public function getApprover(){
+        return $this->approved_by ? User::find($this->approved_by) : null;
+    }
+
 }

@@ -47,7 +47,8 @@ define("PERM_USER_MANAGEMENT", 2);
 define("PERM_CHECKLIST_MANAGEMENT", 3);
 define("PERM_ACCESS_REPORT", 4);
 define("PERM_CREATE_VISIT", 5);
-define("PERM_ALL_APS", 5);
+define("PERM_ALL_APS", 6);
+define("PERM_APPROVE_VISIT_SUMMARY", 7);
 
 
 // FUNCTIONS

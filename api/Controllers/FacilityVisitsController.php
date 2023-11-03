@@ -305,4 +305,21 @@ class FacilityVisitsController extends Controller
             $this->response(PRECONDITION_FAILED_ERROR_CODE, $th->getMessage());
         }
     }
+
+    public function approveVisit($data){
+        try{
+            if(!hasPermission(PERM_APPROVE_VISIT_SUMMARY, $this->user)) throw new \Exception("Forbidden", 403);
+            $attributes = ['id'];
+            $missing = Utility::checkMissingAttributes($data, $attributes);
+            throw_if(sizeof($missing) > 0, new \Exception("Missing parameters passed : " . json_encode($missing)));
+            $visit = FacilityVisit::findOrFail($data['id']);
+            $visit->update([
+                'approved' => 1, 'approved_by' => $this->user->id
+            ]);
+            $this->response(SUCCESS_RESPONSE_CODE, "Visit approved successfully.");
+        } catch (\Throwable $th) {
+            Utility::logError($th->getCode(), $th->getMessage());
+            $this->response(PRECONDITION_FAILED_ERROR_CODE, $th->getMessage());
+        }
+    }
 }

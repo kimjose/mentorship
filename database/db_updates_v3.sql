@@ -1,3 +1,4 @@
+-- Active: 1659504893355@@127.0.0.1@3306@ess
 create table password_resets(
     id int not null AUTO_INCREMENT PRIMARY KEY,
     user_id int not null,
@@ -8,3 +9,7 @@ create table password_resets(
     updated_at TIMESTAMP null DEFAULT CURRENT_TIMESTAMP,
     constraint fk_reset_user FOREIGN KEY(user_id) REFERENCES users(id) on delete cascade on update cascade
 );
+
+alter table facility_visits add column approved tinyint not null default 0 after created_by,
+    add column approved_by int null after approved,
+    add constraint visit_approver foreign key(approved_by) references users(id) on delete restrict on update cascade;

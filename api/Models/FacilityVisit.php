@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class FacilityVisit extends Model{
 
-    protected $fillable = ['facility_id', 'visit_date', 'latitude', 'longitude', 'created_by'];
+    protected $fillable = ['facility_id', 'visit_date', 'latitude', 'longitude', 'created_by', 'approved', 'approved_by'];
 
     public function getCreator(){
         return User::find($this->created_by);

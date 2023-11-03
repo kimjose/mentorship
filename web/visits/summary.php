@@ -40,7 +40,7 @@ $checklists = DB::select("SELECT DISTINCT(c.id), c.title from responses r left j
 
             <div class="row">
                 <div class="col-3">
-                    <img src="<?php echo $baseUrl ?>web/assets/img/visit.png" alt="MOH Logo" style="width: 80px; height: 80px" srcset="">
+                    <img src="<?php echo $baseUrl ?>web/assets/img/moh.png" alt="MOH Logo" style="width: 100px; height: 100px" srcset="">
                 </div>
                 <div class="col-6">
                     <h3 class="text-center">TA Visit Summary</h3>
@@ -48,7 +48,7 @@ $checklists = DB::select("SELECT DISTINCT(c.id), c.title from responses r left j
                     <h4 class="text-center"><span class="text-primary"> <?php echo $visit->visit_date ?> </span> </h4>
                 </div>
                 <div class="col-3">
-                    <img style="width: 80px; height: 80px" src="<?php echo $baseUrl ?>web/assets/img/visit.png" alt="CIHEB Logo" srcset="">
+                    <img style="width: 80px; height: 80px; margin-left: 158px;" src="<?php echo $baseUrl ?>web/assets/img/ciheb_kenya.png" alt="CIHEB Logo" srcset="">
                 </div>
             </div>
         </div>
@@ -82,7 +82,7 @@ $checklists = DB::select("SELECT DISTINCT(c.id), c.title from responses r left j
                                     </div>
                                 </li>
                             <?php endfor; ?>
-                          
+
                         </ol>
                     </div>
                 </div>
@@ -177,36 +177,43 @@ $checklists = DB::select("SELECT DISTINCT(c.id), c.title from responses r left j
             </div>
             <!-- Section Supervision Team summary end -->
 
-            <div id="divSummaryFacilityIncharge">
-                <div>
-                    <h4 class="section-header">Facility Incharge</h4>
-                    <div class="mt-3">
-                        <ol>
+            <?php if ($visit->approved) : ?>
+                <div id="divSummaryFacilityIncharge">
+                    <div>
+                        <h4 class="section-header">Facility Incharge</h4>
+                        <div class="mt-3">
+                            <ol>
 
-                            <div width="50%" class="divListItem">
-                                Name of Facility Incharge:
-                            </div>
+                                <div width="50%" class="divListItem">
+                                    Name of Facility Incharge:
+                                </div>
 
-                            <div width="50%" class="divListItem">
-                                Designation:
-                            </div>
-                            <div width="50%" class="divListItem">
-                                <span>Date:</span>
-                            </div>
+                                <div width="50%" class="divListItem">
+                                    Designation:
+                                </div>
+                                <div width="50%" class="divListItem">
+                                    <span>Date:</span>
+                                </div>
 
-                        </ol>
+                            </ol>
+                        </div>
                     </div>
                 </div>
-            </div>
-
+            <?php endif; ?>
         </div>
 
     </section>
-
-    <button class="btn btn-success m-2 btn-icon-split" id="btnPdfSummary" onclick="printPdfSummary()">
-        <span class="icon"><i class="fa fa-file-pdf" aria-hidden="true"></i></span>
-        <span class="text">Export to pdf</span>
-    </button>
+    <?php if ($visit->approved) : ?>
+        <button class="btn btn-success m-2 btn-icon-split" id="btnPdfSummary" onclick="printPdfSummary()">
+            <span class="icon"><i class="fa fa-file-pdf" aria-hidden="true"></i></span>
+            <span class="text">Export to pdf</span>
+        </button>
+    <?php else : ?>
+        <button class="btn btn-primary m-2 btn-icon-split" id="btnApproveSummary" onclick="approveSummary()">
+            <span class="icon"><i class="fa fa-check" aria-hidden="true"></i></span>
+            <span class="text">Approve Summary</span>
+        </button>
+    <?php endif; ?>
 
 </div>
 

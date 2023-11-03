@@ -452,4 +452,30 @@ $submittedBadge = "<span class='badge badge-success rounded-pill'>Submitted</spa
                 toastr.error(err.message)
             })
     }
+
+    function approveSummary(){
+        let r = confirm("Do you really want to approve this visit? No further updates can be done once approved. Continue?")
+        if(r){
+            fetch('../api/approve_visit', {
+                method: 'POST',
+                headers: {
+                    "content-type": "application/x-www-form-urlencoded"
+                },
+                body: JSON.stringify({id: visitId})
+            })
+            .then(response =>{
+                return response.json()
+            })
+            .then(response => {
+                if(response.code == 200){
+                    toastr.success("Visit Approved successfully.")
+                    setTimeout(() => window.location.reload(), 879)
+                } else throw new Error(response.message)
+            })
+            .catch(err => {
+                toastr.error(err.message)
+            })
+        }
+    }
+
 </script>

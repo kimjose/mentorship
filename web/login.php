@@ -86,11 +86,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit'])) {
 	<main id="main">
 
 		<div class="align-self-top w-100">
-			<marquee behavior="alternate" direction="right">
+			<!-- <marquee behavior="alternate" direction="right">
 				<img src="assets/img/ess_logo.png" alt="">
-			</marquee>
+			</marquee> -->
 			<div id="login-center" class="bg-dark row justify-content-center">
-				<div class="card col-md-4">
+				<div class="card col-md-4" style="
+    margin-top: 150px;
+">
+					<div class="card-header">
+
+					</div>
 					<div class="card-body">
 						<form id="login-form" action="login" method="POST">
 							<div class="form-group">

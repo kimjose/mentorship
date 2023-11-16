@@ -185,14 +185,11 @@ $checklists = DB::select("SELECT DISTINCT(c.id), c.title from responses r left j
                             <ol>
 
                                 <div width="50%" class="divListItem">
-                                    Name of Facility Incharge:
+                                    Approved By: <span class="text-info"><?php echo $visit->getApprover()->getNames(); ?></span>
                                 </div>
 
                                 <div width="50%" class="divListItem">
-                                    Designation:
-                                </div>
-                                <div width="50%" class="divListItem">
-                                    <span>Date:</span>
+                                    <span>Date: <span class="text-info"><?php echo $visit->visit_date; ?></span></span>
                                 </div>
 
                             </ol>

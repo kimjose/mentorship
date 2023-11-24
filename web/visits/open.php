@@ -128,7 +128,7 @@ $submittedBadge = "<span class='badge badge-success rounded-pill'>Submitted</spa
                                                     <td class="text-center">
                                                         <div class="btn-group">
                                                             <?php if ($openedSection == null || !$openedSection->submitted) :
-                                                                if (hasPermission(PERM_CREATE_VISIT, $currUser)) : ?>
+                                                                if (hasPermission(PERM_CREATE_VISIT, $currUser) && !$visit->approved) : ?>
                                                                     <button class="btn btn-primary btn-flat" data-tooltip="tooltip" title="Edit Section" onclick='openSection("<?php echo $section->id; ?>")'>
                                                                         <i class="fas fa-edit"></i>
                                                                     </button>
@@ -161,7 +161,7 @@ $submittedBadge = "<span class='badge badge-success rounded-pill'>Submitted</spa
                         <div class="col-6">
                             <h5>Chart Abstractions</h5>
                         </div>
-                        <?php if (hasPermission(PERM_CREATE_VISIT, $currUser)) : ?>
+                        <?php if (hasPermission(PERM_CREATE_VISIT, $currUser) && !$visit->approved) : ?>
                             <button class="btn btn-primary ml-auto float-right btn-icon-split" id="btnAddAbstraction" onclick="newAbstraction()">
                                 <span class="icon text-white-50"><i class="fa fa-plus"></i> </span>
                                 <span class="text"> New </span>
@@ -224,7 +224,7 @@ $submittedBadge = "<span class='badge badge-success rounded-pill'>Submitted</spa
                         <div class="col-6">
                             <h5>Findings</h5>
                         </div>
-                        <?php if (hasPermission(PERM_CREATE_VISIT, $currUser)) : ?>
+                        <?php if (hasPermission(PERM_CREATE_VISIT, $currUser)  && !$visit->approved) : ?>
                             <button class="btn btn-primary ml-auto float-right btn-icon-split" id="btnAddFinding" onclick="newFinding()">
                                 <span class="icon text-white-50"><i class="fa fa-plus"></i> </span>
                                 <span class="text"> New Finding</span>
@@ -362,6 +362,28 @@ $submittedBadge = "<span class='badge badge-success rounded-pill'>Submitted</spa
         loadVisitSummary()
     })
 
+
+    const printPdfSummary = () => {
+        console.log("Here");
+        let _el = $('<div>')
+        var _head = $('head').clone()
+        _head.find('title').text("Visit summary")
+        _el.append(_head)
+        let p = sectionVisitSummary.cloneNode(true)
+        _el.append(p)
+        var nw = window.open("", "", "width=1200,height=900,left=250,location=yes,titlebar=yes")
+        nw.document.write(_el.html())
+        nw.document.close()
+        setTimeout(() => {
+            nw.print()
+            setTimeout(() => {
+                nw.close()
+                // end_loader()
+            }, 200);
+        }, 500);
+
+    }
+
     function viewResponse(sectionId) {
         view_modal("View Response", `visits/dialog_view_response?section_id=${sectionId}&visit_id=${visitId}`, "large")
     }
@@ -423,9 +445,37 @@ $submittedBadge = "<span class='badge badge-success rounded-pill'>Submitted</spa
             .then(response => {
                 let tabContentSummary = document.getElementById('tabContentSummary')
                 tabContentSummary.innerHTML = response
+                const sectionVisitSummary = document.getElementById('sectionVisitSummary')
+                const btnPdfSummary = document.getElementById('btnPdfSummary')
             })
             .catch(err => {
                 toastr.error(err.message)
             })
     }
+
+    function approveSummary(){
+        let r = confirm("Do you really want to approve this visit? No further updates can be done once approved. Continue?")
+        if(r){
+            fetch('../api/approve_visit', {
+                method: 'POST',
+                headers: {
+                    "content-type": "application/x-www-form-urlencoded"
+                },
+                body: JSON.stringify({id: visitId})
+            })
+            .then(response =>{
+                return response.json()
+            })
+            .then(response => {
+                if(response.code == 200){
+                    toastr.success("Visit Approved successfully.")
+                    setTimeout(() => window.location.reload(), 879)
+                } else throw new Error(response.message)
+            })
+            .catch(err => {
+                toastr.error(err.message)
+            })
+        }
+    }
+
 </script>

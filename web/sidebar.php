@@ -184,6 +184,9 @@
               <i class="nav-icon fas fa-chart-line"></i>
               <p>
                 Analytics
+                <sup>
+                  <span class='badge badge-warning rounded-pill'>Beta</span>
+                </sup>
                 <i class="right fas fa-angle-left"></i>
               </p>
             </a>

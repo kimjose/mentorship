@@ -11,8 +11,6 @@ if ($currUser->getCategory()->access_level == 'Facility') {
 } else {
     $visits = FacilityVisit::orderBy('id', 'desc')->get();
 }
-$approvedBadge = "<span class='badge badge-primary rounded-pill'>Approved</span>";
-$pendingApprovalBadge = "<span class='badge badge-warning rounded-pill'>Pending</span>";
 $todaysDate = date("Y-m-d")
 ?>
 
@@ -45,7 +43,6 @@ $todaysDate = date("Y-m-d")
                         <th>Facility</th>
                         <th>Date</th>
                         <th>Created By</th>
-                        <th>Approval Status</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -55,7 +52,6 @@ $todaysDate = date("Y-m-d")
                         <th>Facility</th>
                         <th>Date</th>
                         <th>Created By</th>
-                        <th>Approval Status</th>
                         <th>Actions</th>
                     </tr>
                 </tfoot>
@@ -71,24 +67,12 @@ $todaysDate = date("Y-m-d")
                             <td><?php echo $visit->visit_date  ?></td>
                             <td><?php echo $creator->first_name . ' ' . $creator->last_name ?></php>
                             </td>
-                            <td>
-                                <?php if ($visit->approved) :
-                                    echo $approvedBadge;
-
-                                ?>
-                                    <br>
-                                    <small><?php echo $visit->getApprover()->getNames(); ?></small>
-                                <?php else :
-                                    echo $pendingApprovalBadge;
-                                ?>
-                                <?php endif; ?>
-                            </td>
                             <td class="text-center">
                                 <div class="btn-group">
                                     <a href="index?page=visits-open&id=<?php echo $visit->id ?>" class="btn btn-secondary btn-flat" data-tooltip="tooltip" title="Open Visit">
                                         <i class="fas fa-fw fa-sign-in-alt"></i>
                                     </a>
-                                    <?php if (hasPermission(PERM_CREATE_VISIT, $currUser) && !$visit->approved) : ?>
+                                    <?php if (hasPermission(PERM_CREATE_VISIT, $currUser) && !$visit->closed) : ?>
                                         <button class="btn btn-primary btn-flat" data-tooltip="tooltip" title="Edit Visit" onclick='editVisit(<?php echo json_encode($visit); ?>)' data-toggle="modal" data-target="#modalVisit">
                                             <i class="fas fa-edit"></i>
                                         </button>

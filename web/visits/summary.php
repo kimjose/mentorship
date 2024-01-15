@@ -177,38 +177,11 @@ $checklists = DB::select("SELECT DISTINCT(c.id), c.title from responses r left j
             </div>
             <!-- Section Supervision Team summary end -->
 
-            <?php if ($visit->approved) : ?>
-                <div id="divSummaryFacilityIncharge">
-                    <div>
-                        <h4 class="section-header">Facility Incharge</h4>
-                        <div class="mt-3">
-                            <ol>
-
-                                <div width="50%" class="divListItem">
-                                    Approved By: <span class="text-info"><?php echo $visit->getApprover()->getNames(); ?></span>
-                                </div>
-
-                                <div width="50%" class="divListItem">
-                                    <span>Date: <span class="text-info"><?php echo $visit->visit_date; ?></span></span>
-                                </div>
-
-                            </ol>
-                        </div>
-                    </div>
-                </div>
-            <?php endif; ?>
-        </div>
-
     </section>
-    <?php if ($visit->approved) : ?>
+    <?php if ($visit->closed) : ?>
         <button class="btn btn-success m-2 btn-icon-split" id="btnPdfSummary" onclick="printPdfSummary()">
             <span class="icon"><i class="fa fa-file-pdf" aria-hidden="true"></i></span>
             <span class="text">Export to pdf</span>
-        </button>
-    <?php else : ?>
-        <button class="btn btn-primary m-2 btn-icon-split" id="btnApproveSummary" onclick="approveSummary()">
-            <span class="icon"><i class="fa fa-check" aria-hidden="true"></i></span>
-            <span class="text">Approve Summary</span>
         </button>
     <?php endif; ?>
 

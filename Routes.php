@@ -180,11 +180,6 @@ $router->post('/api/visit/{id}', function ($id) {
     $controller = new FacilityVisitsController();
     $controller->updateVisit($id, $data);
 });
-$router->post('/api/approve_visit', function(){
-    $data = json_decode(file_get_contents('php://input'), true);
-    $controller = new FacilityVisitsController();
-    $controller->approveVisit($data);
-});
 $router->post('/api/open_visit_section', function () {
     $data = json_decode(file_get_contents('php://input'), true);
     $controller = new FacilityVisitsController();

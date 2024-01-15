@@ -128,7 +128,7 @@ $submittedBadge = "<span class='badge badge-success rounded-pill'>Submitted</spa
                                                     <td class="text-center">
                                                         <div class="btn-group">
                                                             <?php if ($openedSection == null || !$openedSection->submitted) :
-                                                                if (hasPermission(PERM_CREATE_VISIT, $currUser) && !$visit->approved) : ?>
+                                                                if (hasPermission(PERM_CREATE_VISIT, $currUser) && !$visit->closed) : ?>
                                                                     <button class="btn btn-primary btn-flat" data-tooltip="tooltip" title="Edit Section" onclick='openSection("<?php echo $section->id; ?>")'>
                                                                         <i class="fas fa-edit"></i>
                                                                     </button>
@@ -161,7 +161,7 @@ $submittedBadge = "<span class='badge badge-success rounded-pill'>Submitted</spa
                         <div class="col-6">
                             <h5>Chart Abstractions</h5>
                         </div>
-                        <?php if (hasPermission(PERM_CREATE_VISIT, $currUser) && !$visit->approved) : ?>
+                        <?php if (hasPermission(PERM_CREATE_VISIT, $currUser) && !$visit->closed) : ?>
                             <button class="btn btn-primary ml-auto float-right btn-icon-split" id="btnAddAbstraction" onclick="newAbstraction()">
                                 <span class="icon text-white-50"><i class="fa fa-plus"></i> </span>
                                 <span class="text"> New </span>
@@ -224,7 +224,7 @@ $submittedBadge = "<span class='badge badge-success rounded-pill'>Submitted</spa
                         <div class="col-6">
                             <h5>Findings</h5>
                         </div>
-                        <?php if (hasPermission(PERM_CREATE_VISIT, $currUser)  && !$visit->approved) : ?>
+                        <?php if (hasPermission(PERM_CREATE_VISIT, $currUser)  && !$visit->closed) : ?>
                             <button class="btn btn-primary ml-auto float-right btn-icon-split" id="btnAddFinding" onclick="newFinding()">
                                 <span class="icon text-white-50"><i class="fa fa-plus"></i> </span>
                                 <span class="text"> New Finding</span>
@@ -453,29 +453,5 @@ $submittedBadge = "<span class='badge badge-success rounded-pill'>Submitted</spa
             })
     }
 
-    function approveSummary(){
-        let r = confirm("Do you really want to approve this visit? No further updates can be done once approved. Continue?")
-        if(r){
-            fetch('../api/approve_visit', {
-                method: 'POST',
-                headers: {
-                    "content-type": "application/x-www-form-urlencoded"
-                },
-                body: JSON.stringify({id: visitId})
-            })
-            .then(response =>{
-                return response.json()
-            })
-            .then(response => {
-                if(response.code == 200){
-                    toastr.success("Visit Approved successfully.")
-                    setTimeout(() => window.location.reload(), 879)
-                } else throw new Error(response.message)
-            })
-            .catch(err => {
-                toastr.error(err.message)
-            })
-        }
-    }
 
 </script>

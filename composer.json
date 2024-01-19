@@ -1,0 +1,43 @@
+{
+    "name": "umb/mentorship",
+    "description": "A mentorship tool for TAs.",
+    "type": "project",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Umb\\Mentorship\\": "api/"
+        },
+        "files": [
+            "bootstrap.php"
+        ]
+    },
+    "co-authors": [
+        {
+            "name": "fkimonye",
+            "email": "kimonyefrancis@gmail.com"
+        }
+    ],
+    "authors": [
+        {
+            "name": "kimjose",
+            "email": "kimjose693@gmail.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {     
+        "ext-json": "*",
+        "ext-dom": "*",
+        "ext-zip": "*",
+        "ext-curl": "*",
+        "illuminate/database": "^10.15",
+        "bramus/router": "^1.6",
+        "vlucas/phpdotenv": "^5.5",
+        "box/spout": "^3.3",
+        "setasign/fpdf": "^1.8",
+        "phpmailer/phpmailer": "^6.8"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.5"
+    },
+    "scripts": {}
+}

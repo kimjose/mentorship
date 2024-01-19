@@ -1,0 +1,63 @@
+{
+    "_id": "cdf247e9-4d88-408b-b2f1-6491aec9e777",
+    "colName": "ess",
+    "created": "2023-07-21T08:43:18.759Z",
+    "sortNum": 10000,
+    "folders": [],
+    "requests": [
+        {
+            "_id": "1303e2f2-f8fa-44d4-88bb-7cba422dc266",
+            "colId": "cdf247e9-4d88-408b-b2f1-6491aec9e777",
+            "containerId": "",
+            "name": "Export Checklist",
+            "url": "{{base_url}}api/export_checklist_to_json/4",
+            "method": "GET",
+            "sortNum": 10000,
+            "created": "2023-07-21T08:44:30.662Z",
+            "modified": "2023-07-22T06:13:31.712Z",
+            "headers": [
+                {
+                    "name": "PHPSESSID",
+                    "value": "kp8neuttbe80n126fmsp6bk8ne",
+                    "isDisabled": true
+                },
+                {
+                    "name": "Cookie",
+                    "value": "PHPSESSID=kp8neuttbe80n126fmsp6bk8ne; Path=/;"
+                }
+            ],
+            "params": [],
+            "tests": []
+        },
+        {
+            "_id": "212f79cc-08dc-42d5-b6e8-c792afdadb4a",
+            "colId": "cdf247e9-4d88-408b-b2f1-6491aec9e777",
+            "containerId": "",
+            "name": "import checklist",
+            "url": "{{base_url}}api/import_checklist",
+            "method": "POST",
+            "sortNum": 20000,
+            "created": "2023-07-23T19:26:57.352Z",
+            "modified": "2023-07-23T19:39:49.022Z",
+            "headers": [
+                {
+                    "name": "Cookie",
+                    "value": "PHPSESSID=kp8neuttbe80n126fmsp6bk8ne; Path=/;"
+                }
+            ],
+            "params": [],
+            "body": {
+                "type": "formdata",
+                "raw": "",
+                "form": [],
+                "files": [
+                    {
+                        "name": "upload_file",
+                        "value": "../../../../../Downloads/checklist_export_1.json"
+                    }
+                ]
+            },
+            "tests": []
+        }
+    ]
+}

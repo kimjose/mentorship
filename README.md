@@ -69,4 +69,4 @@ This is a mentorship tool that assists persons doing mentorship record data obse
  - Francis Kimonye
 
 ## License
-This project is licensed under the [License Name] - see the [LICENSE.md](LICENSE.md) file for details.
+This project is licensed under the MIT - see the [LICENSE.md](LICENSE.md) file for details.

@@ -5,7 +5,10 @@ use Umb\Mentorship\Models\ApComment;
 use Illuminate\Database\Capsule\Manager as DB;
 
 $query = "select ap.*, concat(u.first_name, ' ', u.last_name), q.question, s.abbr as 'section_abbr', s.title as 'section_title', c.abbr 'checklist_abbr', c.title 'checklist_title', fv.visit_date, f.name 'facility_name' from action_points ap left join users u on u.id = ap.created_by LEFT join questions q on q.id = ap.question_id 
-left join sections s on s.id = q.section_id LEFT join checklists c on c.id = s.checklist_id left join facility_visits fv on ap.visit_id = fv.id LEFT join facilities f on f.id = ap.facility_id;";
+left join sections s on s.id = q.section_id LEFT join checklists c on c.id = s.checklist_id left join facility_visits fv on ap.visit_id = fv.id LEFT join facilities f on f.id = ap.facility_id ";
+if($currUser->getCategory()->access_level == "Facility"){
+    $query .= " where ap.facility_id = " . $currUser->facility_id;
+}
 $actionPoints = DB::select($query);
 
 
@@ -185,22 +188,6 @@ if (!hasPermission(PERM_ALL_APS, $currUser)) :
     </div>
 </div>
 <!-- Add comment dialog  -->
-
-<style>
-	.assigned-tag {
-		padding: 4px;
-		background: #009FED;
-		color: #ffffff;
-		border-radius: 4px;
-		margin-bottom: 5px;
-		margin-right: 10px;
-		-webkit-transition: all 200ms ease;
-		-moz-transition: all 200ms ease;
-		-ms-transition: all 200ms ease;
-		-o-transition: all 200ms ease;
-		transition: all 200ms ease;
-	}
-</style>
 
 <script>
     const inputComment = document.querySelector('#inputComment')

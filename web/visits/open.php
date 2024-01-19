@@ -73,12 +73,14 @@ $submittedBadge = "<span class='badge badge-success rounded-pill'>Submitted</spa
                 <a class="nav-link" id="tabChartAbstractions" data-toggle="tab" href="#tabContentChartAbstractions" role="tab" aria-controls="#tabContentChartAbstractions" aria-selected="false">Chart Abstraction</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" id="tabFindings" data-toggle="tab" href="#tabContentFindings" role="tab" aria-controls="tabContentVisit" aria-selected="false">Findings/Summary</a>
+                <a class="nav-link" id="tabFindings" data-toggle="tab" href="#tabContentFindings" role="tab" aria-controls="tabContentVisit" aria-selected="false">Findings</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" id="tabActionPoints" data-toggle="tab" href="#tabContentActionPoints" role="tab" aria-controls="#tabContentActionPoints" aria-selected="false">Action Points</a>
             </li>
-
+            <li class="nav-item">
+                <a class="nav-link" id="tabSummary" data-toggle="tab" href="#tabContentSummary" role="tab" aria-controls="tabContentSummary" aria-selected="false">Visit Summary</a>
+            </li>
         </ul>
         <div class="tab-content" id="tabContentVisit">
 
@@ -126,7 +128,7 @@ $submittedBadge = "<span class='badge badge-success rounded-pill'>Submitted</spa
                                                     <td class="text-center">
                                                         <div class="btn-group">
                                                             <?php if ($openedSection == null || !$openedSection->submitted) :
-                                                                if (hasPermission(PERM_CREATE_VISIT, $currUser)) : ?>
+                                                                if (hasPermission(PERM_CREATE_VISIT, $currUser) && !$visit->closed) : ?>
                                                                     <button class="btn btn-primary btn-flat" data-tooltip="tooltip" title="Edit Section" onclick='openSection("<?php echo $section->id; ?>")'>
                                                                         <i class="fas fa-edit"></i>
                                                                     </button>
@@ -159,7 +161,7 @@ $submittedBadge = "<span class='badge badge-success rounded-pill'>Submitted</spa
                         <div class="col-6">
                             <h5>Chart Abstractions</h5>
                         </div>
-                        <?php if (hasPermission(PERM_CREATE_VISIT, $currUser)) : ?>
+                        <?php if (hasPermission(PERM_CREATE_VISIT, $currUser) && !$visit->closed) : ?>
                             <button class="btn btn-primary ml-auto float-right btn-icon-split" id="btnAddAbstraction" onclick="newAbstraction()">
                                 <span class="icon text-white-50"><i class="fa fa-plus"></i> </span>
                                 <span class="text"> New </span>
@@ -213,7 +215,7 @@ $submittedBadge = "<span class='badge badge-success rounded-pill'>Submitted</spa
                 </div>
             </div>
             <!-- Tab Chart Abstraction end -->
-            <!-- Tab content summary -->
+            <!-- Tab content findings -->
             <div class="tab-pane fade show " id="tabContentFindings" role="tabpanel" aria-labelledby="custom-tabs-four-home-tab">
 
 
@@ -222,7 +224,7 @@ $submittedBadge = "<span class='badge badge-success rounded-pill'>Submitted</spa
                         <div class="col-6">
                             <h5>Findings</h5>
                         </div>
-                        <?php if (hasPermission(PERM_CREATE_VISIT, $currUser)) : ?>
+                        <?php if (hasPermission(PERM_CREATE_VISIT, $currUser)  && !$visit->closed) : ?>
                             <button class="btn btn-primary ml-auto float-right btn-icon-split" id="btnAddFinding" onclick="newFinding()">
                                 <span class="icon text-white-50"><i class="fa fa-plus"></i> </span>
                                 <span class="text"> New Finding</span>
@@ -263,7 +265,7 @@ $submittedBadge = "<span class='badge badge-success rounded-pill'>Submitted</spa
                 </ul>
 
             </div>
-            <!-- Tab content summary -->
+            <!-- Tab content findings -->
 
             <!-- Tab Action points -->
             <div class="tab-pane fade show" id="tabContentActionPoints" role="tabpanel" aria-labelledby="custom-tabs-four-home-tab">
@@ -281,11 +283,19 @@ $submittedBadge = "<span class='badge badge-success rounded-pill'>Submitted</spa
                             /** @var ActionPoint[] $aps */
                             $aps = ActionPoint::where('visit_id', $visit->id)->get();
                             foreach ($aps as $ap) :
+                                $assigned = $ap->assignedTo();
                             ?>
                                 <tr>
                                     <td><?php echo $ap->title ?></td>
                                     <td><?php echo $ap->description ?></td>
-                                    <td></td>
+                                    <td>
+                                        <ul class="list-inline">
+                                            <?php foreach ($assigned as $u) :
+                                            ?>
+                                                <li class="list-inline-item assigned-tag"> <?php echo $u->getNames(); ?></li>
+                                            <?php endforeach; ?>
+                                        </ul>
+                                    </td>
                                     <td><?php echo $ap->creator()->first_name . ' ' . $ap->creator()->last_name ?></td>
                                 </tr>
                             <?php endforeach; ?>
@@ -294,6 +304,11 @@ $submittedBadge = "<span class='badge badge-success rounded-pill'>Submitted</spa
                 </div>
             </div>
             <!-- Tab Action points end -->
+
+            <!-- Tab Visit summary -->
+            <div class="tab-pane fade show" id="tabContentSummary" role="tabpanel" aria-labelledby="custom-tabs-four-home-tab">
+            </div>
+            <!-- Tab Visit Summary end -->
         </div>
     </div>
 </div>
@@ -344,8 +359,30 @@ $submittedBadge = "<span class='badge badge-success rounded-pill'>Submitted</spa
     const tableResponsive = document.getElementById('tableResponsive')
 
     $(function() {
-
+        loadVisitSummary()
     })
+
+
+    const printPdfSummary = () => {
+        console.log("Here");
+        let _el = $('<div>')
+        var _head = $('head').clone()
+        _head.find('title').text("Visit summary")
+        _el.append(_head)
+        let p = sectionVisitSummary.cloneNode(true)
+        _el.append(p)
+        var nw = window.open("", "", "width=1200,height=900,left=250,location=yes,titlebar=yes")
+        nw.document.write(_el.html())
+        nw.document.close()
+        setTimeout(() => {
+            nw.print()
+            setTimeout(() => {
+                nw.close()
+                // end_loader()
+            }, 200);
+        }, 500);
+
+    }
 
     function viewResponse(sectionId) {
         view_modal("View Response", `visits/dialog_view_response?section_id=${sectionId}&visit_id=${visitId}`, "large")
@@ -399,4 +436,22 @@ $submittedBadge = "<span class='badge badge-success rounded-pill'>Submitted</spa
                 toastr.error(err.message)
             })
     }
+
+    function loadVisitSummary() {
+        fetch(`./visits/summary?visit_id=${visitId}`)
+            .then(response => {
+                return response.text()
+            })
+            .then(response => {
+                let tabContentSummary = document.getElementById('tabContentSummary')
+                tabContentSummary.innerHTML = response
+                const sectionVisitSummary = document.getElementById('sectionVisitSummary')
+                const btnPdfSummary = document.getElementById('btnPdfSummary')
+            })
+            .catch(err => {
+                toastr.error(err.message)
+            })
+    }
+
+
 </script>

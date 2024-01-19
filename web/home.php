@@ -19,7 +19,7 @@ $checklists = Checklist::where('status', 'published')->get();
 /** @var FacilityVisit[] $periodVisits */
 $periodVisits = FacilityVisit::where('visit_date', '>=', $startDate)->where('visit_date', '<=', $endDate)->orderBy('visit_date', 'asc')->get();
 
-$responses = DB::select("select r.*, q.category, q.frequency_id from responses r left join questions q on q.id = r.question_id ");
+$responses = DB::select("select r.visit_id, r.question_id, q.category, q.frequency_id from responses r left join questions q on q.id = r.question_id ");
 ?>
 
 <!-- Page Heading -->

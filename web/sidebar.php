@@ -1,12 +1,12 @@
   <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <div class="dropdown">
-      <a href="javascript:void(0)" class="brand-link dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
+      <a href="#" class="brand-link dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
         <span class="brand-image img-circle elevation-3 d-flex justify-content-center align-items-center bg-primary text-white font-weight-500" style="width: 38px;height:50px"><?php echo strtoupper(substr($currUser->first_name, 0, 1) . substr($currUser->last_name, 0, 1)) ?></span>
         <span class="brand-text font-weight-light"><?php echo ucwords($currUser->first_name . ' ' . $currUser->last_name) ?></span>
 
       </a>
       <div class="dropdown-menu">
-        <a class="dropdown-item manage_account" href="javascript:void(0)" data-id="<?php echo $currUser->id ?>">Manage Account</a>
+        <a class="dropdown-item manage_account" href="index?page=users-profile" data-id="<?php echo $currUser->id ?>">Manage Account</a>
         <div class="dropdown-divider"></div>
         <a class="dropdown-item" href="javascript:void(0)" onclick="logout()">Logout</a>
       </div>
@@ -184,6 +184,9 @@
               <i class="nav-icon fas fa-chart-line"></i>
               <p>
                 Analytics
+                <sup>
+                  <span class='badge badge-warning rounded-pill'>Beta</span>
+                </sup>
                 <i class="right fas fa-angle-left"></i>
               </p>
             </a>
@@ -221,9 +224,6 @@
         }
 
       }
-      $('.manage_account').click(function() {
-        uni_modal('Manage Account', 'manage_user?id=' + $(this).attr('data-id'))
-      })
     })
 
     const logout = () => {

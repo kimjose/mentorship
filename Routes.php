@@ -19,6 +19,11 @@ $router->set404(function () {
     $notFound = file_get_contents("404.html");
     echo $notFound;
 });
+
+$router->post("/api/user-rssequest-reset", function(){
+    $data = json_decode(file_get_contents('php://input'), true);
+    // UsersController::requestResetPassword($data);
+});
 $router->post("/api/checklist", function () {
     $builder = new QuestionsBuilder();
     $data = json_decode(file_get_contents('php://input'), true);
@@ -68,6 +73,14 @@ $router->post("/api/import_questions", function () {
     $builder = new QuestionsBuilder();
     $builder->importQuestions();
 });
+$router->get("/api/export_checklist_to_json/{id}", function ($id) {
+    $builder = new QuestionsBuilder();
+    $builder->exportChecklistToJson($id);
+});
+$router->post("/api/import_checklist", function () {
+    $builder = new QuestionsBuilder();
+    $builder->importChecklistFromJson();
+});
 $router->post("/api/user", function () {
     $controller = new UsersController();
     $data = json_decode(file_get_contents('php://input'), true);
@@ -77,6 +90,11 @@ $router->post("/api/user/{id}", function ($id) {
     $controller = new UsersController();
     $data = json_decode(file_get_contents('php://input'), true);
     $controller->updateUser($id, $data);
+});
+$router->post("/api/user_profile_update/{id}", function($id){
+    $controller = new UsersController();
+    $data = json_decode(file_get_contents('php://input'), true);
+    $controller->updateProfile($id, $data);
 });
 $router->post("/api/user_category", function () {
     $controller = new UsersController();
@@ -88,10 +106,18 @@ $router->post("/api/user_category/{id}", function ($id) {
     $data = json_decode(file_get_contents('php://input'), true);
     $controller->updateUserCategory($id, $data);
 });
-$router->post("/api/user/{id}", function ($id) {
+$router->post("/api/user_category/{id}", function ($id) {
     $controller = new UsersController();
     $data = json_decode(file_get_contents('php://input'), true);
     $controller->updateUserCategory($id, $data);
+});
+$router->post("/api/user-request-reset", function(){
+    $data = json_decode(file_get_contents('php://input'), true);
+    UsersController::requestResetPassword($data);
+});
+$router->post("/api/reset-password", function(){
+    $data = json_decode(file_get_contents('php://input'), true);
+    UsersController::resetPassword($data);
 });
 $router->get('/api/notifications/{id}', function ($id) {
     $controller = new UsersController();
@@ -219,22 +245,29 @@ $router->get('/api/visit_sections', function () {
 });
 
 $router->mount('/api/analytics', function () use ($router) {
-    $controller =  new AnalyticsController();
 
     //GET
-    $router->get('/', function () use ($controller) {
+    $router->get('/', function () {
+        $controller =  new AnalyticsController();
         $controller->getAnalytics();
     });
     //POST
     $data = json_decode(file_get_contents('php://input'), true);
-    $router->post('/create', function() use($controller, $data) {
+    $router->post('/create', function() use($data) {
+        $controller =  new AnalyticsController();
         $controller->createAnalytic($data);
     });
-    $router->post('/update/{id}', function($id) use($controller, $data) {
+    $router->post('/update/{id}', function($id) use($data) {
+        $controller =  new AnalyticsController();
         $controller->updateAnalytic($id, $data);
     });
-    $router->post('/run', function() use ($controller){
+    $router->post('/run', function(){
+        $controller =  new AnalyticsController();
         $controller->runAnalytic($_POST);
+    });
+    $router->post('/delete-run', function() use ($data){
+        $controller =  new AnalyticsController();
+        $controller->deleteAnalyticRun($data);
     });
 });
 

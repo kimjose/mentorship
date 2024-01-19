@@ -39,26 +39,18 @@ if (!hasPermission(PERM_CHECKLIST_MANAGEMENT, $currUser)) :
 					<div class="col-md-6 border-right">
 						<div class="form-group">
 							<label for="" class="control-label">Title</label>
-							<input type="text" name="title" class="form-control form-control-sm" required value="<?php echo $id != '' ? $checklist->title : '' ?>">
+							<input type="text" name="title" class="form-control form-control-sm" required value="<?php echo $id != '' ? $checklist->title : '' ?>" placeholder="Title" >
 						</div>
 						<div class="form-group">
-							<label for="" class="control-label">Start</label>
-							<input type="date" name="start_date" class="form-control form-control-sm" required value="<?php echo isset($start_date) ? $start_date : '' ?>">
-						</div>
-						<div class="form-group">
-							<label for="" class="control-label">End</label>
-							<input type="date" name="end_date" class="form-control form-control-sm" required value="<?php echo isset($end_date) ? $end_date : '' ?>">
+							<label for="" class="control-label">Abbreviation</label>
+							<input type="text" name="abbr" class="form-control form-control-sm" required value="<?php echo $id != '' ? $checklist->abbr : '' ?>" placeholder="Abbreviation">
 						</div>
 					</div>
 
 					<div class="col-md-6">
 						<div class="form-group">
-							<label for="" class="control-label">Abbreviation</label>
-							<input type="text" name="abbr" class="form-control form-control-sm" required value="<?php echo $id != '' ? $checklist->abbr : '' ?>">
-						</div>
-						<div class="form-group">
 							<label class="control-label">Description</label>
-							<textarea name="description" id="" cols="30" rows="4" class="form-control" required><?php echo $id != '' ? $checklist->description : '' ?></textarea>
+							<textarea name="description" placeholder="Description..." id="" cols="30" rows="4" class="form-control" required><?php echo $id != '' ? $checklist->description : '' ?></textarea>
 						</div>
 					</div>
 				</div>

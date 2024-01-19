@@ -6,6 +6,8 @@
   $title = isset($_GET['page']) ? ucwords(str_replace("_", ' ', $_GET['page'])) : "Home";
   ?>
   <title><?php echo $title ?> | eSupport Supervision</title>
+  <link rel="icon" href="../favicon.ico">
+
   <?php ob_end_flush() ?>
 
   <!-- Google Font: Source Sans Pro -->

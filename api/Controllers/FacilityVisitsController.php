@@ -31,7 +31,7 @@ class FacilityVisitsController extends Controller
     public function createVisit($data)
     {
         try {
-            if(!hasPermission(PERM_CREATE_VISIT, $this->user)) throw new \Exception("Forbidden", 403);
+            if (!hasPermission(PERM_CREATE_VISIT, $this->user)) throw new \Exception("Forbidden", 403);
             $attributes = ['facility_id', 'visit_date', 'latitude', 'longitude'];
             $missing = Utility::checkMissingAttributes($data, $attributes);
             throw_if(sizeof($missing) > 0, new \Exception("Missing parameters passed : " . json_encode($missing)));
@@ -51,13 +51,14 @@ class FacilityVisitsController extends Controller
     public function updateVisit($id, $data)
     {
         try {
-            if(!hasPermission(PERM_CREATE_VISIT, $this->user)) throw new \Exception("Forbidden", 403);
+            if (!hasPermission(PERM_CREATE_VISIT, $this->user)) throw new \Exception("Forbidden", 403);
             $attributes = ['facility_id', 'visit_date', 'latitude', 'longitude'];
             $missing = Utility::checkMissingAttributes($data, $attributes);
             throw_if(sizeof($missing) > 0, new \Exception("Missing parameters passed : " . json_encode($missing)));
             $existing = FacilityVisit::where('facility_id', $data['facility_id'])->where('visit_date', $data['visit_date'])->where('id', '!=', $id)->first();
             if ($existing) throw new \Exception("A similar visit already exists", 1);
             $visit = FacilityVisit::findOrFail($id);
+            if ($visit->closed) throw new \Exception("This visit has been closed and can't be updated.");
             $data['latitude'] = $data['latitude'] == '' ? null : $data['latitude'];
             $data['longitude'] = $data['longitude'] == '' ? null : $data['longitude'];
             $visit->update($data);
@@ -71,11 +72,13 @@ class FacilityVisitsController extends Controller
     public function openVisitSection($data)
     {
         try {
-            if(!hasPermission(PERM_CREATE_VISIT, $this->user)) throw new \Exception("Forbidden", 403);
+            if (!hasPermission(PERM_CREATE_VISIT, $this->user)) throw new \Exception("Forbidden", 403);
             $attributes = ['visit_id', 'section_id'];
             $missing = Utility::checkMissingAttributes($data, $attributes);
             throw_if(sizeof($missing) > 0, new \Exception("Missing parameters passed : " . json_encode($missing)));
             $visitId = $data['visit_id'];
+            $visit = FacilityVisit::findOrFail($visitId);
+            if ($visit->closed) throw new \Exception("This visit has been closed and can't be updated.");
             $sectionId = $data['section_id'];
             $userId = $this->user->id;
             // $openedByOther = VisitSection::where(function($q) use($userId, $sectionId, $visitId){
@@ -98,7 +101,7 @@ class FacilityVisitsController extends Controller
     public function submitResponse($data)
     {
         try {
-            if(!hasPermission(PERM_CREATE_VISIT, $this->user)) throw new \Exception("Forbidden", 403);
+            if (!hasPermission(PERM_CREATE_VISIT, $this->user)) throw new \Exception("Forbidden", 403);
             extract($data);
             DB::beginTransaction();
             foreach ($qid as $k => $v) {
@@ -139,12 +142,15 @@ class FacilityVisitsController extends Controller
         }
     }
 
-    public function createFinding($data){
+    public function createFinding($data)
+    {
         try {
-            if(!hasPermission(PERM_CREATE_VISIT, $this->user)) throw new \Exception("Forbidden", 403);
+            if (!hasPermission(PERM_CREATE_VISIT, $this->user)) throw new \Exception("Forbidden", 403);
             $attributes = ['visit_id', 'description'];
             $missing = Utility::checkMissingAttributes($data, $attributes);
             throw_if(sizeof($missing) > 0, new \Exception("Missing parameters passed : " . json_encode($missing)));
+            $visit = FacilityVisit::findOrFail($data['visit_id']);
+            if ($visit->closed) throw new \Exception("This visit has been closed and can't be updated.");
             $data['created_by'] = $this->user->id;
             VisitFinding::create($data);
             self::response(SUCCESS_RESPONSE_CODE, "Finding created successfully...");
@@ -154,14 +160,17 @@ class FacilityVisitsController extends Controller
         }
     }
 
-    public function updateFinding($id, $data){
+    public function updateFinding($id, $data)
+    {
         try {
-            if(!hasPermission(PERM_CREATE_VISIT, $this->user)) throw new \Exception("Forbidden", 403);
-            $attributes = [ 'description'];
+            if (!hasPermission(PERM_CREATE_VISIT, $this->user)) throw new \Exception("Forbidden", 403);
+            $attributes = ['description'];
             $missing = Utility::checkMissingAttributes($data, $attributes);
             throw_if(sizeof($missing) > 0, new \Exception("Missing parameters passed : " . json_encode($missing)));
             $data['created_by'] = $this->user->id;
             $finding = VisitFinding::findOrFail($id);
+            $visit = FacilityVisit::findOrFail($finding->visit_id);
+            if ($visit->closed) throw new \Exception("This visit has been closed and can't be updated.");
             $finding->update($data);
             self::response(SUCCESS_RESPONSE_CODE, "Finding updated successfully...");
         } catch (\Throwable $th) {
@@ -170,13 +179,16 @@ class FacilityVisitsController extends Controller
         }
     }
 
-    public function createChartAbstraction($data){
-        try{
-            if(!hasPermission(PERM_CREATE_VISIT, $this->user)) throw new \Exception("Forbidden", 403);
+    public function createChartAbstraction($data)
+    {
+        try {
+            if (!hasPermission(PERM_CREATE_VISIT, $this->user)) throw new \Exception("Forbidden", 403);
             $attributes = ['visit_id', 'ccc_number', 'age'];
             $missing = Utility::checkMissingAttributes($data, $attributes);
             throw_if(sizeof($missing) > 0, new \Exception("Missing parameters passed : " . json_encode($missing)));
             extract($data);
+            $visit = FacilityVisit::findOrFail($visit_id);
+            if ($visit->closed) throw new \Exception("This visit has been closed and can't be updated.");
             DB::beginTransaction();
             $ca = ChartAbstraction::create([
                 'visit_id' => $visit_id,
@@ -184,14 +196,14 @@ class FacilityVisitsController extends Controller
                 'age' => $age,
                 'created_by' => $this->user->id
             ]);
-            foreach($gaps as $gap){
+            foreach ($gaps as $gap) {
                 ChartAbstractionGap::create([
                     'gap' => $gap, 'abstraction_id' => $ca->id
                 ]);
             }
             DB::commit();
             self::response(SUCCESS_RESPONSE_CODE, 'Abstraction created ');
-        } catch(\Throwable $th){
+        } catch (\Throwable $th) {
             DB::rollback();
             Utility::logError($th->getCode(), $th->getMessage());
             $this->response(PRECONDITION_FAILED_ERROR_CODE, $th->getMessage());
@@ -201,7 +213,7 @@ class FacilityVisitsController extends Controller
     public function createActionPoint($data)
     {
         try {
-            if(!hasPermission(PERM_CREATE_VISIT, $this->user)) throw new \Exception("Forbidden", 403);
+            if (!hasPermission(PERM_CREATE_VISIT, $this->user)) throw new \Exception("Forbidden", 403);
             $assign_to = [];
             $attributes = ['title', 'description', 'due_date'];
             $missing = Utility::checkMissingAttributes($data, $attributes);
@@ -209,6 +221,7 @@ class FacilityVisitsController extends Controller
             DB::beginTransaction();
             if (isset($data['visit_id'])) {
                 $fv = FacilityVisit::findOrFail($data['visit_id']);
+                if ($fv->closed) throw new \Exception("This visit has been closed and can't be updated.");
                 $data['facility_id'] = $fv->facility_id;
             }
             extract($data);
@@ -218,6 +231,7 @@ class FacilityVisitsController extends Controller
             $facility = Facility::findOrFail($data['facility_id']);
             $ap = ActionPoint::create([
                 'visit_id' => $data['visit_id'],
+                'facility_id' => $data['facility_id'],
                 'question_id' => $data['question_id'] == '' ? null : $data['question_id'],
                 'title' => $data['title'],
                 'description' => $data['description'],
@@ -225,14 +239,14 @@ class FacilityVisitsController extends Controller
                 'due_date' => $data['due_date'],
                 'created_by' => $data['created_by'],
             ]);
-            if(isset($data['finding_id']) && $data['finding_id'] != ''){
+            if (isset($data['finding_id']) && $data['finding_id'] != '') {
                 $finding = VisitFinding::findOrFail($data['finding_id']);
                 $aps = ($finding->ap_ids === null || $finding->ap_ids === '') ? [] : explode(',', $finding->ap_ids);
                 $aps[] = $ap->id;
                 $finding->ap_ids = implode(',', $aps);
                 $finding->save();
             }
-            if(isset($data['abstraction_id']) && $data['abstraction_id'] != ''){
+            if (isset($data['abstraction_id']) && $data['abstraction_id'] != '') {
                 $chartAbstraction = ChartAbstraction::findOrFail($data['abstraction_id']);
                 $aps = ($chartAbstraction->ap_ids === null || $chartAbstraction->ap_ids === '') ? [] : explode(',', $chartAbstraction->ap_ids);
                 $aps[] = $ap->id;
@@ -256,10 +270,12 @@ class FacilityVisitsController extends Controller
     public function updateActionPoint($id, $data)
     {
         try {
-            if(!hasPermission(PERM_CREATE_VISIT, $this->user)) throw new \Exception("Forbidden", 403);
+            if (!hasPermission(PERM_CREATE_VISIT, $this->user)) throw new \Exception("Forbidden", 403);
             $attributes = ['visit_id', 'question_id', 'title', 'description', 'due_date'];
             $missing = Utility::checkMissingAttributes($data, $attributes);
             throw_if(sizeof($missing) > 0, new \Exception("Missing parameters passed : " . json_encode($missing)));
+            $visit = FacilityVisit::findOrFail($data['visit_id']);
+            if($visit->closed) throw new \Exception("This visit has been closed and can't be updated.");
             $ap = ActionPoint::findOrFail($id);
             $ap->update($data);
             self::response(SUCCESS_RESPONSE_CODE, 'Action Point updated successfully.');
@@ -290,7 +306,7 @@ class FacilityVisitsController extends Controller
     public function markApAsDone($data)
     {
         try {
-            if(!hasPermission(PERM_CREATE_VISIT, $this->user)) throw new \Exception("Forbidden", 403);
+            if (!hasPermission(PERM_CREATE_VISIT, $this->user)) throw new \Exception("Forbidden", 403);
             $attributes = ['id'];
             $missing = Utility::checkMissingAttributes($data, $attributes);
             throw_if(sizeof($missing) > 0, new \Exception("Missing parameters passed : " . json_encode($missing)));
@@ -304,4 +320,5 @@ class FacilityVisitsController extends Controller
             $this->response(PRECONDITION_FAILED_ERROR_CODE, $th->getMessage());
         }
     }
+
 }

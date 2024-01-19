@@ -1,11 +1,13 @@
 <?php
+
 namespace Umb\Mentorship\Controllers;
 
 use Umb\Mentorship\Controllers\Utils\Utility;
 use Umb\Mentorship\Models\Notification;
 use Umb\Mentorship\Models\User;
 
-class Controller{
+class Controller
+{
     protected User $user;
 
     public function __construct()
@@ -29,12 +31,9 @@ class Controller{
                 session_destroy();
                 Utility::logError(401, "Session expired");
                 http_response_code(401);
-                //        die(401);
+                die(401);
             } else {
                 $this->user = $sessionData['user'];
-                //        if ($currUser->getUserCategory()->events_admin_access != 1){
-                //            die("You are not allowed to access this service. Consult admin for assistance");
-                //        }
                 $sessionData['expires_at'] = time() + ($_ENV['SESSION_DURATION'] * 60);
                 $_SESSION[$_ENV['SESSION_APP_NAME']] = $sessionData;
             }
@@ -66,6 +65,25 @@ class Controller{
         ]);
     }
 
+    public function returnFile($fileName)
+    {
+        if (file_exists($fileName)) {
 
+            //Define header information
+            header('Content-Description: File Transfer');
+            header('Content-Type: application/octet-stream');
+            header("Cache-Control: no-cache, must-revalidate");
+            header("Expires: 0");
+            header('Content-Disposition: attachment; filename="' . basename($fileName) . '"');
+            header('Content-Length: ' . filesize($fileName));
+            header('Pragma: public');
+
+            //Clear system output buffer
+            flush();
+
+            //Read the size of the file
+            readfile($fileName);
+            unlink($fileName);
+        }
+    }
 }
-

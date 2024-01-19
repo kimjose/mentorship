@@ -137,4 +137,20 @@ class AnalyticsController extends Controller
             self::response(PRECONDITION_FAILED_ERROR_CODE, $th->getMessage());
         }
     }
+
+    public function deleteAnalyticRun($data){
+        try{
+            $attributes = ['id'];
+            $missing = Utility::checkMissingAttributes($data, $attributes);
+            throw_if(sizeof($missing) > 0, new \Exception("Missing parameters passed : " . json_encode($missing)));
+            $run = AnalyticRun::find($data['id']);
+            if($run != null){
+                $run->delete();
+            }
+            self::response(SUCCESS_RESPONSE_CODE, "Deleted successfuly.");
+        } catch(\Throwable $th){
+            Utility::logError($th->getCode(), $th->getMessage());
+            self::response(PRECONDITION_FAILED_ERROR_CODE, $th->getMessage());
+        }
+    }
 }

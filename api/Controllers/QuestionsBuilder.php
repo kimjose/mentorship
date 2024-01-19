@@ -41,7 +41,7 @@ class QuestionsBuilder extends Controller
     public function createChecklist($data)
     {
         try {
-            if(!hasPermission(PERM_CHECKLIST_MANAGEMENT, $this->user)) throw new \Exception("Forbidden", 403);
+            if (!hasPermission(PERM_CHECKLIST_MANAGEMENT, $this->user)) throw new \Exception("Forbidden", 403);
             $attributes = ['title', 'description', 'abbr'];
             $missing = Utility::checkMissingAttributes($data, $attributes);
             throw_if(sizeof($missing) > 0, new \Exception("Missing parameters passed : " . json_encode($missing)));
@@ -57,7 +57,7 @@ class QuestionsBuilder extends Controller
     public function updateChecklist($id, $data)
     {
         try {
-            if(!hasPermission(PERM_CHECKLIST_MANAGEMENT, $this->user)) throw new \Exception("Forbidden", 403);
+            if (!hasPermission(PERM_CHECKLIST_MANAGEMENT, $this->user)) throw new \Exception("Forbidden", 403);
             $attributes = ['title', 'description', 'abbr'];
             $missing = Utility::checkMissingAttributes($data, $attributes);
             throw_if(sizeof($missing) > 0, new \Exception("Missing parameters passed : " . json_encode($missing)));
@@ -73,7 +73,7 @@ class QuestionsBuilder extends Controller
     public function publishChecklist($data)
     {
         try {
-            if(!hasPermission(PERM_CHECKLIST_MANAGEMENT, $this->user)) throw new \Exception("Forbidden", 403);
+            if (!hasPermission(PERM_CHECKLIST_MANAGEMENT, $this->user)) throw new \Exception("Forbidden", 403);
             $attributes = ['id'];
             $missing = Utility::checkMissingAttributes($data, $attributes);
             throw_if(sizeof($missing) > 0, new \Exception("Missing parameters passed : " . json_encode($missing)));
@@ -93,7 +93,7 @@ class QuestionsBuilder extends Controller
     public function retireChecklist($data)
     {
         try {
-            if(!hasPermission(PERM_CHECKLIST_MANAGEMENT, $this->user)) throw new \Exception("Forbidden", 403);
+            if (!hasPermission(PERM_CHECKLIST_MANAGEMENT, $this->user)) throw new \Exception("Forbidden", 403);
             $attributes = ['id', 'recreate'];
             $missing = Utility::checkMissingAttributes($data, $attributes);
             throw_if(sizeof($missing) > 0, new \Exception("Missing parameters passed : " . json_encode($missing)));
@@ -140,7 +140,7 @@ class QuestionsBuilder extends Controller
     public function addSection($data)
     {
         try {
-            if(!hasPermission(PERM_CHECKLIST_MANAGEMENT, $this->user)) throw new \Exception("Forbidden", 403);
+            if (!hasPermission(PERM_CHECKLIST_MANAGEMENT, $this->user)) throw new \Exception("Forbidden", 403);
             $attributes = ['title', 'abbr', 'checklist_id'];
             $missing = Utility::checkMissingAttributes($data, $attributes);
             throw_if(sizeof($missing) > 0, new \Exception("Missing parameters passed : " . json_encode($missing)));
@@ -156,7 +156,7 @@ class QuestionsBuilder extends Controller
     public function updateSection($id, $data)
     {
         try {
-            if(!hasPermission(PERM_CHECKLIST_MANAGEMENT, $this->user)) throw new \Exception("Forbidden", 403);
+            if (!hasPermission(PERM_CHECKLIST_MANAGEMENT, $this->user)) throw new \Exception("Forbidden", 403);
             $attributes = ['title', 'abbr', 'checklist_id'];
             $missing = Utility::checkMissingAttributes($data, $attributes);
             throw_if(sizeof($missing) > 0, new \Exception("Missing parameters passed : " . json_encode($missing)));
@@ -172,7 +172,7 @@ class QuestionsBuilder extends Controller
     public function addQuestion($data)
     {
         try {
-            if(!hasPermission(PERM_CHECKLIST_MANAGEMENT, $this->user)) throw new \Exception("Forbidden", 403);
+            if (!hasPermission(PERM_CHECKLIST_MANAGEMENT, $this->user)) throw new \Exception("Forbidden", 403);
             $attributes = ['question', 'type', 'category'];
             $missing = Utility::checkMissingAttributes($data, $attributes);
             throw_if(sizeof($missing) > 0, new \Exception("Missing parameters passed : " . json_encode($missing)));
@@ -216,7 +216,7 @@ class QuestionsBuilder extends Controller
     public function updateQuestion($id, $data)
     {
         try {
-            if(!hasPermission(PERM_CHECKLIST_MANAGEMENT, $this->user)) throw new \Exception("Forbidden", 403);
+            if (!hasPermission(PERM_CHECKLIST_MANAGEMENT, $this->user)) throw new \Exception("Forbidden", 403);
             $attributes = ['question', 'type', 'category'];
             $missing = Utility::checkMissingAttributes($data, $attributes);
             throw_if(sizeof($missing) > 0, new \Exception("Missing parameters passed : " . json_encode($missing)));
@@ -252,9 +252,10 @@ class QuestionsBuilder extends Controller
         }
     }
 
-    public function deleteQuestion($data){
+    public function deleteQuestion($data)
+    {
         try {
-            if(!hasPermission(PERM_CHECKLIST_MANAGEMENT, $this->user)) throw new \Exception("Forbidden", 403);
+            if (!hasPermission(PERM_CHECKLIST_MANAGEMENT, $this->user)) throw new \Exception("Forbidden", 403);
             $attributes = ['id'];
             $missing = Utility::checkMissingAttributes($data, $attributes);
             throw_if(sizeof($missing) > 0, new \Exception("Missing parameters passed : " . json_encode($missing)));
@@ -262,7 +263,7 @@ class QuestionsBuilder extends Controller
             $question = Question::findOrFail($data['id']);
             $section = $question->section();
             $checklist = $section->checklist();
-            if($checklist->status != 'draft') throw new \Exception("Delete not allowed", -1);
+            if ($checklist->status != 'draft') throw new \Exception("Delete not allowed", -1);
             $question->delete();
             self::response(SUCCESS_RESPONSE_CODE, "Question deleted successfully.");
         } catch (\Throwable $th) {
@@ -274,7 +275,7 @@ class QuestionsBuilder extends Controller
     public function importQuestions()
     {
         try {
-            if(!hasPermission(PERM_CHECKLIST_MANAGEMENT, $this->user)) throw new \Exception("Forbidden", 403);
+            if (!hasPermission(PERM_CHECKLIST_MANAGEMENT, $this->user)) throw new \Exception("Forbidden", 403);
             $missing = Utility::checkMissingAttributes($_POST, ["section_id"]);
             throw_if(sizeof($missing) > 0, new \Exception("Missing parameters passed : " . json_encode($missing)));
             $missing = Utility::checkMissingAttributes($_FILES, ["upload_file"]);
@@ -379,6 +380,107 @@ class QuestionsBuilder extends Controller
             unlink($tempDir . $uploaded);
             DB::commit();
             self::response(SUCCESS_RESPONSE_CODE, "Import successfull.");
+        } catch (\Throwable $th) {
+            DB::rollback();
+            Utility::logError($th->getCode(), $th->getMessage());
+            self::response(PRECONDITION_FAILED_ERROR_CODE, $th->getMessage());
+        }
+    }
+
+    public function exportChecklistToJson($checklistId)
+    {
+        try {
+            // Get checklist
+            // Get sections
+            // Get questions
+            // Load to file and expose.
+            $checklist = Checklist::find($checklistId);
+            if ($checklist == null) throw new \Exception("Checklist not found.");
+            $data = array();
+            $data['title'] = $checklist->title;
+            $data['abbr'] = $checklist->abbr;
+            $data['description'] = $checklist->description;
+            $data['status'] = $checklist->status;
+            $sections = Section::where('checklist_id', $checklist->id)->get();
+            $sectionData = array();
+            foreach ($sections as $section) {
+                $sectionDatum  = array();
+                $sectionDatum['title'] = $section->title;
+                $sectionDatum['abbr'] = $section->abbr;
+                $questions = Question::where('section_id', $section->id)->get();
+                $questionData = array();
+                foreach ($questions as $question) {
+                    $questionDatum = array();
+                    $questionDatum['question'] = $question->question;
+                    $questionDatum['category'] = $question->category;
+                    $questionDatum['frequency_id'] = $question->frequency_id;
+                    $questionDatum['type'] = $question->type;
+                    $questionDatum['order_by'] = $question->order_by;
+                    $questionDatum['frm_option'] = $question->frm_option;
+                    $questionData[] = $questionDatum;
+                }
+                $sectionDatum['questions'] = $questionData;
+                $sectionData[] = $sectionDatum;
+            }
+            $data['sections'] = $sectionData;
+            $filename = $_ENV['TEMP_DIR'] . "checklist_export_" . $checklistId . ".json";
+            $handle = fopen($filename, 'w');
+            fwrite($handle, json_encode($data));
+            fclose($handle);
+            $this->returnFile($filename);
+            // echo json_encode($data);
+        } catch (\Throwable $th) {
+            Utility::logError($th->getCode(), $th->getMessage());
+            self::response(PRECONDITION_FAILED_ERROR_CODE, $th->getMessage());
+        }
+    }
+
+    public function importChecklistFromJson()
+    {
+        try {
+            $tempDir = $_ENV['TEMP_DIR'];
+            if (!is_dir($tempDir)) {
+                mkdir($tempDir);
+            }
+            $uploaded = Utility::uploadFile("", $tempDir);
+            if ($uploaded === null) throw new \Exception("Could not upload file");
+            $handle = fopen($tempDir . $uploaded, 'r');
+            $data = fread($handle, filesize($tempDir . $uploaded));
+            $checklistData = json_decode($data, false);
+            DB::beginTransaction();
+            // create checklist
+            $checklist = Checklist::create([
+                "title" => $checklistData->title,
+                "abbr" => $checklistData->abbr,
+                "description" => $checklistData->description,
+                "created_by" => $this->user->id
+            ]);
+            // create sections
+            $sections = $checklistData->sections;
+            foreach ($sections as $sectionData) {
+                $section = Section::create([
+                    "title" => $sectionData->title,
+                    "abbr" => $sectionData->abbr,
+                    "created_by" => $this->user->id,
+                    "checklist_id" => $checklist->id
+                ]);
+                // Create questions
+                $questions = $sectionData->questions;
+                foreach($questions as $questionData){
+                    $question = Question::create([
+                        "question" => $questionData->question,
+                        "category" => $questionData->category,
+                        "frequency_id" => $questionData->frequency_id,
+                        "type" => $questionData->type,
+                        "order_by" => $questionData->order_by,
+                        "frm_option" => $questionData->frm_option,
+                        "created_by" => $this->user->id,
+                        "section_id" => $section->id
+                    ]);
+                }
+            }
+            DB::commit();
+            self::response(SUCCESS_RESPONSE_CODE, "Checklist inported successfully");
         } catch (\Throwable $th) {
             DB::rollback();
             Utility::logError($th->getCode(), $th->getMessage());

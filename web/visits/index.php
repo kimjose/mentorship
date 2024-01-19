@@ -7,12 +7,11 @@ use Umb\Mentorship\Models\FacilityVisit;
 
 $visits = [];
 if ($currUser->getCategory()->access_level == 'Facility') {
-	$visits = FacilityVisit::where('facility_id', $currUser->facility_id)->get();
+    $visits = FacilityVisit::where('facility_id', $currUser->facility_id)->get();
 } else {
-	$visits = FacilityVisit::all();
+    $visits = FacilityVisit::orderBy('id', 'desc')->get();
 }
-$activeBadge = "<span class='badge badge-primary rounded-pill'>Active</span>";
-$inActiveBadge = "<span class='badge badge-warning rounded-pill'>In Active</span>";
+$todaysDate = date("Y-m-d")
 ?>
 
 <!-- Page Heading -->
@@ -73,7 +72,7 @@ $inActiveBadge = "<span class='badge badge-warning rounded-pill'>In Active</span
                                     <a href="index?page=visits-open&id=<?php echo $visit->id ?>" class="btn btn-secondary btn-flat" data-tooltip="tooltip" title="Open Visit">
                                         <i class="fas fa-fw fa-sign-in-alt"></i>
                                     </a>
-                                    <?php if (hasPermission(PERM_CREATE_VISIT, $currUser)) : ?>
+                                    <?php if (hasPermission(PERM_CREATE_VISIT, $currUser) && !$visit->closed) : ?>
                                         <button class="btn btn-primary btn-flat" data-tooltip="tooltip" title="Edit Visit" onclick='editVisit(<?php echo json_encode($visit); ?>)' data-toggle="modal" data-target="#modalVisit">
                                             <i class="fas fa-edit"></i>
                                         </button>
@@ -124,7 +123,7 @@ $inActiveBadge = "<span class='badge badge-warning rounded-pill'>In Active</span
 
                     <div class="form-group">
                         <label for="inputVisitDate">Visit Date</label>
-                        <input type="date" class="form-control" id="inputVisitDate" name="visit_date" placeholder="Visit Date" required>
+                        <input type="date" class="form-control" id="inputVisitDate" name="visit_date" max="<?php echo $todaysDate ?>" placeholder="Visit Date" required>
                     </div>
                     <div class="row pl-2">
                         <h5>Location</h5>

@@ -1,4 +1,4 @@
--- Active: 1659504893355@@127.0.0.1@3306@ess
+-- Active: 1676467061241@@127.0.0.1@3307@ess
 create table password_resets(
     id int not null AUTO_INCREMENT PRIMARY KEY,
     user_id int not null,

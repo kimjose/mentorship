@@ -205,6 +205,16 @@
               </li>
             </ul>
           </li>
+          <?php if ($currUser->getCategory()->access_level === 'Program') : ?>
+            <li class="nav-item">
+              <a href="./index?page=programs" class="nav-link nav-programs">
+                <i class="nav-icon fa fa-building"></i>
+                <p>
+                  Programs
+                </p>
+              </a>
+            </li>
+          <?php endif; ?>
         </ul>
       </nav>
     </div>

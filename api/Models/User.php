@@ -17,4 +17,18 @@ class User extends Model{
     public function getCategory(){
         return UserCategory::find($this->category_id);
     }
+
+    /**
+     * @return Program[]
+     */
+    public function getPrograms(){
+        return Program::whereIn('id', explode(',', $this->program_ids))->get();
+    }
+
+    /**
+     * @return array
+     */
+    public function getProgramsNames(){
+        return Program::whereIn('id', explode(',', $this->program_ids))->get(['name'])->pluck('name')->toArray();
+    }
 }

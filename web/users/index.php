@@ -11,6 +11,7 @@ if (!hasPermission(PERM_USER_MANAGEMENT, $currUser)) :
 
 $users = [];
 if ($currUser->getCategory()->access_level == 'Facility') {
+	/** @var User[] */
 	$users = User::where('facility_id', $currUser->facility_id)->get();
 } else {
 	$users = User::all();
@@ -29,6 +30,7 @@ if ($currUser->getCategory()->access_level == 'Facility') {
 					<thead>
 						<tr>
 							<th class="text-center">#</th>
+							<th>Programs</th>
 							<th>Name</th>
 							<th>Phone Number</th>
 							<th>User category</th>
@@ -43,6 +45,7 @@ if ($currUser->getCategory()->access_level == 'Facility') {
 						?>
 							<tr>
 								<th class="text-center"><?php echo $i++ ?></th>
+								<td><b><?php echo implode(', ', $user->getProgramsNames()); ?></b></td>
 								<td><b><?php echo ucwords($user->first_name . ' ' . $user->last_name) ?></b></td>
 								<td><b><?php echo $user->phone_number ?></b></td>
 								<td><b><?php echo $user->getCategory()->name ?></b></td>

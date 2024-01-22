@@ -30,3 +30,15 @@ CREATE DEFINER=`root`@`localhost` EVENT `ess_midnight_tasks`
  
     UPDATE facility_visits SET closed = 0 WHERE closed = 1;
 END
+
+CREATE TABLE `programs` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `created_by` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_program_name` (`name`) USING BTREE,
+  KEY `FK_program_creator` (`created_by`),
+  CONSTRAINT `FK_program_creator` FOREIGN KEY (`created_by`) REFERENCES `users` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;

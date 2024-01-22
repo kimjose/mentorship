@@ -270,6 +270,9 @@ $router->mount('/api/analytics', function () use ($router) {
         $controller->deleteAnalyticRun($data);
     });
 });
+$router->mount('/api/program' function() use($router){
+    $router->get('/', func)
+});
 
 
 $router->all('/logout', function () {

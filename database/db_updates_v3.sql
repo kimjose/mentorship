@@ -1,4 +1,4 @@
--- Active: 1676467061241@@127.0.0.1@3307@ess
+-- Active: 1659504893355@@127.0.0.1@3306@ess
 create table password_resets(
     id int not null AUTO_INCREMENT PRIMARY KEY,
     user_id int not null,
@@ -41,4 +41,4 @@ CREATE TABLE `programs` (
   UNIQUE KEY `unique_program_name` (`name`) USING BTREE,
   KEY `FK_program_creator` (`created_by`),
   CONSTRAINT `FK_program_creator` FOREIGN KEY (`created_by`) REFERENCES `users` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;

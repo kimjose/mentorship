@@ -6,6 +6,7 @@ use Umb\Mentorship\Controllers\Controller;
 use Umb\Mentorship\Controllers\QuestionsBuilder;
 use Umb\Mentorship\Controllers\FacilitiesController;
 use Umb\Mentorship\Controllers\FacilityVisitsController;
+use Umb\Mentorship\Controllers\ProgramsController;
 use Umb\Mentorship\Controllers\UsersController;
 use Umb\Mentorship\Models\VisitSection;
 
@@ -270,8 +271,21 @@ $router->mount('/api/analytics', function () use ($router) {
         $controller->deleteAnalyticRun($data);
     });
 });
-$router->mount('/api/program' function() use($router){
-    $router->get('/', func)
+$router->mount('/api/program', function() use($router){
+    $router->get('/', function(){
+        $controller = new ProgramsController();
+        $controller->getPrograms();
+    });
+    //POST
+    $data = json_decode(file_get_contents('php://input'), true);
+    $router->post('/', function() use ($router, $data){
+        $controller = new ProgramsController();
+        $controller->createProgram($data);
+    });
+    $router->post('/{id}', function($id) use ($router, $data){
+        $controller = new ProgramsController();
+        $controller->updateProgram($id, $data);
+    });    
 });
 
 

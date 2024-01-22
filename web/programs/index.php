@@ -1,5 +1,7 @@
-<?php /** @var Umb\Mentorship\Models\User $currUser */
-if (!in_array($currUser->category_id, [1])): ?>
+<?php
+
+/** @var Umb\Mentorship\Models\User $currUser */
+if (!in_array($currUser->category_id, [1])) : ?>
     <script>
         window.location.replace('index.php');
     </script>
@@ -35,7 +37,6 @@ $programs = \Umb\Mentorship\Models\Program::all();
                 <thead>
                     <tr>
                         <th>#</th>
-                        <!-- <th>Logo</th> -->
                         <th>Name</th>
                         <th>Actions</th>
                     </tr>
@@ -43,7 +44,6 @@ $programs = \Umb\Mentorship\Models\Program::all();
                 <tfoot>
                     <tr>
                         <th>#</th>
-                        <!-- <th>Logo</th> -->
                         <th>Name</th>
                         <th>Actions</th>
                     </tr>
@@ -83,24 +83,9 @@ $programs = \Umb\Mentorship\Models\Program::all();
             <form action="" method="post" onsubmit="event.preventDefault()" id="formProgram">
 
                 <div class="modal-body">
-                    <div class="form-group d-none">
-                        <label class="custom-control-label" for="inputName">Name</label>
-                        <input type="text" class="form-control" id="inputCreator" name="created_by" value="<?php echo $currUser->id; ?>">
-                    </div>
                     <div class="form-group">
                         <label class="custom-control-label" for="inputName">Name</label>
                         <input type="text" class="form-control" id="inputName" name="name" required placeholder="Program name">
-                    </div>
-                    <!-- <div class="form-group">
-                        <label for="inputLogo">Program Logo</label>
-                        <div class="custom-file">
-                            <input type="file" class="custom-file-input rounded-circle" id="inputLogo" name="upload_file" onchange="displayImg(this,$(this))">
-                            <label class="custom-file-label" for="customFile">Choose file</label>
-                        </div> -->
-
-                    </div>
-                    <div class="form-group d-flex justify-content-center">
-                        <img src="../public/logo.png" alt="" style="width: 200px; height: 200px;" id="cimg" class="img-fluid img-thumbnail">
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -119,12 +104,10 @@ $programs = \Umb\Mentorship\Models\Program::all();
 <script>
     let editedId = ''
     const inputName = document.getElementById('inputName')
-    const inputLogo = document.getElementById('inputLogo')
     const formProgram = document.getElementById('formProgram')
     const currUser = JSON.parse('<?php echo $currUser; ?>')
 
     function initialize() {
-        updateNav('navPrograms')
 
         $("#modalProgram").on("hide.bs.modal", () => {
             editedId = ''
@@ -147,20 +130,18 @@ $programs = \Umb\Mentorship\Models\Program::all();
 
     function saveProgram() {
         let btnSaveProgram = document.getElementById('btnSaveProgram')
-        let formData = new FormData(formProgram)
         let name = inputName.value
         let data = {
             name: name
         }
         data.created_by = currUser.id;
-        data.upload_file = inputLogo.files[0]
         let saveUrl = '../api/program'
         let updateUrl = `../api/program/${editedId}`
-        /*fetch(
+        fetch(
                 editedId === "" ? saveUrl : updateUrl, {
 
                     method: "POST",
-                    body: JSON.stringify(formData),
+                    body: JSON.stringify(data),
                     headers: {
                         "content-type": "application/x-www-form-urlencoded",
                         cache: false,
@@ -173,49 +154,21 @@ $programs = \Umb\Mentorship\Models\Program::all();
             })
             .then(response => {
                 if (response.code === 200) {
-                    toastr.success("User added successfully.")
-                    // window.location.reload()
+                    toastr.success("Program saved successfully.")
+                    setTimeout(() => window.location.reload(), 765)
                 } else throw new Error(response.message)
                 // hideModal(dialogId)
             })
             .catch(error => {
                 console.log(error.message);
                 toastr.error(error.message)
-            })*/
+            })
 
-        $.ajax({
-            url: editedId === "" ? saveUrl : updateUrl,
-            type: "POST",
-            data: new FormData(formProgram),
-            contentType: false,
-            cache: false,
-            processData: false,
-            beforeSend: function() {
-                btnSaveProgram.setAttribute('disabled', '')
-                //$("#preview").fadeOut();
-                // $("#err").fadeOut();
-            },
-            success: function(data) {
-                let response = data
-                if (response.code == 200) {
-                    toastr.success("Program added successfully.")
-                    setTimeout(() => window.location.reload(), 1000);
-                } else {
-                    btnSaveProgram.removeAttribute('disabled')
-                    toastr.error(response.message)
-                }
-            },
-            error: function(e) {
-                btnSaveProgram.removeAttribute('disabled')
-                toastr.error(e.message)
-            }
-        });
     }
 
-    function editProgram(program){
+    function editProgram(program) {
         editedId = program.id;
         inputName.value = program.name;
-        $('#cimg').attr('src', `../public/${program.logo}`)
     }
 
     initialize()

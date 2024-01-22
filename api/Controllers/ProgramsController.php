@@ -39,10 +39,10 @@ class ProgramsController extends Controller
             $missing = Utility::checkMissingAttributes($data, $attributes);
             throw_if(sizeof($missing) > 0, new \Exception("Missing parameters passed : " . json_encode($missing)));
             $data['created_by'] = $this->user->id;
-            $program = Program::findOrFail();
+            $program = Program::findOrFail($id);
             $program->name = $data['name'];
-            $program->save;
-            self::response(SUCCESS_RESPONSE_CODE, "User created successfully.", $program);
+            $program->save();
+            self::response(SUCCESS_RESPONSE_CODE, "Program updated successfully.", $program);
         } catch (\Throwable $th) {
             Utility::logError($th->getCode(), $th->getMessage());
             $this->response(PRECONDITION_FAILED_ERROR_CODE, $th->getMessage());

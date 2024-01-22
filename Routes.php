@@ -84,13 +84,11 @@ $router->post("/api/import_checklist", function () {
 });
 $router->post("/api/user", function () {
     $controller = new UsersController();
-    $data = json_decode(file_get_contents('php://input'), true);
-    $controller->createUser($data);
+    $controller->createUser($_POST);
 });
 $router->post("/api/user/{id}", function ($id) {
     $controller = new UsersController();
-    $data = json_decode(file_get_contents('php://input'), true);
-    $controller->updateUser($id, $data);
+    $controller->updateUser($id, $_POST);
 });
 $router->post("/api/user_profile_update/{id}", function($id){
     $controller = new UsersController();

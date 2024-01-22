@@ -17,7 +17,7 @@ class UsersController extends Controller
     {
         try {
             if (!hasPermission(PERM_USER_MANAGEMENT, $this->user)) throw new \Exception("Forbidden", 403);
-            $attributes = ['first_name', 'middle_name', 'last_name', 'email', 'phone_number', 'facility_id'];
+            $attributes = ['program_ids', 'first_name', 'middle_name', 'last_name', 'email', 'phone_number', 'facility_id'];
             $missing = Utility::checkMissingAttributes($data, $attributes);
             throw_if(sizeof($missing) > 0, new \Exception("Missing parameters passed : " . json_encode($missing)));
             if ($data['password'] != '') {
@@ -27,6 +27,8 @@ class UsersController extends Controller
             $data['created_by'] = $this->user->id;
             $data['active'] = 1;
             $data['facility_id'] = $data['facility_id'] == '' ? null : $data['facility_id'];
+            $programIds = implode(',', $data['program_ids']);
+            $data['program_ids'] = $programIds;
             User::create($data);
             self::response(SUCCESS_RESPONSE_CODE, "User created successfully.");
         } catch (\Throwable $th) {
@@ -39,7 +41,7 @@ class UsersController extends Controller
     {
         try {
             if (!hasPermission(PERM_USER_MANAGEMENT, $this->user)) throw new \Exception("Forbidden", 403);
-            $attributes = ['first_name', 'middle_name', 'last_name', 'email', 'phone_number', 'password', 'facility_id'];
+            $attributes = ['program_ids', 'first_name', 'middle_name', 'last_name', 'email', 'phone_number', 'password', 'facility_id'];
             $missing = Utility::checkMissingAttributes($data, $attributes);
             throw_if(sizeof($missing) > 0, new \Exception("Missing parameters passed : " . json_encode($missing)));
             $u = User::findOrFail($id);
@@ -47,6 +49,9 @@ class UsersController extends Controller
                 $data['password'] = md5($data['password']);
             } else unset($data['password']);
             $data['facility_id'] = $data['facility_id'] == '' ? null : $data['facility_id'];
+
+            $programIds = implode(',', $data['program_ids']);
+            $data['program_ids'] = $programIds;
             $u->update($data);
             self::response(SUCCESS_RESPONSE_CODE, "User updated successfully.");
         } catch (\Throwable $th) {

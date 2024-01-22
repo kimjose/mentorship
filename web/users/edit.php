@@ -11,8 +11,9 @@ if (!hasPermission(PERM_USER_MANAGEMENT, $currUser)) :
 <?php
 endif;
 
-use Umb\Mentorship\Models\Facility;
 use Umb\Mentorship\Models\User;
+use Umb\Mentorship\Models\Program;
+use Umb\Mentorship\Models\Facility;
 use Umb\Mentorship\Models\UserCategory;
 
 $id = '';
@@ -50,6 +51,7 @@ if ($currUser->getCategory()->access_level == 'Facility') {
 		if ($allowed) $categories[] = $category;
 	}
 }
+$programs = Program::all(); // TODO filter depending on who has logged in
 ?>
 <div class="col-lg-12">
 	<div class="card">
@@ -90,6 +92,16 @@ if ($currUser->getCategory()->access_level == 'Facility') {
 										<option value="<?php echo $category->id ?>" <?php echo $category->id === $u->category_id ? ' selected' : '' ?>> <?php echo $category->name ?> </option>
 								<?php endforeach;
 								endif; ?>
+							</select>
+						</div>
+						<div class="form-group">
+							<label for="selectPrograms">Program<sub>s</sub></label>
+							<select name="program_ids[]" id="selectPrograms" class="select2" multiple="multiple" data-placeholder="Select programs">
+								<?php
+								foreach ($programs as $program) :
+								?>
+									<option value="<?php echo $program->id ?>" <?php if($id != '' && in_array($program->id, explode(',', $u->program_ids))) echo 'selected'; ?> ><?php echo $program->name ?></option>
+								<?php endforeach; ?>
 							</select>
 						</div>
 						<div class="form-group <?php echo ($id !== '' && $u->getCategory()->access_level != 'Facility') ? 'd-none' : '' ?>" id="divSelectFacility">
@@ -188,6 +200,34 @@ if ($currUser->getCategory()->access_level == 'Facility') {
 			userData[key] = value
 		}
 
+            start_load()
+
+            $.ajax({
+                url: id == '' ? '../api/user' : `../api/user/${id}`,
+                data: formData,
+                cache: false,
+                contentType: false,
+                processData: false,
+                method: 'POST',
+                type: 'POST',
+                success: function(resp) {
+                    end_load()
+                    if (resp.code == 200) {
+                        alert_toast('Data successfully saved.', "success");
+                        setTimeout(function() {
+                            location.replace('index?page=users');
+                        }, 800)
+                    } else {
+                        toastr.error(resp.message)
+                    }
+                },
+                error: function(request, status, error) {
+                    end_load()
+				console.log(error.message);
+				toastr.error(error.message)
+                }
+            })
+/*
 		fetch(id == '' ? '../api/user' : `../api/user/${id}`, {
 				method: 'POST',
 				body: JSON.stringify(userData),
@@ -210,7 +250,7 @@ if ($currUser->getCategory()->access_level == 'Facility') {
 				end_load()
 				console.log(error.message);
 				toastr.error(error.message)
-			})
+			})*/
 	})
 
 	function accessLevelChanged() {

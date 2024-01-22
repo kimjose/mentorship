@@ -67,7 +67,7 @@ class FacilitiesController extends Controller
     public function createTeam($data){
         try {
             if(!hasPermission(PERM_SYSTEM_ADMINISTRATION, $this->user)) throw new \Exception("Forbidden", 403);
-            $attributes = ['team_lead', 'name'];
+            $attributes = ['program_id', 'team_lead', 'name'];
             $missing = Utility::checkMissingAttributes($data, $attributes);
             throw_if(sizeof($missing) > 0, new \Exception("Missing parameters passed : " . json_encode($missing)));
             Team::create($data);
@@ -81,7 +81,7 @@ class FacilitiesController extends Controller
     public function updateTeam($id,$data){
         try {
             if(!hasPermission(PERM_SYSTEM_ADMINISTRATION, $this->user)) throw new \Exception("Forbidden", 403);
-            $attributes = ['team_lead', 'name'];
+            $attributes = ['program_id', 'team_lead', 'name'];
             $missing = Utility::checkMissingAttributes($data, $attributes);
             throw_if(sizeof($missing) > 0, new \Exception("Missing parameters passed : " . json_encode($missing)));
             $team = Team::findOrFail($id);

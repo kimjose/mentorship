@@ -5,7 +5,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Team extends Model{
 
-    protected $fillable = ['name', 'team_lead'];
+    protected $fillable = ['program_id', 'name', 'team_lead'];
 
     /**
      * @return User
@@ -19,6 +19,13 @@ class Team extends Model{
      */
     public function facilities(){
         return Facility::where('team_id', $this->id)->get();
+    }
+
+    /**
+     * @return Program
+     */
+    public function program(){
+        return Program::find($this->program_id);
     }
 
 }

@@ -1,8 +1,9 @@
 <?php
 
-use Umb\Mentorship\Models\Facility;
 use Umb\Mentorship\Models\Team;
 use Umb\Mentorship\Models\User;
+use Umb\Mentorship\Models\Program;
+use Umb\Mentorship\Models\Facility;
 
 $id = '';
 if (isset($_GET['id'])) {
@@ -10,6 +11,7 @@ if (isset($_GET['id'])) {
     $t = Team::findOrFail($id);
 }
 $users = User::all();
+$programs =  Program::all(); // TODO filter depending on the user logged in.
 if (!hasPermission(PERM_USER_MANAGEMENT, $currUser)) :
 ?>
     <script>
@@ -20,7 +22,18 @@ if (!hasPermission(PERM_USER_MANAGEMENT, $currUser)) :
     <div class="card">
         <div class="card-body p-2">
             <form action="" id="manage_team">
-
+                <div class="form-group">
+                    <label for="selectProgram">Program</label>
+                    <select name="program_id" id="selectProgram" class="form-control select2" required>
+                        <option value="" hidden selected>Select Program</option>
+                        <?php
+                        for ($j = 0; $j < sizeof($programs); $j++) :
+                            $program = $programs[$j];
+                        ?>
+                            <option value="<?php echo $program->id ?>" <?php echo ($id != '' && $t->program_id == $program->id) ? 'selected' : '' ?> ><?php echo $program->name; ?> </option>
+                        <?php endfor; ?>
+                    </select>
+                </div>
                 <div class="form-group">
                     <label for="inputName">Team Name</label>
                     <input placeholder="Team name" type="text" name="name" id="inputName" class="form-control" required value="<?php echo $id == '' ? '' : $t->name ?>">
@@ -112,6 +125,7 @@ if (!hasPermission(PERM_USER_MANAGEMENT, $currUser)) :
     const id = '<?php echo $id ?>'
     const formManageTeam = document.querySelector('#manage_team')
     const inputName = document.querySelector('#inputName')
+    const selectProgram = document.querySelector('#selectProgram')
     const selectTeamLead = document.querySelector('#selectTeamLead')
 
     $(document).ready(function() {
@@ -123,6 +137,12 @@ if (!hasPermission(PERM_USER_MANAGEMENT, $currUser)) :
 
     $('#manage_team').submit(e => {
         e.preventDefault()
+        let program = $(selectProgram).val()
+        if (program === '') {
+            selectProgram.focus();
+            toastr.error('Select program first')
+            return
+        }
         let name = inputName.value.trim()
         if (name === '') {
             inputName.focus()
@@ -141,6 +161,7 @@ if (!hasPermission(PERM_USER_MANAGEMENT, $currUser)) :
                     "content-type": "application/x-www-form-urlencoded"
                 },
                 body: JSON.stringify({
+                    program_id: program,
                     name: name,
                     team_lead: lead
                 })

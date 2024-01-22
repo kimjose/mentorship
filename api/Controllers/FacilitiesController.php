@@ -19,7 +19,7 @@ class FacilitiesController extends Controller
     public function addFacility($data){
         try {
             if(!hasPermission(PERM_SYSTEM_ADMINISTRATION, $this->user)) throw new \Exception("Forbidden", 403);
-            $attributes = ['mfl_code', 'name', 'county_code', 'latitude', 'longitude', 'active', 'team_id'];
+            $attributes = ['program_id', 'mfl_code', 'name', 'county_code', 'latitude', 'longitude', 'active', 'team_id'];
             $missing = Utility::checkMissingAttributes($data, $attributes);
             throw_if(sizeof($missing) > 0, new \Exception("Missing parameters passed : " . json_encode($missing)));
             $exists = Facility::where('mfl_code', $data['mfl_code'])->first();
@@ -38,13 +38,14 @@ class FacilitiesController extends Controller
     public function updateFacility($id, $data){
         try {
             if(!hasPermission(PERM_SYSTEM_ADMINISTRATION, $this->user)) throw new \Exception("Forbidden", 403);
-            $attributes = ['mfl_code', 'name', 'county_code', 'active', 'team_id'];
+            $attributes = ['program_id', 'mfl_code', 'name', 'county_code', 'active', 'team_id'];
             $missing = Utility::checkMissingAttributes($data, $attributes);
             throw_if(sizeof($missing) > 0, new \Exception("Missing parameters passed : " . json_encode($missing)));
             $exists = Facility::where('mfl_code', $data['mfl_code'])->where('id','!=', $id)->first();
             throw_if($exists != null, new \Exception("Facility already exists.", -1));
             $facility = Facility::findOrFail($id);
             $facility->mfl_code = $data['mfl_code'];
+            $facility->program_id = $data['program_id'];
             $facility->name = $data['name'];
             $facility->county_code = $data['county_code'];
             $facility->active = $data['active'];

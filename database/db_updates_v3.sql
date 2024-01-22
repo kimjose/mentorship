@@ -42,3 +42,6 @@ CREATE TABLE `programs` (
   KEY `FK_program_creator` (`created_by`),
   CONSTRAINT `FK_program_creator` FOREIGN KEY (`created_by`) REFERENCES `users` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+alter table facilities add column program_id int not null default 1 after id;
+alter table facilities add constraint fk_facility_program FOREIGN KEY(program_id) REFERENCES programs(id) on delete restrict on update cascade;

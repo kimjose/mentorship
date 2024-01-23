@@ -49,3 +49,13 @@ alter table facilities add constraint fk_facility_program FOREIGN KEY(program_id
 alter table users add column program_ids text null after id;
 alter table teams add column program_id int not null default 1 after id,
     add constraint fk_team_program FOREIGN KEY(program_id) REFERENCES programs(id) on update cascade on delete restrict;
+
+create table team_members(
+    user_id int not null,
+    team_id int not null,
+    created_at TIMESTAMP null DEFAULT CURRENT_TIMESTAMP(),
+    updated_at TIMESTAMP null DEFAULT CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP(),
+    PRIMARY KEY(user_id, team_id),
+    constraint fk_team_member_team FOREIGN KEY(team_id) REFERENCES teams(id) on delete cascade on update cascade,
+    constraint fk_team_members_user FOREIGN KEY(user_id) REFERENCES users(id) on delete cascade on update cascade
+);

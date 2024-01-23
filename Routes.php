@@ -164,6 +164,15 @@ $router->post('/api/remove_facility_from_team', function () {
     $controller = new FacilitiesController();
     $controller->removeFacilityFromTeam($data);
 });
+$router->post('/api/add_members_to_team', function () {
+    $controller = new UsersController();
+    $controller->addMembersToTeam($_POST);
+});
+$router->post('/api/remove_member_from_team', function () {
+    $data = json_decode(file_get_contents('php://input'), true);
+    $controller = new UsersController();
+    $controller->removeMemberFromTeam($data);
+});
 $router->get('/api/visits', function () {
     $controller = new FacilityVisitsController();
     Controller::response(SUCCESS_RESPONSE_CODE, '', $controller->getVisits());

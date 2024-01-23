@@ -5,21 +5,12 @@ use Umb\Mentorship\Models\Facility;
 use Umb\Mentorship\Models\Checklist;
 use Umb\Mentorship\Models\FacilityVisit;
 use Illuminate\Database\Capsule\Manager as DB;
+use Umb\Mentorship\Models\Program;
 
-$thisMonth = date('y-m-01');
 
-$startDate = date_create(date('y-m-d'));
-$endDate = date('Y-m-d');
-date_sub($startDate, date_interval_create_from_date_string("60 days"));
-$startDate = date_format($startDate, 'Y-m-d');
-
-$users = User::all();
-$facilities = DB::select("select f.*, (select COUNT(fv.facility_id) from facility_visits fv where fv.facility_id = f.id GROUP BY fv.facility_id) as visits from facilities f order by visits desc;");
-$checklists = Checklist::where('status', 'published')->get();
-/** @var FacilityVisit[] $periodVisits */
-$periodVisits = FacilityVisit::where('visit_date', '>=', $startDate)->where('visit_date', '<=', $endDate)->orderBy('visit_date', 'asc')->get();
-
-$responses = DB::select("select r.visit_id, r.question_id, q.category, q.frequency_id from responses r left join questions q on q.id = r.question_id ");
+$programs = Program::all(); //TODO filter depending on user logged in
+$program_id = $_GET['program_id'] ?? '';
+$selected = false;
 ?>
 
 <!-- Page Heading -->
@@ -28,8 +19,47 @@ $responses = DB::select("select r.visit_id, r.question_id, q.category, q.frequen
 
     <li class="breadcrumb-item active"> Home </li>
   </ol>
-
+  <form action="">
+    <div class="form-group">
+      <select name="program" id="selectProgram" class="form-control" onchange="selectProgramChanged()">
+        <option value="" hidden>Select program</option>
+        <?php for ($i = 0; $i < sizeof($programs); $i++) :
+          $program = $programs[$i];
+          if ($program_id == '' && $i == 0) $program_id = $program->id;
+          if ($program_id == $program->id) $selected = true;
+          if ($i == (sizeof($programs) - 1) && !$selected) : $program_id = $program->id;
+        ?>
+            <script>
+             location.replace("index?program_id=<?php echo $program_id; ?>")
+            </script>
+          <?php endif; ?>
+          <option value="<?php echo $program->id ?>" <?php echo $program_id == $program->id ? 'selected' : '' ?>><?php echo $program->name ?></option>
+        <?php
+        endfor;
+        ?>
+      </select>
+    </div>
+  </form>
 </div>
+
+<?php
+
+$thisMonth = date('y-m-01');
+
+$startDate = date_create(date('y-m-d'));
+$endDate = date('Y-m-d');
+date_sub($startDate, date_interval_create_from_date_string("60 days"));
+$startDate = date_format($startDate, 'Y-m-d');
+
+$users = DB::select("select * from users where active = ? and $program_id in (program_ids)", [1]);
+$facilities = DB::select("select f.*, (select COUNT(fv.facility_id) from facility_visits fv where fv.facility_id = f.id GROUP BY fv.facility_id) as visits from facilities f where f.program_id = $program_id order by visits desc;");
+$checklists = Checklist::where('status', 'published')->get();
+/** @var FacilityVisit[] $periodVisits */
+$periodVisits = FacilityVisit::where('visit_date', '>=', $startDate)->where('visit_date', '<=', $endDate)->orderBy('visit_date', 'asc')->get();
+$periodVisit = DB::select("select fv.* from facility_visits fv left join facilities f on f.id = fv.facility_id where f.program_id = ? and fv.visit_date between ? and ? order by fv.visit_date asc", [$program_id, $startDate, $endDate]);
+$responses = DB::select("select r.visit_id, r.question_id, q.category, q.frequency_id from responses r left join questions q on q.id = r.question_id left join facility_visits v on v.id = r.visit_id left join facilities f on f.id = v.facility_id where f.program_id = $program_id");
+
+?>
 
 <!-- top row boxes -->
 <div class="row">
@@ -230,6 +260,11 @@ $responses = DB::select("select r.visit_id, r.question_id, q.category, q.frequen
   const endDateString = "<?php echo $endDate; ?>"
   const visits = JSON.parse('<?php echo $periodVisits ?>');
   const responses = JSON.parse('<?php echo json_encode($responses) ?>')
+
+  function selectProgramChanged(){
+    let selected = $("#selectProgram").val();
+    location.replace(`index?program_id=${selected}`);
+  }
 
   function drawResponseDonut() {
     let canvasResponse = $('#canvasResponse').get(0).getContext('2d')

@@ -1,4 +1,4 @@
--- Active: 1659504893355@@127.0.0.1@3306@ess
+-- Active: 1636088492019@@127.0.0.1@3306@ess
 create table password_resets(
     id int not null AUTO_INCREMENT PRIMARY KEY,
     user_id int not null,
@@ -43,6 +43,7 @@ CREATE TABLE `programs` (
   CONSTRAINT `FK_program_creator` FOREIGN KEY (`created_by`) REFERENCES `users` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+insert into programs(name, created_by) VALUES('CONNECT', 1);
 alter table facilities add column program_id int not null default 1 after id;
 alter table facilities add constraint fk_facility_program FOREIGN KEY(program_id) REFERENCES programs(id) on delete restrict on update cascade;
 alter table users add column program_ids text null after id;

@@ -24,7 +24,7 @@ if (!hasPermission(PERM_USER_MANAGEMENT, $currUser)) :
             <form action="" id="manage_team">
                 <div class="form-group">
                     <label for="selectProgram">Program</label>
-                    <select name="program_id" id="selectProgram" class="form-control select2" required>
+                    <select name="program_id" id="selectProgram" class="form-control select2" <?php echo $id != '' ? 'disabled' : '' ?> required>
                         <option value="" hidden selected>Select Program</option>
                         <?php
                         for ($j = 0; $j < sizeof($programs); $j++) :
@@ -131,7 +131,8 @@ if (!hasPermission(PERM_USER_MANAGEMENT, $currUser)) :
     $(document).ready(function() {
         $('.select2').select2()
         $('#btnAddFacilities').click(() => {
-            uni_modal("Add Facilities", `teams/dialog_add_facilities?team_id=${id}`, "large")
+            let programId = $(selectProgram).val()
+            uni_modal("Add Facilities", `teams/dialog_add_facilities?team_id=${id}&program_id=${programId}`, "large")
         })
     })
 

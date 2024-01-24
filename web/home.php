@@ -6,7 +6,7 @@ use Umb\Mentorship\Models\Checklist;
 use Umb\Mentorship\Models\FacilityVisit;
 use Illuminate\Database\Capsule\Manager as DB;
 use Umb\Mentorship\Models\Program;
-
+use Umb\Mentorship\Models\Team;
 
 $programs = Program::all(); //TODO filter depending on user logged in
 $program_id = $_GET['program_id'] ?? '';
@@ -55,9 +55,9 @@ $users = DB::select("select * from users where active = ? and $program_id in (pr
 $facilities = DB::select("select f.*, (select COUNT(fv.facility_id) from facility_visits fv where fv.facility_id = f.id GROUP BY fv.facility_id) as visits from facilities f where f.program_id = $program_id order by visits desc;");
 $checklists = Checklist::where('status', 'published')->get();
 /** @var FacilityVisit[] $periodVisits */
-$periodVisits = DB::select("select fv.* from facility_visits fv left join facilities f on f.id = fv.facility_id where f.program_id = ? and fv.visit_date between ? and ? order by fv.visit_date asc", [$program_id, $startDate, $endDate]);
+$periodVisits = DB::select("select fv.*, f.team_id from facility_visits fv left join facilities f on f.id = fv.facility_id where f.program_id = ? and fv.visit_date between ? and ? order by fv.visit_date asc", [$program_id, $startDate, $endDate]);
 $responses = DB::select("select r.visit_id, r.question_id, q.category, q.frequency_id from responses r left join questions q on q.id = r.question_id left join facility_visits v on v.id = r.visit_id left join facilities f on f.id = v.facility_id where f.program_id = $program_id");
-
+$teams = Team::where('program_id', $program_id)->get();
 ?>
 
 <!-- top row boxes -->
@@ -252,7 +252,38 @@ $responses = DB::select("select r.visit_id, r.question_id, q.category, q.frequen
   </div>
 
 </div>
+<?php
+/*
+  // Action Points Statistics
+  $dashboardStats = [
+    'totalActionPoints' => count($actionPoints),
+    'pendingActionPoints' => array_reduce($actionPoints, function ($carry, $item) {
+        return $carry + ($item->status === 'Pending' ? 1 : 0);
+    }, 0),
+    'overdueActionPoints' => array_reduce($actionPoints, function ($carry, $item) {
+        $dueDate = date_create($item->due_date . ' 23:59:59');
+        $today = date_create(date('Y-m-d G:i:s'));
+        return $carry + ($dueDate < $today ? 1 : 0);
+    }, 0),
+    // Add more dashboard statistics here
+    'averageCompletionTime' => calculateAverageCompletionTime($actionPoints),
+    'actionPointsByCategory' => countActionPointsByCategory($actionPoints),
+    // Add more dashboard statistics as needed
+];
+*/
+?>
 
+
+<!-- Add more dashboard sections to display additional statistics -->
+<!-- <div class="dashboard-section">
+    <h2>Dashboard</h2>
+    <div>Total Action Points: <?php echo $dashboardStats['totalActionPoints']; ?></div>
+    <div>Pending Action Points: <?php echo $dashboardStats['pendingActionPoints']; ?></div>
+    <div>Overdue Action Points: <?php echo $dashboardStats['overdueActionPoints']; ?></div>
+    <div>Average Completion Time: <?php echo $dashboardStats['averageCompletionTime']; ?></div>
+    <div>Action Points by Category: <?php echo json_encode($dashboardStats['actionPointsByCategory']); ?></div>
+    
+</div> -->
 
 <script>
   const startDateString = "<?php echo $startDate; ?>"
@@ -383,34 +414,7 @@ $responses = DB::select("select r.visit_id, r.question_id, q.category, q.frequen
       }
     })
   }
-   // Action Points Statistics
-   $dashboardStats = [
-    'totalActionPoints' => count($actionPoints),
-    'pendingActionPoints' => array_reduce($actionPoints, function ($carry, $item) {
-        return $carry + ($item->status === 'Pending' ? 1 : 0);
-    }, 0),
-    'overdueActionPoints' => array_reduce($actionPoints, function ($carry, $item) {
-        $dueDate = date_create($item->due_date . ' 23:59:59');
-        $today = date_create(date('Y-m-d G:i:s'));
-        return $carry + ($dueDate < $today ? 1 : 0);
-    }, 0),
-    // Add more dashboard statistics here
-    'averageCompletionTime' => calculateAverageCompletionTime($actionPoints),
-    'actionPointsByCategory' => countActionPointsByCategory($actionPoints),
-    // Add more dashboard statistics as needed
-];
-?>
-
-<!-- Add more dashboard sections to display additional statistics -->
-<div class="dashboard-section">
-    <h2>Dashboard</h2>
-    <div>Total Action Points: <?php echo $dashboardStats['totalActionPoints']; ?></div>
-    <div>Pending Action Points: <?php echo $dashboardStats['pendingActionPoints']; ?></div>
-    <div>Overdue Action Points: <?php echo $dashboardStats['overdueActionPoints']; ?></div>
-    <div>Average Completion Time: <?php echo $dashboardStats['averageCompletionTime']; ?></div>
-    <div>Action Points by Category: <?php echo json_encode($dashboardStats['actionPointsByCategory']); ?></div>
-    <!-- Add more dashboard sections to display additional statistics -->
-</div>
+ 
 
   drawVisitsGraph()
   drawResponseDonut()

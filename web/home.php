@@ -257,7 +257,7 @@ $responses = DB::select("select r.visit_id, r.question_id, q.category, q.frequen
 <script>
   const startDateString = "<?php echo $startDate; ?>"
   const endDateString = "<?php echo $endDate; ?>"
-  const visits = JSON.parse('<?php echo $periodVisits ?>');
+  const visits = JSON.parse('<?php echo json_encode($periodVisits) ?>');
   const responses = JSON.parse('<?php echo json_encode($responses) ?>')
 
   function selectProgramChanged(){

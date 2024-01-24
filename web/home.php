@@ -55,8 +55,7 @@ $users = DB::select("select * from users where active = ? and $program_id in (pr
 $facilities = DB::select("select f.*, (select COUNT(fv.facility_id) from facility_visits fv where fv.facility_id = f.id GROUP BY fv.facility_id) as visits from facilities f where f.program_id = $program_id order by visits desc;");
 $checklists = Checklist::where('status', 'published')->get();
 /** @var FacilityVisit[] $periodVisits */
-$periodVisits = FacilityVisit::where('visit_date', '>=', $startDate)->where('visit_date', '<=', $endDate)->orderBy('visit_date', 'asc')->get();
-$periodVisit = DB::select("select fv.* from facility_visits fv left join facilities f on f.id = fv.facility_id where f.program_id = ? and fv.visit_date between ? and ? order by fv.visit_date asc", [$program_id, $startDate, $endDate]);
+$periodVisits = DB::select("select fv.* from facility_visits fv left join facilities f on f.id = fv.facility_id where f.program_id = ? and fv.visit_date between ? and ? order by fv.visit_date asc", [$program_id, $startDate, $endDate]);
 $responses = DB::select("select r.visit_id, r.question_id, q.category, q.frequency_id from responses r left join questions q on q.id = r.question_id left join facility_visits v on v.id = r.visit_id left join facilities f on f.id = v.facility_id where f.program_id = $program_id");
 
 ?>

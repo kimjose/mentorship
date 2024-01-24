@@ -6,7 +6,9 @@ use Illuminate\Database\Capsule\Manager as DB;
 $teamId = $_GET['team_id'];
 $programId = $_GET['program_id'];
 $members = TeamMember::where('team_id', $teamId)->get(['user_id'])->pluck('user_id')->toArray();
-$query = "select * from users where $programId in program_ids and id not in (" . implode(",", $members) . ")";
+$query = "select u.* from users u where $programId in (u.program_ids) and id not in (" . (sizeof($members) == 0 ? '0' : implode(",", $members) ). ")";
+// echo $query ;
+// return;
 $users = DB::select($query);
 
 ?>
@@ -15,10 +17,10 @@ $users = DB::select($query);
     <form action="" id="formAddMembers">
         <input type="hidden" name="team_id" value="<?php echo $teamId ?>">
         <div class="form-group">
-            <label for="selectMembers">Select Mambers</label>
+            <label for="selectMembers">Select Members</label>
             <select name="user_ids[]" class="select2" multiple="multiple" data-placeholder="Select members" id="selectMembers">
                 <?php foreach ($users as $user) : ?>
-                    <option value="<?php echo $user->id ?>"><?php echo ucwords($user->first_name, ' ', $user->last_name) ?></option>
+                    <option value="<?php echo $user->id ?>"><?php echo ucwords($user->first_name . ' ' . $user->last_name) ?></option>
                 <?php endforeach; ?>
             </select>
         </div>

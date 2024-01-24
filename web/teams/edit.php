@@ -1,6 +1,6 @@
 <?php
 
-use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Capsule\Manager as DB;
 use Umb\Mentorship\Models\Team;
 use Umb\Mentorship\Models\User;
 use Umb\Mentorship\Models\Program;
@@ -31,7 +31,7 @@ if (!hasPermission(PERM_USER_MANAGEMENT, $currUser)) :
                         for ($j = 0; $j < sizeof($programs); $j++) :
                             $program = $programs[$j];
                         ?>
-                            <option value="<?php echo $program->id ?>" <?php echo ($id != '' && $t->program_id == $program->id) ? 'selected' : '' ?> ><?php echo $program->name; ?> </option>
+                            <option value="<?php echo $program->id ?>" <?php echo ($id != '' && $t->program_id == $program->id) ? 'selected' : '' ?>><?php echo $program->name; ?> </option>
                         <?php endfor; ?>
                     </select>
                 </div>
@@ -122,7 +122,7 @@ if (!hasPermission(PERM_USER_MANAGEMENT, $currUser)) :
                 <div class="tab-pane fade show active" id="tabContentMembers" role="tabpanel" aria-labelledby="custom-tabs-four-home-tab">
                     <div class="card-header">
                         <div class="card-tools">
-                            <button id="btnAddFacilities" class="btn btn-block btn-sm btn-default btn-flat border-primary"><i class="fa fa-plus"></i> Add Facilities</button>
+                            <button id="btnAddMembers" class="btn btn-block btn-sm btn-default btn-flat border-primary"><i class="fa fa-plus"></i> Add Members</button>
                         </div>
                     </div>
                     <table class="table table-bordered table-striped">
@@ -136,14 +136,15 @@ if (!hasPermission(PERM_USER_MANAGEMENT, $currUser)) :
                         <tbody>
                             <?php
                             $i = 1;
+                            $users = [];
                             $users = DB::select("select u.*  from team_members t left join users u on u.id = t.user_id where t.team_id = ?", [$id]);
                             foreach ($users as $user) :
                             ?>
                                 <tr>
                                     <td><?php echo $i ?></td>
-                                    <td><?php echo ucwords($user->first_name, ' ', $user->last_name); ?></td>
+                                    <td><?php echo ucwords($user->first_name . ' ' . $user->last_name); ?></td>
                                     <td>
-                                        <button type="button" class="btn btn-outline-danger btn-flat" data-tooltip="tooltip" title="Remove from team" data-id="<?php echo $facility->id ?>" onclick='removeMember(<?php echo $user->id; ?>)'>
+                                        <button type="button" class="btn btn-outline-danger btn-flat" data-tooltip="tooltip" title="Remove from team" data-id="<?php echo $user->id ?>" onclick='removeMember(<?php echo $user->id; ?>)'>
                                             <i class="fas fa-times"></i>
                                         </button>
                                     </td>
@@ -155,19 +156,19 @@ if (!hasPermission(PERM_USER_MANAGEMENT, $currUser)) :
                         <tfoot>
                             <tr>
                                 <th>#</th>
-                                <th>Facility Name</th>
-                                <th>MFL Code</th>
+                                <th>User Name</th>
                                 <th>Actions</th>
                             </tr>
                         </tfoot>
                     </table>
                 </div>
             </div>
-            
+
         </div>
     </div>
 <?php endif; ?>
 <script>
+    console.log('start of issue');
     const id = '<?php echo $id ?>'
     const formManageTeam = document.querySelector('#manage_team')
     const inputName = document.querySelector('#inputName')
@@ -175,10 +176,15 @@ if (!hasPermission(PERM_USER_MANAGEMENT, $currUser)) :
     const selectTeamLead = document.querySelector('#selectTeamLead')
 
     $(document).ready(function() {
+        console.log("Here is the error");
         $('.select2').select2()
         $('#btnAddFacilities').click(() => {
             let programId = $(selectProgram).val()
             uni_modal("Add Facilities", `teams/dialog_add_facilities?team_id=${id}&program_id=${programId}`, "large")
+        })
+        $('#btnAddMembers').click(() => {
+            let programId = $(selectProgram).val()
+            uni_modal("Add Facilities", `teams/dialog_add_members?team_id=${id}&program_id=${programId}`, "large")
         })
     })
 
@@ -254,9 +260,10 @@ if (!hasPermission(PERM_USER_MANAGEMENT, $currUser)) :
         }, () => {})
 
     }
+
     function removeMember(userId) {
         customConfirm("Confirm Action", "Are you sure you want to remove this user from the team?", () => {
-            fetch('../api/remove_user_from_team', {
+            fetch('../api/remove_member_from_team', {
                     method: 'POST',
                     headers: {
                         "content-type": "application/x-www-form-urlencoded"

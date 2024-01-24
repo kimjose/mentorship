@@ -383,6 +383,34 @@ $responses = DB::select("select r.visit_id, r.question_id, q.category, q.frequen
       }
     })
   }
+   // Action Points Statistics
+   $dashboardStats = [
+    'totalActionPoints' => count($actionPoints),
+    'pendingActionPoints' => array_reduce($actionPoints, function ($carry, $item) {
+        return $carry + ($item->status === 'Pending' ? 1 : 0);
+    }, 0),
+    'overdueActionPoints' => array_reduce($actionPoints, function ($carry, $item) {
+        $dueDate = date_create($item->due_date . ' 23:59:59');
+        $today = date_create(date('Y-m-d G:i:s'));
+        return $carry + ($dueDate < $today ? 1 : 0);
+    }, 0),
+    // Add more dashboard statistics here
+    'averageCompletionTime' => calculateAverageCompletionTime($actionPoints),
+    'actionPointsByCategory' => countActionPointsByCategory($actionPoints),
+    // Add more dashboard statistics as needed
+];
+?>
+
+<!-- Add more dashboard sections to display additional statistics -->
+<div class="dashboard-section">
+    <h2>Dashboard</h2>
+    <div>Total Action Points: <?php echo $dashboardStats['totalActionPoints']; ?></div>
+    <div>Pending Action Points: <?php echo $dashboardStats['pendingActionPoints']; ?></div>
+    <div>Overdue Action Points: <?php echo $dashboardStats['overdueActionPoints']; ?></div>
+    <div>Average Completion Time: <?php echo $dashboardStats['averageCompletionTime']; ?></div>
+    <div>Action Points by Category: <?php echo json_encode($dashboardStats['actionPointsByCategory']); ?></div>
+    <!-- Add more dashboard sections to display additional statistics -->
+</div>
 
   drawVisitsGraph()
   drawResponseDonut()

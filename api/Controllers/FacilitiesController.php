@@ -18,7 +18,7 @@ class FacilitiesController extends Controller
 
     public function addFacility($data){
         try {
-            if(!hasPermission(PERM_SYSTEM_ADMINISTRATION, $this->user)) throw new \Exception("Forbidden", 403);
+            if(!hasPermission(PERM_FACILITY_MANAGEMENT, $this->user)) throw new \Exception("Forbidden", 403);
             $attributes = ['program_id', 'mfl_code', 'name', 'county_code', 'latitude', 'longitude', 'active', 'team_id'];
             $missing = Utility::checkMissingAttributes($data, $attributes);
             throw_if(sizeof($missing) > 0, new \Exception("Missing parameters passed : " . json_encode($missing)));
@@ -37,7 +37,7 @@ class FacilitiesController extends Controller
 
     public function updateFacility($id, $data){
         try {
-            if(!hasPermission(PERM_SYSTEM_ADMINISTRATION, $this->user)) throw new \Exception("Forbidden", 403);
+            if(!hasPermission(PERM_FACILITY_MANAGEMENT, $this->user)) throw new \Exception("Forbidden", 403);
             $attributes = ['program_id', 'mfl_code', 'name', 'county_code', 'active', 'team_id'];
             $missing = Utility::checkMissingAttributes($data, $attributes);
             throw_if(sizeof($missing) > 0, new \Exception("Missing parameters passed : " . json_encode($missing)));
@@ -66,7 +66,7 @@ class FacilitiesController extends Controller
 
     public function createTeam($data){
         try {
-            if(!hasPermission(PERM_SYSTEM_ADMINISTRATION, $this->user)) throw new \Exception("Forbidden", 403);
+            if(!hasPermission(PERM_FACILITY_MANAGEMENT, $this->user) || !hasPermission(PERM_USER_MANAGEMENT, $this->user)) throw new \Exception("Forbidden", 403);
             $attributes = ['program_id', 'team_lead', 'name'];
             $missing = Utility::checkMissingAttributes($data, $attributes);
             throw_if(sizeof($missing) > 0, new \Exception("Missing parameters passed : " . json_encode($missing)));
@@ -80,7 +80,7 @@ class FacilitiesController extends Controller
 
     public function updateTeam($id,$data){
         try {
-            if(!hasPermission(PERM_SYSTEM_ADMINISTRATION, $this->user)) throw new \Exception("Forbidden", 403);
+            if(!hasPermission(PERM_FACILITY_MANAGEMENT, $this->user) || !hasPermission(PERM_USER_MANAGEMENT, $this->user)) throw new \Exception("Forbidden", 403);
             $attributes = ['program_id', 'team_lead', 'name'];
             $missing = Utility::checkMissingAttributes($data, $attributes);
             throw_if(sizeof($missing) > 0, new \Exception("Missing parameters passed : " . json_encode($missing)));
@@ -95,7 +95,7 @@ class FacilitiesController extends Controller
 
     public function removeFacilityFromTeam($data){
         try {
-            if(!hasPermission(PERM_SYSTEM_ADMINISTRATION, $this->user)) throw new \Exception("Forbidden", 403);
+            if(!hasPermission(PERM_FACILITY_MANAGEMENT, $this->user) || !hasPermission(PERM_USER_MANAGEMENT, $this->user)) throw new \Exception("Forbidden", 403);
             $attributes = ['team_id', 'facility_id'];
             $missing = Utility::checkMissingAttributes($data, $attributes);
             throw_if(sizeof($missing) > 0, new \Exception("Missing parameters passed : " . json_encode($missing)));
@@ -112,7 +112,7 @@ class FacilitiesController extends Controller
 
     public function addFacilitiesToTeam($data) {
         try{
-            if(!hasPermission(PERM_SYSTEM_ADMINISTRATION, $this->user)) throw new \Exception("Forbidden", 403);
+            if(!hasPermission(PERM_FACILITY_MANAGEMENT, $this->user) || !hasPermission(PERM_USER_MANAGEMENT, $this->user)) throw new \Exception("Forbidden", 403);
             $facility_ids = [];
             $attributes = ['team_id'];
             $missing = Utility::checkMissingAttributes($data, $attributes);

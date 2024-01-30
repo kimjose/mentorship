@@ -59,3 +59,5 @@ create table team_members(
     constraint fk_team_member_team FOREIGN KEY(team_id) REFERENCES teams(id) on delete cascade on update cascade,
     constraint fk_team_members_user FOREIGN KEY(user_id) REFERENCES users(id) on delete cascade on update cascade
 );
+
+alter table user_categories change column access_level access_level enum('System','Program','Facility') not null after id;

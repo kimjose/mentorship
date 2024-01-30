@@ -13,7 +13,9 @@ $users = [];
 if ($currUser->getCategory()->access_level == 'Facility') {
 	/** @var User[] */
 	$users = User::where('facility_id', $currUser->facility_id)->get();
-} else {
+} elseif($currUser->getCategory()->access_level == 'Program'){
+	$users = User::whereIn('program_ids', explode(',', $currUser->program_ids))->get();
+}else {
 	$users = User::all();
 }
 ?>

@@ -14,6 +14,8 @@ $permissions = UserPermission::all();
 $categories = [];
 if ($currUser->getCategory()->access_level == 'Facility') {
 	$categories = UserCategory::where('access_level', 'Facility')->get();
+}elseif($currUser->getCategory()->access_level == 'Program'){
+	$categories = UserCategory::where('access_level', 'Program')->orWhere('access_level', 'Facility')->get();
 } else {
 	$categories = UserCategory::all();
 }
@@ -104,6 +106,9 @@ if ($currUser->getCategory()->access_level == 'Facility') {
 						<label for="">Access Level</label>
 						<select name="access_level" id="selectAccessLevel" class="form-control">
 							<option value="" selected hidden>Select Access Level</option>
+							<?php if ($currUser->getCategory()->access_level == "System") : ?>
+								<option value="System">System</option>
+							<?php endif; ?>
 							<option value="Program">Program</option>
 							<option value="Facility">Facility</option>
 						</select>

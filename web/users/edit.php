@@ -25,7 +25,10 @@ if (isset($_GET['id'])) {
 /** @var Facility[] $facilities */
 $facilities = [];
 $categories = [];
+
+$programs = [];
 if ($currUser->getCategory()->access_level == 'Facility') {
+	$programs = Program::whereIn('id', explode(',', $currUser->program_ids))->get();
 	$facilities = Facility::where('id', $currUser->facility_id)->get();
 	$allCategories = UserCategory::where('access_level', 'Facility')->get();
 	$userPermissions = explode(',', $currUser->getCategory()->permissions);
@@ -37,11 +40,24 @@ if ($currUser->getCategory()->access_level == 'Facility') {
 		}
 		if ($allowed) $categories[] = $category;
 	}
+} elseif($currUser->getCategory()->access_level == 'Program'){
+	$programs = Program::whereIn('id', explode(',', $currUser->program_ids))->get();
+	$facilities = Facility::whereIn('program_id', explode(',', $currUser->program_ids))->orderBy('name', 'asc')->get();
+	$allCategories = UserCategory::where('access_level', 'Program')->orWhere('access_level', 'Facility')->get();
+	$userPermissions = explode(',', $currUser->getCategory()->permissions);
+	foreach ($allCategories as $category) {
+		$categoryPermissions = explode(',', $category->permissions);
+		$allowed = true;
+		foreach ($categoryPermissions as $categoryPermission) {
+			if (!in_array($categoryPermission, $userPermissions)) $allowed = false;
+		}
+		if ($allowed) $categories[] = $category;
+	}
 } else {
+	$programs = Program::all();
 	$facilities = Facility::where('active', 1)->orderBy('name', 'asc')->get();
 	$allCategories = UserCategory::all();
 	$userPermissions = explode(',', $currUser->getCategory()->permissions);
-	// print_r($userPermissions);
 	foreach ($allCategories as $category) {
 		$categoryPermissions = explode(',', $category->permissions);
 		$allowed = true;
@@ -51,7 +67,6 @@ if ($currUser->getCategory()->access_level == 'Facility') {
 		if ($allowed) $categories[] = $category;
 	}
 }
-$programs = Program::all(); // TODO filter depending on who has logged in
 ?>
 <div class="col-lg-12">
 	<div class="card">
@@ -77,7 +92,9 @@ $programs = Program::all(); // TODO filter depending on who has logged in
 							<label for="">Access Level</label>
 							<select name="access_level" id="selectAccessLevel" class="form-control" onchange="accessLevelChanged()">
 								<option value="" <?php echo $id == '' ? 'selected' : '' ?> hidden>Select level</option>
-								<?php if ($currUser->getCategory()->access_level === 'Program') : ?>
+								<?php if ($currUser->getCategory()->access_level === 'System') : ?>
+									<option value="System" <?php echo ($id != '' && $u->getCategory()->access_level == 'System') ? 'selected' : '' ?>>System</option>
+								<?php elseif ($currUser->getCategory()->access_level === 'Program') : ?>
 									<option value="Program" <?php echo ($id != '' && $u->getCategory()->access_level == 'Program') ? 'selected' : '' ?>>Program</option>
 								<?php endif; ?>
 								<option value="Facility" <?php echo ($id != '' && $u->getCategory()->access_level == 'Facility') ? 'selected' : '' ?>>Facility</option>
@@ -256,7 +273,17 @@ $programs = Program::all(); // TODO filter depending on who has logged in
 	function accessLevelChanged() {
 		let selected = $(selectAccessLevel).val();
 		selectCategory.innerHTML = '<option value="" selected hidden>Select Category</option>';
-		if (selected === "Program") {
+		if (selected === "System") {
+			divSelectFacility.classList.add("d-none")
+			categories.forEach(category => {
+				if (category.access_level === 'System') {
+					let option = document.createElement('option');
+					option.value = category.id
+					option.innerText = category.name
+					selectCategory.append(option)
+				}
+			})
+		} else if (selected === "Program") {
 			divSelectFacility.classList.add("d-none")
 			categories.forEach(category => {
 				if (category.access_level === 'Program') {

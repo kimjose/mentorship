@@ -153,7 +153,7 @@
             </li>
           <?php endif; ?>
 
-          <?php if (hasPermission(PERM_SYSTEM_ADMINISTRATION, $currUser) && $currUser->getCategory()->access_level === 'Program') : ?>
+          <?php if (hasPermission(PERM_SYSTEM_ADMINISTRATION, $currUser) && ($currUser->getCategory()->access_level === 'Program' || $currUser->getCategory()->access_level === 'System') : ?>
             <li class="nav-item">
               <a href="#" class="nav-link nav-edit_user">
                 <i class="nav-icon fas fa-users"></i>

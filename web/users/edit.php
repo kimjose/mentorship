@@ -94,6 +94,7 @@ if ($currUser->getCategory()->access_level == 'Facility') {
 								<option value="" <?php echo $id == '' ? 'selected' : '' ?> hidden>Select level</option>
 								<?php if ($currUser->getCategory()->access_level === 'System') : ?>
 									<option value="System" <?php echo ($id != '' && $u->getCategory()->access_level == 'System') ? 'selected' : '' ?>>System</option>
+									<option value="Program" <?php echo ($id != '' && $u->getCategory()->access_level == 'Program') ? 'selected' : '' ?>>Program</option>
 								<?php elseif ($currUser->getCategory()->access_level === 'Program') : ?>
 									<option value="Program" <?php echo ($id != '' && $u->getCategory()->access_level == 'Program') ? 'selected' : '' ?>>Program</option>
 								<?php endif; ?>

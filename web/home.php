@@ -66,6 +66,8 @@ $checklists = Checklist::where('status', 'published')->get();
 $periodVisits = DB::select("select fv.*, f.team_id from facility_visits fv left join facilities f on f.id = fv.facility_id where f.program_id = ? and fv.visit_date between ? and ? order by fv.visit_date asc", [$program_id, $startDate, $endDate]);
 $responses = DB::select("select r.visit_id, r.question_id, q.category, q.frequency_id from responses r left join questions q on q.id = r.question_id left join facility_visits v on v.id = r.visit_id left join facilities f on f.id = v.facility_id where f.program_id = $program_id");
 $teams = Team::where('program_id', $program_id)->get();
+
+$actionPoints = DB::select("select ap.visit_id, ap.facility_id, ap.question_id, ap.due_date, ap.status, ap.created_by from action_points ap left join facilities f on ap.facility_id = f.id where f.program_id = ?", [$program_id]);
 ?>
 
 <!-- top row boxes -->
@@ -228,6 +230,27 @@ $teams = Team::where('program_id', $program_id)->get();
     <!-- /.footer -->
   </div>
 
+  <!-- PIE CHART -->
+  <div class="card card-danger">
+    <div class="card-header">
+      <h3 class="card-title">Pie Chart</h3>
+
+      <div class="card-tools">
+        <button type="button" class="btn btn-tool" data-card-widget="collapse">
+          <i class="fas fa-minus"></i>
+        </button>
+        <button type="button" class="btn btn-tool" data-card-widget="remove">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+    </div>
+    <div class="card-body">
+      <canvas id="pieChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+    </div>
+    <!-- /.card-body -->
+  </div>
+  <!-- /.card -->
+
   <!-- Custom tabs (Charts with tabs)-->
   <div class="card">
     <div class="card-header">
@@ -260,6 +283,26 @@ $teams = Team::where('program_id', $program_id)->get();
   </div>
 
 </div>
+<!-- PIE CHART -->
+<div class="card card-danger">
+    <div class="card-header">
+      <h3 class="card-title">Pie Chart</h3>
+
+      <div class="card-tools">
+        <button type="button" class="btn btn-tool" data-card-widget="collapse">
+          <i class="fas fa-minus"></i>
+        </button>
+        <button type="button" class="btn btn-tool" data-card-widget="remove">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+    </div>
+    <div class="card-body">
+      <canvas id="pieChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+    </div>
+    <!-- /.card-body -->
+  </div>
+  <!-- /.card -->
 <?php
 /*
   // Action Points Statistics
@@ -299,6 +342,7 @@ $teams = Team::where('program_id', $program_id)->get();
   const visits = JSON.parse('<?php echo json_encode($periodVisits) ?>');
   const responses = JSON.parse('<?php echo json_encode($responses) ?>')
   const teams = JSON.parse('<?php echo json_encode($teams) ?>')
+  const actionPoints = JSON.parse('<?php echo json_encode($actionPoints) ?>')
 
   function selectProgramChanged() {
     let selected = $("#selectProgram").val();

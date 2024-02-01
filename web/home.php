@@ -378,7 +378,6 @@ $teams = Team::where('program_id', $program_id)->get();
         ds.data.push(teamDayVisits.length)
       }
     }
-console.log(teamsDatasets);
 
     let ticksStyle = {
       fontColor: '#495057',

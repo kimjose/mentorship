@@ -127,7 +127,7 @@ if (!hasPermission(PERM_USER_MANAGEMENT, $currUser)) :
                     </table>
                 </div>
 
-                <div class="tab-pane fade show active" id="tabContentMembers" role="tabpanel" aria-labelledby="custom-tabs-four-home-tab">
+                <div class="tab-pane fade " id="tabContentMembers" role="tabpanel" aria-labelledby="custom-tabs-four-home-tab">
                     <div class="card-header">
                         <div class="card-tools">
                             <button id="btnAddMembers" class="btn btn-block btn-sm btn-default btn-flat border-primary"><i class="fa fa-plus"></i> Add Members</button>

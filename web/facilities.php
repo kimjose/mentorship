@@ -4,16 +4,35 @@
 ?>
 <?php
 
-use Illuminate\Database\Capsule\Manager as DB;
-use Umb\Mentorship\Models\Program;
 use Umb\Mentorship\Models\Team;
+use Umb\Mentorship\Models\Program;
+use Umb\Mentorship\Models\Facility;
+use Illuminate\Database\Capsule\Manager as DB;
 
 /*** @var \Umb\EventsManager\Models\Facility[] $facilities */
-$facilities = DB::select("select f.*,p.name program, c.name 'county', t.name 'team_name', (select count(fv.facility_id) from facility_visits fv where fv.facility_id = f.id group by fv.facility_id ) as visits from facilities f left join counties c on c.code = f.county_code left join teams t on t.id = f.team_id left join programs p on p.id = f.program_id");
+$facilities = [];
 $activeBadge = "<span class='badge badge-primary rounded-pill'>Active</span>";
 $inActiveBadge = "<span class='badge badge-warning rounded-pill'>In Active</span>";
 $teams = Team::all();
-$programs =  Program::all(); // TODO filter depending on the user logged in.
+$programs =  [];
+if ($currUser->getCategory()->access_level == 'Facility') {
+    $facility = Facility::findOrFail($currUser->facility_id);
+    $programs = Program::where('id', $facility->program_id)->get();
+    $teams = Team::where('id', $facility->team_id)->get();
+    /*** @var \Umb\EventsManager\Models\Facility[] $facilities */
+    $facilities = DB::select("select f.*,p.name program, c.name 'county', t.name 'team_name', (select count(fv.facility_id) from facility_visits fv where fv.facility_id = f.id group by fv.facility_id ) as visits from facilities f left join counties c on c.code = f.county_code left join teams t on t.id = f.team_id left join programs p on p.id = f.program_id where p.id = " . $facility->program_id);
+  }elseif($currUser->getCategory()->access_level == 'Program'){
+    $programs = Program::where('id', explode(',', $currUser->program_ids))->get();
+    $teams = Team::whereIn('program_id', explode(',', $currUser->program_ids))->get();
+    /*** @var \Umb\EventsManager\Models\Facility[] $facilities */
+    $facilities = DB::select("select f.*,p.name program, c.name 'county', t.name 'team_name', (select count(fv.facility_id) from facility_visits fv where fv.facility_id = f.id group by fv.facility_id ) as visits from facilities f left join counties c on c.code = f.county_code left join teams t on t.id = f.team_id left join programs p on p.id = f.program_id where p.id in (" . ($currUser->program_ids == '' ? 0 : $currUser->program_ids) . ");");
+  }
+  else {
+    $programs = Program::all();
+    $teams = Team::all();
+    /*** @var \Umb\EventsManager\Models\Facility[] $facilities */
+    $facilities = DB::select("select f.*,p.name program, c.name 'county', t.name 'team_name', (select count(fv.facility_id) from facility_visits fv where fv.facility_id = f.id group by fv.facility_id ) as visits from facilities f left join counties c on c.code = f.county_code left join teams t on t.id = f.team_id left join programs p on p.id = f.program_id");
+  }
 ?>
 
 

@@ -12,10 +12,9 @@ $programs = [];
 if ($currUser->getCategory()->access_level == 'Facility') {
   $facility = Facility::findOrFail($currUser->facility_id);
   $programs = Program::where('id', $facility->program_id)->get();
-}elseif($currUser->getCategory()->access_level == 'Program'){
+} elseif ($currUser->getCategory()->access_level == 'Program') {
   $programs = Program::where('id', explode(',', $currUser->program_ids))->get();
-}
-else {
+} else {
   $programs = Program::all();
 }
 $program_id = $_GET['program_id'] ?? '';
@@ -39,7 +38,7 @@ $selected = false;
           if ($i == (sizeof($programs) - 1) && !$selected) : $program_id = $program->id;
         ?>
             <script>
-             location.replace("index?program_id=<?php echo $program_id; ?>")
+              location.replace("index?program_id=<?php echo $program_id; ?>")
             </script>
           <?php endif; ?>
           <option value="<?php echo $program->id ?>" <?php echo $program_id == $program->id ? 'selected' : '' ?>><?php echo $program->name ?></option>
@@ -299,8 +298,9 @@ $teams = Team::where('program_id', $program_id)->get();
   const endDateString = "<?php echo $endDate; ?>"
   const visits = JSON.parse('<?php echo json_encode($periodVisits) ?>');
   const responses = JSON.parse('<?php echo json_encode($responses) ?>')
+  const teams = JSON.parse('<?php echo json_encode($teams) ?>')
 
-  function selectProgramChanged(){
+  function selectProgramChanged() {
     let selected = $("#selectProgram").val();
     location.replace(`index?program_id=${selected}`);
   }
@@ -343,6 +343,8 @@ $teams = Team::where('program_id', $program_id)->get();
     let startDate = new Date(startDateString)
     let endDate = new Date(endDateString)
     let diff = (endDate - startDate) / (24 * 3600 * 1000)
+    let datasets = []
+    let teamsDatasets = []
 
     for (let i = 0; i <= diff; i++) {
       let mDate = new Date(startDate.getTime() + (i * (24 * 3600 * 1000)))
@@ -352,7 +354,31 @@ $teams = Team::where('program_id', $program_id)->get();
         return visit.visit_date === DateFormatter.formatDate(mDate, 'yyyy-MM-DD')
       })
       values.push(dayVisits.length);
+      for (let j = 0; j < teams.length; j++) {
+        let team = teams[j]
+        if (i == 0) {
+          let c = "rgb(" + Math.floor(Math.random() * 255) + "," + Math.floor(Math.random() * 255) + "," + Math.floor(Math.random() * 255) + ")"
+          let teamDataset = {
+            name: team.name,
+            label: team.name,
+            type: 'line',
+            data: [],
+            backgroundColor: 'transparent',
+            borderColor: c,
+            pointBorderColor: c,
+            pointBackgroundColor: c,
+            fill: false
+          }
+          teamsDatasets.push(teamDataset)
+        }
+        let ds = teamsDatasets[j];
+        let teamDayVisits = visits.filter(visit => {
+          return visit.visit_date === DateFormatter.formatDate(mDate, 'yyyy-MM-DD') && visit.team_id === team.id
+        })
+        ds.data.push(teamDayVisits.length)
+      }
     }
+console.log(teamsDatasets);
 
     let ticksStyle = {
       fontColor: '#495057',
@@ -366,7 +392,7 @@ $teams = Team::where('program_id', $program_id)->get();
       data: {
         labels: labels,
         datasets: [{
-          label: 'visits',
+          label: 'All visits',
           type: 'line',
           data: values,
           backgroundColor: 'transparent',
@@ -376,7 +402,7 @@ $teams = Team::where('program_id', $program_id)->get();
           fill: false
           // pointHoverBackgroundColor: '#007bff',
           // pointHoverBorderColor    : '#007bff'
-        }]
+        }, ...teamsDatasets]
       },
       options: {
         maintainAspectRatio: false,
@@ -389,7 +415,7 @@ $teams = Team::where('program_id', $program_id)->get();
           intersect: intersect
         },
         legend: {
-          display: false
+          display: true
         },
         scales: {
           yAxes: [{
@@ -423,7 +449,7 @@ $teams = Team::where('program_id', $program_id)->get();
       }
     })
   }
- 
+
 
   drawVisitsGraph()
   drawResponseDonut()

@@ -8,10 +8,10 @@ use Umb\Mentorship\Models\FacilityVisit;
 
 $visits = [];
 if ($currUser->getCategory()->access_level == 'Facility') {
-    $visits = FacilityVisit::where('facility_id', $currUser->facility_id)->get();
+    $visits = FacilityVisit::where('facility_id', $currUser->facility_id)->orderBy('visit_date', 'desc')->get();
 }elseif($currUser->getCategory()->access_level == 'Program'){
     $facilityIds = Facility::whereIn('program_id', explode(',', $currUser->program_ids))->get(['id'])->pluck('id')->toArray();
-    $visits = FacilityVisit::whereIn('facility_id', $facilityIds)->get();
+    $visits = FacilityVisit::whereIn('facility_id', $facilityIds)->orderBy('visit_date', 'desc')->get();
 }
  else {
     $visits = FacilityVisit::orderBy('id', 'desc')->get();

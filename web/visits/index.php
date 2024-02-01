@@ -2,13 +2,18 @@
 
 /** @var Umb\Mentorship\Models\User $currUser */
 
+use Umb\Mentorship\Models\Facility;
 use Umb\Mentorship\Models\FacilityVisit;
 
 
 $visits = [];
 if ($currUser->getCategory()->access_level == 'Facility') {
     $visits = FacilityVisit::where('facility_id', $currUser->facility_id)->get();
-} else {
+}elseif($currUser->getCategory()->access_level == 'Program'){
+    $facilityIds = Facility::whereIn('program_id', explode(',', $currUser->program_ids))->get(['id'])->pluck('id')->toArray();
+    $visits = FacilityVisit::whereIn('facility_id', $facilityIds)->get();
+}
+ else {
     $visits = FacilityVisit::orderBy('id', 'desc')->get();
 }
 $todaysDate = date("Y-m-d")

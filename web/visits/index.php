@@ -46,6 +46,7 @@ $todaysDate = date("Y-m-d")
                     <tr>
                         <th>#</th>
                         <th>Facility</th>
+                        <th>Program</th>
                         <th>Date</th>
                         <th>Created By</th>
                         <th>Actions</th>
@@ -55,6 +56,7 @@ $todaysDate = date("Y-m-d")
                     <tr>
                         <th>#</th>
                         <th>Facility</th>
+                        <th>Program</th>
                         <th>Date</th>
                         <th>Created By</th>
                         <th>Actions</th>
@@ -69,6 +71,7 @@ $todaysDate = date("Y-m-d")
                         <tr>
                             <td><?php echo $i ?></td>
                             <td><?php echo $visit->getFacility()->name ?></td>
+                            <td><?php echo $visit->getFacility()->program()->name ?></td>
                             <td><?php echo $visit->visit_date  ?></td>
                             <td><?php echo $creator->first_name . ' ' . $creator->last_name ?></php>
                             </td>

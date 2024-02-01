@@ -110,7 +110,7 @@
               </li>
             </ul>
           </li>
-          <?php if ($currUser->getCategory()->access_level === 'Program') : ?>
+          <?php if ($currUser->getCategory()->access_level === 'Program' || $currUser->getCategory()->access_level === 'System') : ?>
             <li class="nav-item">
               <a href="./index?page=facilities" class="nav-link nav-facilities">
                 <i class="nav-icon fa fa-building"></i>
@@ -205,7 +205,7 @@
               </li>
             </ul>
           </li>
-          <?php if ($currUser->getCategory()->access_level === 'Program') : ?>
+          <?php if ($currUser->getCategory()->access_level === 'Program' || $currUser->getCategory()->access_level === 'System') : ?>
             <li class="nav-item">
               <a href="./index?page=programs" class="nav-link nav-programs">
                 <i class="nav-icon fa fa-building"></i>

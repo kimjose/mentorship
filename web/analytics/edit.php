@@ -57,7 +57,6 @@ $questionString = str_replace("'", $k, $questionString);
                 <div class="form-group">
                     <label for="">Select Response Type</label>
                     <select name="qn_type" id="selectQnType" class="form-control" onchange="selectQnTypeChanged()">
-                        <!-- TODO Update for editing -->
                         <option value="" hidden <?php echo !isset($id) ? 'selected' : '' ?>>Please Select here</option>
                         <option value="radio_opt" <?php echo (isset($id) &&  $question->type == 'radio_opt') ? 'selected' : ''  ?>>Single Answer/Radio Button</option>
                         <option value="check_opt" <?php echo (isset($id) &&  $question->type == 'check_opt') ? 'selected' : ''  ?>>Multiple Answer/Check Boxes</option>

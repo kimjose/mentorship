@@ -12,7 +12,15 @@ if (isset($_GET['id'])) {
     $t = Team::findOrFail($id);
 }
 $users = User::all();
-$programs =  Program::all(); // TODO filter depending on the user logged in.
+$programs =  [];
+if ($currUser->getCategory()->access_level == 'Facility') {
+    $facility = Facility::findOrFail($currUser->facility_id);
+    $programs = Program::where('id', $facility->program_id)->get();
+} elseif ($currUser->getCategory()->access_level == 'Program') {
+    $programs = Program::where('id', explode(',', $currUser->program_ids))->get();
+} else {
+    $programs = Program::all();
+}
 if (!hasPermission(PERM_USER_MANAGEMENT, $currUser)) :
 ?>
     <script>

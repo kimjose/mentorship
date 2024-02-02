@@ -3,7 +3,7 @@
 use Illuminate\Database\Capsule\Manager as DB;
 use Umb\Mentorship\Models\ApComment;
 
-$query = "select ap.*, concat(u.first_name, ' ', u.last_name), q.question, s.abbr as 'section_abbr', s.title as 'section_title', c.abbr 'checklist_abbr', c.title 'checklist_title', fv.visit_date, f.name 'facility_name' from action_points ap left join users u on u.id = ap.created_by LEFT join questions q on q.id = ap.question_id 
+$query = "select ap.*, concat(u.first_name, ' ', u.last_name) creator, q.question, s.abbr as 'section_abbr', s.title as 'section_title', c.abbr 'checklist_abbr', c.title 'checklist_title', fv.visit_date, f.name 'facility_name' from action_points ap left join users u on u.id = ap.created_by LEFT join questions q on q.id = ap.question_id 
 left join sections s on s.id = q.section_id LEFT join checklists c on c.id = s.checklist_id left join facility_visits fv on ap.visit_id = fv.id LEFT join facilities f on f.id = ap.facility_id where {$currUser->id} in(ap.assign_to);";
 $actionPoints = DB::select($query);
 
@@ -52,6 +52,7 @@ function badge($actionPoint){
                     <th>Checklist</th>
                     <th>Section</th>
                     <th>Question</th>
+                    <th>Created By</th>
                     <th>Comments</th>
                     <th>Status</th>
                     <th>Actions</th>
@@ -67,6 +68,7 @@ function badge($actionPoint){
                     <th>Checklist</th>
                     <th>Section</th>
                     <th>Question</th>
+                    <th>Created By</th>
                     <th>Comments</th>
                     <th>Status</th>
                     <th>Actions</th>
@@ -92,6 +94,7 @@ function badge($actionPoint){
                         </td>
                         <td><abbr title="<?php echo $ap->section_title ?>"> <?php echo $ap->section_abbr ?></abbr></td>
                         <td><?php echo $ap->question ?></td>
+                        <td><?php echo $ap->creator . ' ====  ' .$ap->assign_to;  ?></td>
                         <td>
                             <?php
                             /** @var ApComment[] $comments */
@@ -116,7 +119,7 @@ function badge($actionPoint){
                                         data-target="#modalComment">
                                     <i class="far fa-comment"></i>
                                 </button>
-                                <?php if ($currUser->id == $ap->created_by): ?>
+                                <?php if ($ap->status == "Pending" && ($currUser->id == $ap->created_by || in_array($currUser->id, explode(',', $ap->assign_to)))): ?>
                                     <button type="button" class="btn btn-outline-success btn-flat" title="Mark as Done"
                                             data-id="<?php echo $ap->id ?>"
                                             onclick='markAsDone(<?php echo $ap->id; ?>)'>

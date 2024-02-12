@@ -94,7 +94,7 @@ function badge($actionPoint){
                         </td>
                         <td><abbr title="<?php echo $ap->section_title ?>"> <?php echo $ap->section_abbr ?></abbr></td>
                         <td><?php echo $ap->question ?></td>
-                        <td><?php echo $ap->creator . ' ====  ' .$ap->assign_to;  ?></td>
+                        <td><?php echo $ap->creator;  ?></td>
                         <td>
                             <?php
                             /** @var ApComment[] $comments */

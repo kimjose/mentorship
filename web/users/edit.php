@@ -29,7 +29,7 @@ $categories = [];
 $programs = [];
 if ($currUser->getCategory()->access_level == 'Facility') {
 	$programs = Program::whereIn('id', explode(',', $currUser->program_ids))->get();
-	$facilities = Facility::where('id', $currUser->facility_id)->get();
+	$facilities = Facility::whereIn('id', explode(',', $currUser->facility_ids))->where('active', 1)->get();
 	$allCategories = UserCategory::where('access_level', 'Facility')->get();
 	$userPermissions = explode(',', $currUser->getCategory()->permissions);
 	foreach ($allCategories as $category) {
@@ -124,10 +124,9 @@ if ($currUser->getCategory()->access_level == 'Facility') {
 						</div>
 						<div class="form-group <?php echo ($id !== '' && $u->getCategory()->access_level != 'Facility') ? 'd-none' : '' ?>" id="divSelectFacility">
 							<label for="">Facility</label>
-							<select name="facility_id" id="selectFacility" class="form-control">
-								<option value="" <?php echo $id == '' ? 'selected' : '' ?> hidden>Select facility</option>
+							<select name="facility_ids[]" id="selectFacility" class="select2" multiple="multiple" data-placeholder="Select facility(s)">
 								<?php foreach ($facilities as $facility) : ?>
-									<option value="<?php echo $facility->id ?>" <?php echo ($id != '' && $u->facility_id == $facility->id) ? 'selected' : '' ?>><?php echo $facility->name ?></option>
+									<option value="<?php echo $facility->id ?>" <?php echo ($id != '' && in_array($facility->id, explode(',',$u->facility_ids))) ? 'selected' : '' ?>><?php echo $facility->name ?></option>
 								<?php endforeach; ?>
 							</select>
 						</div>

@@ -1,4 +1,4 @@
--- Active: 1659504893355@@127.0.0.1@3306@ess
+-- Active: 1708950568838@@127.0.0.1@3306@ess
 create table password_resets(
     id int not null AUTO_INCREMENT PRIMARY KEY,
     user_id int not null,
@@ -61,3 +61,6 @@ create table team_members(
 );
 
 alter table user_categories change column access_level access_level enum('System','Program','Facility') not null after id;
+
+alter table users drop index fk_user_facility_id, 
+            CHANGE column facility_id facility_ids text null after active;

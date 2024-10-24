@@ -1,0 +1,6 @@
+Support user assignment for multiple facilities
+  - Change facility_id column in users in users table to facility_ids supporting comma separated ids
+  - Allow multiple selection in the user's form
+  -  Cascade the effect inside the code
+        * in the facility visit display visits for related facilities
+        * While assigning action points show 

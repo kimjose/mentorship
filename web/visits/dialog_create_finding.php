@@ -10,7 +10,6 @@ if (isset($_GET['finding_id'])) {
     $findingId = $_GET['finding_id'];
     $finding = VisitFinding::findOrFail($findingId);
 }
-$users = User::all();
 ?>
 <div class="container-fluid">
     <form action="" id="formFinding">

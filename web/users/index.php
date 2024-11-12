@@ -36,6 +36,7 @@ if ($currUser->getCategory()->access_level == 'Facility') {
 							<th>Name</th>
 							<th>Phone Number</th>
 							<th>User category</th>
+							<th>Facility(<small>s</small>)</th>
 							<th>Email</th>
 							<th>Actions</th>
 						</tr>
@@ -51,6 +52,7 @@ if ($currUser->getCategory()->access_level == 'Facility') {
 								<td><b><?php echo ucwords($user->first_name . ' ' . $user->last_name) ?></b></td>
 								<td><b><?php echo $user->phone_number ?></b></td>
 								<td><b><?php echo $user->getCategory()->name ?></b></td>
+								<td><b><?php echo implode(', ', $user->getFacilityNames()); ?></b></td>
 								<td><b><?php echo $user->email ?></b></td>
 								<td class="text-center">
 									<button type="button" class="btn btn-default btn-sm btn-flat border-info wave-effect text-info dropdown-toggle" data-toggle="dropdown" aria-expanded="true">

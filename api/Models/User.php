@@ -31,4 +31,18 @@ class User extends Model{
     public function getProgramsNames(){
         return Program::whereIn('id', explode(',', $this->program_ids))->get(['name'])->pluck('name')->toArray();
     }
+
+    /**
+     * @return Facility[]
+     */
+    public function getFacilities(){
+        return Facility::whereIn('id', explode(',', $this->facility_ids))->get();
+    }
+
+    /**
+     * @return  array
+     */
+    public function getFacilityNames(){
+        return Facility::whereIn('id', explode(',', $this->facility_ids))->get(['name'])->pluck('name')->toArray();
+    }
 }

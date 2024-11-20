@@ -44,14 +44,14 @@ class UsersController extends Controller
     {
         try {
             if (!hasPermission(PERM_USER_MANAGEMENT, $this->user)) throw new \Exception("Forbidden", 403);
-            $attributes = ['program_ids', 'first_name', 'middle_name', 'last_name', 'email', 'phone_number', 'password', 'facility_ids'];
+            $attributes = ['program_ids', 'first_name', 'middle_name', 'last_name', 'email', 'phone_number', 'password'];
             $missing = Utility::checkMissingAttributes($data, $attributes);
             throw_if(sizeof($missing) > 0, new \Exception("Missing parameters passed : " . json_encode($missing)));
             $u = User::findOrFail($id);
             if ($data['password'] != '') {
                 $data['password'] = md5($data['password']);
             } else unset($data['password']);
-            $facilityIds = implode(',', $data['facility_ids']);
+            $facilityIds = implode(',', $data['facility_ids'] ?? '');
             $data['facility_ids'] = $facilityIds;
 
             $programIds = implode(',', $data['program_ids']);

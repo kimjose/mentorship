@@ -15,8 +15,8 @@ class HssController extends Controller
             $missing = Utility::checkMissingAttributes($data, $attributes);
             throw_if(sizeof($missing) > 0, new \Exception("Missing parameters passed : " . json_encode($missing)));
             $data['user_id'] = $this->user->id;
-            HssAssessment::create($data);
-            $this->response(SUCCESS_RESPONSE_CODE, 'Assessment created successfully! 👍');
+            $assessment = HssAssessment::create($data);
+            $this->response(SUCCESS_RESPONSE_CODE, 'Assessment created successfully! 👍', $assessment);
         } catch (\Throwable $th) {
             Utility::logError($th->getCode(), $th->getMessage());
             $this->response(PRECONDITION_FAILED_ERROR_CODE, $th->getMessage());
@@ -39,7 +39,10 @@ class HssController extends Controller
                 $datum['user_id'] = $this->user->id;
                 $answerData[] = $datum;
             }
+            $assessment->answers()->delete();
             $assessment->answers()->createMany($answerData);
+            $assessment->status = 'submitted';
+            $assessment->save();
             $this->response(SUCCESS_RESPONSE_CODE, 'Assessment submitted successfully! 👍');
         } catch (\Throwable $th) {
             Utility::logError($th->getCode(), $th->getMessage());

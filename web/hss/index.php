@@ -6,7 +6,10 @@
 $assessments = [];
 $assessments = \Umb\Mentorship\Models\HssAssessment::all();
 $counties = \Umb\Mentorship\Models\County::all();
-$todaysDate = date("Y-m-d")
+$todaysDate = date("Y-m-d");
+
+$SubmittedBadge = "<span class='badge badge-success rounded-pill'>Submitted</span>";
+$draftBadge = "<span class='badge badge-warning rounded-pill'>Draft</span>";
 ?>
 
 <!-- Page Heading -->
@@ -36,6 +39,7 @@ $todaysDate = date("Y-m-d")
                         <th>County</th>
                         <th>Section</th>
                         <th>Date</th>
+                        <th>Status</th>
                         <th>Created By</th>
                         <th>Actions</th>
                     </tr>
@@ -46,6 +50,7 @@ $todaysDate = date("Y-m-d")
                         <th>County</th>
                         <th>Section</th>
                         <th>Date</th>
+                        <th>Status</th>
                         <th>Created By</th>
                         <th>Actions</th>
                     </tr>
@@ -63,6 +68,8 @@ $todaysDate = date("Y-m-d")
                             <td><?php echo $county->name ?></td>
                             <td><?php echo $section->name ?></td>
                             <td><?php echo $assessment->assessment_date  ?></td>
+                            <td><?php echo $assessment->status == 'submitted' ? $SubmittedBadge : $draftBadge ?></td>
+                            </td>
                             <td><?php echo $creator->first_name . ' ' . $creator->last_name ?></php>
                             </td>
                             <td class="text-center">
@@ -207,7 +214,8 @@ $todaysDate = date("Y-m-d")
             .then(response => {
                 if (response.code === 200) {
                     toastr.success("Assessment saved successfully.")
-                    window.location.reload()
+                    $assessment = response.data
+                    window.location.replace(`index?page=hss-open&id=${$assessment.id}`)
                 } else throw new Error(response.message)
 
             })

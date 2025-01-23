@@ -23,4 +23,30 @@ class HssController extends Controller
         }
     }
 
+    public function submitAssessment($id, $data){
+        try{
+            if (!hasPermission(PERM_CREATE_VISIT, $this->user)) throw new \Exception("Forbidden", 403);
+            $attributes = ['answers'];
+            $missing = Utility::checkMissingAttributes($data, $attributes);
+            throw_if(sizeof($missing) > 0, new \Exception("Missing parameters passed : " . json_encode($missing)));
+            $assessment = HssAssessment::find($id);
+            extract($data);
+            $answerData = [];
+            foreach ($answers as $key => $value) {
+                $datum = [];
+                $datum['question_id'] = $key;
+                $datum['answer'] = $value;
+                $datum['user_id'] = $this->user->id;
+                $answerData[] = $datum;
+            }
+            $assessment->answers()->createMany($answerData);
+            $this->response(SUCCESS_RESPONSE_CODE, 'Assessment submitted successfully! 👍');
+        } catch (\Throwable $th) {
+            Utility::logError($th->getCode(), $th->getMessage());
+            $this->response(PRECONDITION_FAILED_ERROR_CODE, $th->getMessage());
+        }
+    }
+
+
+
 }

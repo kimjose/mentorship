@@ -303,6 +303,10 @@ $router->mount('/api/hss_assessment', function() use ($router){
         $controller = new HssController();
         $controller->createAssessment($data);
     });
+    $router->post('/submit/{id}', function($id) {
+        $controller = new HssController();
+        $controller->submitAssessment($id, $_POST);
+    });
 });
 
 $router->all('/logout', function () {

@@ -1,14 +1,15 @@
 <?php
 
 use Bramus\Router\Router;
-use Umb\Mentorship\Controllers\AnalyticsController;
+use Umb\Mentorship\Models\VisitSection;
 use Umb\Mentorship\Controllers\Controller;
+use Umb\Mentorship\Controllers\HssController;
+use Umb\Mentorship\Controllers\UsersController;
 use Umb\Mentorship\Controllers\QuestionsBuilder;
+use Umb\Mentorship\Controllers\ProgramsController;
+use Umb\Mentorship\Controllers\AnalyticsController;
 use Umb\Mentorship\Controllers\FacilitiesController;
 use Umb\Mentorship\Controllers\FacilityVisitsController;
-use Umb\Mentorship\Controllers\ProgramsController;
-use Umb\Mentorship\Controllers\UsersController;
-use Umb\Mentorship\Models\VisitSection;
 
 require_once __DIR__ . "/vendor/autoload.php";
 
@@ -295,6 +296,14 @@ $router->mount('/api/program', function() use($router){
     });    
 });
 
+// HSS
+$router->mount('/api/hss_assessment', function() use ($router){
+    $data = json_decode(file_get_contents('php://input'), true);
+    $router->post('/', function() use ($data){
+        $controller = new HssController();
+        $controller->createAssessment($data);
+    });
+});
 
 $router->all('/logout', function () {
     session_start();

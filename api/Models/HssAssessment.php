@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class HssAssessment extends Model
 {
     protected $table = 'hss_assessments';
-    protected $fillable = ['county_code', 'assessment_date', 'user_id', 'section_id'];
+    protected $fillable = ['county_code', 'assessment_date', 'user_id', 'section_id', 'status'];
 
     public function answers()
     {

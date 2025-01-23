@@ -18,6 +18,7 @@ create table hss_assessments(
     county_code int not null,
     section_id int not null,
     assessment_date date not null,
+    status enum('draft', 'submitted') default 'draft',
     created_at timestamp default current_timestamp,
     updated_at timestamp default current_timestamp,
     constraint fk_hss_assessments_user_id foreign key(user_id) references users(id) on update cascade on delete RESTRICT,
@@ -34,5 +35,6 @@ create table hss_answers(
     updated_at timestamp default current_timestamp,
     constraint fk_hss_answers_question_id foreign key(question_id) references hss_questions(id) on update cascade on delete RESTRICT,
     constraint fk_hss_answers_assessment_id foreign key(assessment_id) references hss_assessments(id) on update cascade on delete RESTRICT,
-    constraint fk_hss_answers_user_id foreign key(user_id) references users(id) on update cascade on delete RESTRICT
+    constraint fk_hss_answers_user_id foreign key(user_id) references users(id) on update cascade on delete RESTRICT,
+    constraint fk_hss_answers_assessment_id_question_id unique(assessment_id, question_id)
 );

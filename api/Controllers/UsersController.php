@@ -51,11 +51,11 @@ class UsersController extends Controller
             if ($data['password'] != '') {
                 $data['password'] = md5($data['password']);
             } else unset($data['password']);
-            $facilityIds = implode(',', $data['facility_ids'] ?? '');
-            $data['facility_ids'] = $facilityIds;
+            // $facilityIds = implode(',', $data['facility_ids'] ?? '');
+            // $data['facility_ids'] = $facilityIds;
 
-            // $programIds = implode(',', $data['program_ids']);
-            // $data['program_ids'] = $programIds;
+            $programIds = implode(',', $data['program_ids']);
+            $data['program_ids'] = $programIds;
             $u->update($data);
             self::response(SUCCESS_RESPONSE_CODE, "User updated successfully.");
         } catch (\Throwable $th) {

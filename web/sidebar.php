@@ -217,7 +217,7 @@
           <?php endif; ?>
           <li class="nav-item">
             <a href="./index?page=hss" class="nav-link nav-hss nav-hss-open">
-              <i class="nav-icon fas fa-route"></i>
+              <i class="nav-icon fas fa-clipboard-list"></i>
               <p>
                 HSS Assessments
               </p>

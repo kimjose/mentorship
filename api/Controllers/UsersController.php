@@ -19,7 +19,7 @@ class UsersController extends Controller
     {
         try {
             if (!hasPermission(PERM_USER_MANAGEMENT, $this->user)) throw new \Exception("Forbidden", 403);
-            $attributes = ['program_ids', 'first_name', 'middle_name', 'last_name', 'email', 'phone_number', 'facility_ids'];
+            $attributes = ['program_ids', 'first_name', 'middle_name', 'last_name', 'email', 'phone_number'];
             $missing = Utility::checkMissingAttributes($data, $attributes);
             throw_if(sizeof($missing) > 0, new \Exception("Missing parameters passed : " . json_encode($missing)));
             if ($data['password'] != '') {
@@ -29,8 +29,10 @@ class UsersController extends Controller
             $data['created_by'] = $this->user->id;
             $data['active'] = 1;
             $programIds = implode(',', $data['program_ids']);
-            $facilityIds = implode(',', $data['facility_ids']);
-            $data['facility_ids'] = $facilityIds;
+            if(isset($data['facility_ids'])){
+                $facilityIds = implode(',', $data['facility_ids']);
+                $data['facility_ids'] = $facilityIds;
+            }
             $data['program_ids'] = $programIds;
             User::create($data);
             self::response(SUCCESS_RESPONSE_CODE, "User created successfully.");
@@ -51,8 +53,10 @@ class UsersController extends Controller
             if ($data['password'] != '') {
                 $data['password'] = md5($data['password']);
             } else unset($data['password']);
-            // $facilityIds = implode(',', $data['facility_ids'] ?? '');
-            // $data['facility_ids'] = $facilityIds;
+            if(isset($data['facility_ids'])){
+                $facilityIds = implode(',', $data['facility_ids']);
+                $data['facility_ids'] = $facilityIds;
+            }
 
             $programIds = implode(',', $data['program_ids']);
             $data['program_ids'] = $programIds;

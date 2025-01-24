@@ -14,6 +14,8 @@ class HssController extends Controller
             $attributes = ['county_code', 'assessment_date', 'section_id'];
             $missing = Utility::checkMissingAttributes($data, $attributes);
             throw_if(sizeof($missing) > 0, new \Exception("Missing parameters passed : " . json_encode($missing)));
+            $existing = HssAssessment::where('county_code', $data['county_code'])->where('section_id', $data['section_id'])->first();
+            throw_if($existing, new \Exception("Assessment already exists for the selected section and county"));
             $data['user_id'] = $this->user->id;
             $assessment = HssAssessment::create($data);
             $this->response(SUCCESS_RESPONSE_CODE, 'Assessment created successfully! 👍', $assessment);

@@ -4,7 +4,11 @@
 
 
 $assessments = [];
-$assessments = \Umb\Mentorship\Models\HssAssessment::all();
+if ($currUser->getCategory()->access_level == 'System') {
+    $assessments = \Umb\Mentorship\Models\HssAssessment::all();
+} else {
+    $assessments = \Umb\Mentorship\Models\HssAssessment::where('user_id', $currUser->id)->get();
+}
 $counties = \Umb\Mentorship\Models\County::all();
 $todaysDate = date("Y-m-d");
 

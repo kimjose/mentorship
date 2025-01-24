@@ -35,9 +35,10 @@ $questions = $section->questions;
             <?php foreach ($questions as $question) :
                 $answer = HssAnswer::where('assessment_id', $id)->where('question_id', $question->id)->first();
             ?>
-                <h5><?php echo $question->question ?></h5>
-                <div class="callout callout-info">
+
+                <div class="callout callout-info" style="padding: 4px !important;">
                     <div class="form-group">
+                        <label><?php echo $question->question ?></label>
                         <textarea name="answers[<?php echo $question->id ?>]" id="" cols="30" rows="2" class="form-control" placeholder="Write Something Here..."> <?php echo $answer == null ? '' : $answer->answer ?></textarea>
                     </div>
                 </div>

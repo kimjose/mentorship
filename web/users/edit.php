@@ -11,8 +11,9 @@ if (!hasPermission(PERM_USER_MANAGEMENT, $currUser)) :
 <?php
 endif;
 
-use Umb\Mentorship\Models\Facility;
 use Umb\Mentorship\Models\User;
+use Umb\Mentorship\Models\Program;
+use Umb\Mentorship\Models\Facility;
 use Umb\Mentorship\Models\UserCategory;
 
 $id = '';
@@ -24,8 +25,11 @@ if (isset($_GET['id'])) {
 /** @var Facility[] $facilities */
 $facilities = [];
 $categories = [];
+
+$programs = [];
 if ($currUser->getCategory()->access_level == 'Facility') {
-	$facilities = Facility::where('id', $currUser->facility_id)->get();
+	$programs = Program::whereIn('id', explode(',', $currUser->program_ids))->get();
+	$facilities = Facility::whereIn('id', explode(',', $currUser->facility_ids))->where('active', 1)->get();
 	$allCategories = UserCategory::where('access_level', 'Facility')->get();
 	$userPermissions = explode(',', $currUser->getCategory()->permissions);
 	foreach ($allCategories as $category) {
@@ -36,11 +40,24 @@ if ($currUser->getCategory()->access_level == 'Facility') {
 		}
 		if ($allowed) $categories[] = $category;
 	}
+} elseif($currUser->getCategory()->access_level == 'Program'){
+	$programs = Program::whereIn('id', explode(',', $currUser->program_ids))->get();
+	$facilities = Facility::whereIn('program_id', explode(',', $currUser->program_ids))->orderBy('name', 'asc')->get();
+	$allCategories = UserCategory::where('access_level', 'Program')->orWhere('access_level', 'Facility')->get();
+	$userPermissions = explode(',', $currUser->getCategory()->permissions);
+	foreach ($allCategories as $category) {
+		$categoryPermissions = explode(',', $category->permissions);
+		$allowed = true;
+		foreach ($categoryPermissions as $categoryPermission) {
+			if (!in_array($categoryPermission, $userPermissions)) $allowed = false;
+		}
+		if ($allowed) $categories[] = $category;
+	}
 } else {
+	$programs = Program::all();
 	$facilities = Facility::where('active', 1)->orderBy('name', 'asc')->get();
 	$allCategories = UserCategory::all();
 	$userPermissions = explode(',', $currUser->getCategory()->permissions);
-	// print_r($userPermissions);
 	foreach ($allCategories as $category) {
 		$categoryPermissions = explode(',', $category->permissions);
 		$allowed = true;
@@ -75,7 +92,10 @@ if ($currUser->getCategory()->access_level == 'Facility') {
 							<label for="">Access Level</label>
 							<select name="access_level" id="selectAccessLevel" class="form-control" onchange="accessLevelChanged()">
 								<option value="" <?php echo $id == '' ? 'selected' : '' ?> hidden>Select level</option>
-								<?php if ($currUser->getCategory()->access_level === 'Program') : ?>
+								<?php if ($currUser->getCategory()->access_level === 'System') : ?>
+									<option value="System" <?php echo ($id != '' && $u->getCategory()->access_level == 'System') ? 'selected' : '' ?>>System</option>
+									<option value="Program" <?php echo ($id != '' && $u->getCategory()->access_level == 'Program') ? 'selected' : '' ?>>Program</option>
+								<?php elseif ($currUser->getCategory()->access_level === 'Program') : ?>
 									<option value="Program" <?php echo ($id != '' && $u->getCategory()->access_level == 'Program') ? 'selected' : '' ?>>Program</option>
 								<?php endif; ?>
 								<option value="Facility" <?php echo ($id != '' && $u->getCategory()->access_level == 'Facility') ? 'selected' : '' ?>>Facility</option>
@@ -92,12 +112,21 @@ if ($currUser->getCategory()->access_level == 'Facility') {
 								endif; ?>
 							</select>
 						</div>
+						<div class="form-group">
+							<label for="selectPrograms">Program<sub>s</sub></label>
+							<select name="program_ids[]" id="selectPrograms" class="select2" multiple="multiple" data-placeholder="Select programs">
+								<?php
+								foreach ($programs as $program) :
+								?>
+									<option value="<?php echo $program->id ?>" <?php if($id != '' && in_array($program->id, explode(',', $u->program_ids))) echo 'selected'; ?> ><?php echo $program->name ?></option>
+								<?php endforeach; ?>
+							</select>
+						</div>
 						<div class="form-group <?php echo ($id !== '' && $u->getCategory()->access_level != 'Facility') ? 'd-none' : '' ?>" id="divSelectFacility">
 							<label for="">Facility</label>
-							<select name="facility_id" id="selectFacility" class="form-control">
-								<option value="" <?php echo $id == '' ? 'selected' : '' ?> hidden>Select facility</option>
+							<select name="facility_ids[]" id="selectFacility" class="select2" multiple="multiple" data-placeholder="Select facility(s)">
 								<?php foreach ($facilities as $facility) : ?>
-									<option value="<?php echo $facility->id ?>" <?php echo ($id != '' && $u->facility_id == $facility->id) ? 'selected' : '' ?>><?php echo $facility->name ?></option>
+									<option value="<?php echo $facility->id ?>" <?php echo ($id != '' && in_array($facility->id, explode(',',$u->facility_ids))) ? 'selected' : '' ?>><?php echo $facility->name ?></option>
 								<?php endforeach; ?>
 							</select>
 						</div>
@@ -188,6 +217,34 @@ if ($currUser->getCategory()->access_level == 'Facility') {
 			userData[key] = value
 		}
 
+            start_load()
+
+            $.ajax({
+                url: id == '' ? '../api/user' : `../api/user/${id}`,
+                data: formData,
+                cache: false,
+                contentType: false,
+                processData: false,
+                method: 'POST',
+                type: 'POST',
+                success: function(resp) {
+                    end_load()
+                    if (resp.code == 200) {
+                        alert_toast('Data successfully saved.', "success");
+                        setTimeout(function() {
+                            location.replace('index?page=users');
+                        }, 800)
+                    } else {
+                        toastr.error(resp.message)
+                    }
+                },
+                error: function(request, status, error) {
+                    end_load()
+				console.log(error.message);
+				toastr.error(error.message)
+                }
+            })
+/*
 		fetch(id == '' ? '../api/user' : `../api/user/${id}`, {
 				method: 'POST',
 				body: JSON.stringify(userData),
@@ -210,13 +267,23 @@ if ($currUser->getCategory()->access_level == 'Facility') {
 				end_load()
 				console.log(error.message);
 				toastr.error(error.message)
-			})
+			})*/
 	})
 
 	function accessLevelChanged() {
 		let selected = $(selectAccessLevel).val();
 		selectCategory.innerHTML = '<option value="" selected hidden>Select Category</option>';
-		if (selected === "Program") {
+		if (selected === "System") {
+			divSelectFacility.classList.add("d-none")
+			categories.forEach(category => {
+				if (category.access_level === 'System') {
+					let option = document.createElement('option');
+					option.value = category.id
+					option.innerText = category.name
+					selectCategory.append(option)
+				}
+			})
+		} else if (selected === "Program") {
 			divSelectFacility.classList.add("d-none")
 			categories.forEach(category => {
 				if (category.access_level === 'Program') {

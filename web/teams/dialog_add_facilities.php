@@ -3,7 +3,8 @@ require_once __DIR__ . '/../../vendor/autoload.php';
 use Umb\Mentorship\Models\Facility;
 
 $teamId = $_GET['team_id'];
-$facilities = Facility::where('team_id', null)->get();
+$programId = $_GET['program_id'];
+$facilities = Facility::where('program_id', $programId)->where('team_id', null)->get();
 
 ?>
 

@@ -5,21 +5,20 @@ use Umb\Mentorship\Models\Facility;
 use Umb\Mentorship\Models\Checklist;
 use Umb\Mentorship\Models\FacilityVisit;
 use Illuminate\Database\Capsule\Manager as DB;
+use Umb\Mentorship\Models\Program;
+use Umb\Mentorship\Models\Team;
 
-$thisMonth = date('y-m-01');
-
-$startDate = date_create(date('y-m-d'));
-$endDate = date('Y-m-d');
-date_sub($startDate, date_interval_create_from_date_string("60 days"));
-$startDate = date_format($startDate, 'Y-m-d');
-
-$users = User::all();
-$facilities = DB::select("select f.*, (select COUNT(fv.facility_id) from facility_visits fv where fv.facility_id = f.id GROUP BY fv.facility_id) as visits from facilities f order by visits desc;");
-$checklists = Checklist::where('status', 'published')->get();
-/** @var FacilityVisit[] $periodVisits */
-$periodVisits = FacilityVisit::where('visit_date', '>=', $startDate)->where('visit_date', '<=', $endDate)->orderBy('visit_date', 'asc')->get();
-
-$responses = DB::select("select r.visit_id, r.question_id, q.category, q.frequency_id from responses r left join questions q on q.id = r.question_id ");
+$programs = [];
+if ($currUser->getCategory()->access_level == 'Facility') {
+  $facility = Facility::findOrFail($currUser->facility_id);
+  $programs = Program::where('id', $facility->program_id)->get();
+} elseif ($currUser->getCategory()->access_level == 'Program') {
+  $programs = Program::where('id', explode(',', $currUser->program_ids))->get();
+} else {
+  $programs = Program::all();
+}
+$program_id = $_GET['program_id'] ?? '';
+$selected = false;
 ?>
 
 <!-- Page Heading -->
@@ -28,8 +27,48 @@ $responses = DB::select("select r.visit_id, r.question_id, q.category, q.frequen
 
     <li class="breadcrumb-item active"> Home </li>
   </ol>
-
+  <form action="">
+    <div class="form-group">
+      <select name="program" id="selectProgram" class="form-control" onchange="selectProgramChanged()">
+        <option value="" hidden>Select program</option>
+        <?php for ($i = 0; $i < sizeof($programs); $i++) :
+          $program = $programs[$i];
+          if ($program_id == '' && $i == 0) $program_id = $program->id;
+          if ($program_id == $program->id) $selected = true;
+          if ($i == (sizeof($programs) - 1) && !$selected) : $program_id = $program->id;
+        ?>
+            <script>
+              location.replace("index?program_id=<?php echo $program_id; ?>")
+            </script>
+          <?php endif; ?>
+          <option value="<?php echo $program->id ?>" <?php echo $program_id == $program->id ? 'selected' : '' ?>><?php echo $program->name ?></option>
+        <?php
+        endfor;
+        ?>
+      </select>
+    </div>
+  </form>
 </div>
+
+<?php
+
+$thisMonth = date('y-m-01');
+
+$startDate = date_create(date('y-m-d'));
+$endDate = date('Y-m-d');
+date_sub($startDate, date_interval_create_from_date_string("60 days"));
+$startDate = date_format($startDate, 'Y-m-d');
+
+$users = DB::select("select * from users where active = ? and $program_id in (program_ids)", [1]);
+$facilities = DB::select("select f.*, (select COUNT(fv.facility_id) from facility_visits fv where fv.facility_id = f.id GROUP BY fv.facility_id) as visits from facilities f where f.program_id = $program_id order by visits desc;");
+$checklists = Checklist::where('status', 'published')->get();
+/** @var FacilityVisit[] $periodVisits */
+$periodVisits = DB::select("select fv.*, f.team_id from facility_visits fv left join facilities f on f.id = fv.facility_id where f.program_id = ? and fv.visit_date between ? and ? order by fv.visit_date asc", [$program_id, $startDate, $endDate]);
+$responses = DB::select("select r.visit_id, r.question_id, q.category, q.frequency_id from responses r left join questions q on q.id = r.question_id left join facility_visits v on v.id = r.visit_id left join facilities f on f.id = v.facility_id where f.program_id = $program_id");
+$teams = Team::where('program_id', $program_id)->get();
+
+$actionPoints = DB::select("select ap.visit_id, ap.facility_id, ap.question_id, ap.due_date, ap.status, ap.created_by from action_points ap left join facilities f on ap.facility_id = f.id where f.program_id = ?", [$program_id]);
+?>
 
 <!-- top row boxes -->
 <div class="row">
@@ -166,70 +205,102 @@ $responses = DB::select("select r.visit_id, r.question_id, q.category, q.frequen
       </div>
     </div>
   </div>
-  <div class="card">
-    <div class="card-header">
-      <h3 class="card-title">Response Category Analysis</h3>
+  <div class="col-lg-4 col-md-6 col-sm-12">
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">Response Category Analysis</h3>
 
-      <div class="card-tools">
-        <button type="button" class="btn btn-tool" data-card-widget="collapse">
-          <i class="fas fa-minus"></i>
-        </button>
-        <button type="button" class="btn btn-tool" data-card-widget="remove">
-          <i class="fas fa-times"></i>
-        </button>
-      </div>
-    </div>
-    <!-- /.card-header -->
-    <div class="card-body">
-      <div class="chart tab-pane" id="sales-chart" style="position: relative; height: 300px;">
-        <canvas id="canvasResponse" height="300" style="height: 300px;"></canvas>
-      </div>
-    </div>
-    <!-- /.card-body -->
-    <div class="card-footer p-0">
-    </div>
-    <!-- /.footer -->
-  </div>
-
-  <!-- Custom tabs (Charts with tabs)-->
-  <div class="card">
-    <div class="card-header">
-      <h3 class="card-title">
-        <i class="fas fa-chart-pie mr-1"></i>
-        Visits
-      </h3>
-      <div class="card-tools">
-        <ul class="nav nav-pills ml-auto">
-          <li class="nav-item">
-            <a class="nav-link active" href="#revenue-chart" data-toggle="tab">Area</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#sales-chart" data-toggle="tab">Donut</a>
-          </li>
-        </ul>
-      </div>
-    </div><!-- /.card-header -->
-    <div class="card-body">
-      <div class="tab-content p-0">
-        <!-- Morris chart - Sales -->
-        <div class="chart tab-pane active" id="revenue-chart" style="position: relative; height: 300px;">
-          <canvas id="revenue-chart-canvas" height="300" style="height: 300px;"></canvas>
+        <div class="card-tools">
+          <button type="button" class="btn btn-tool" data-card-widget="collapse">
+            <i class="fas fa-minus"></i>
+          </button>
+          <button type="button" class="btn btn-tool" data-card-widget="remove">
+            <i class="fas fa-times"></i>
+          </button>
         </div>
+      </div>
+      <!-- /.card-header -->
+      <div class="card-body">
         <div class="chart tab-pane" id="sales-chart" style="position: relative; height: 300px;">
-          <canvas id="sales-chart-canvas" height="300" style="height: 300px;"></canvas>
+          <canvas id="canvasResponse" height="300" style="height: 300px;"></canvas>
         </div>
       </div>
-    </div><!-- /.card-body -->
+      <!-- /.card-body -->
+      <div class="card-footer p-0">
+      </div>
+      <!-- /.footer -->
+    </div>
+  </div>
+  <div class="col-lg-4 col-md-6 col-sm-12">
+    <!-- PIE CHART -->
+    <div class="card card-secondary">
+      <div class="card-header">
+        <h3 class="card-title">Action Points</h3>
+
+        <div class="card-tools">
+          <button type="button" class="btn btn-tool" data-card-widget="collapse">
+            <i class="fas fa-minus"></i>
+          </button>
+          <button type="button" class="btn btn-tool" data-card-widget="remove">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+      </div>
+      <div class="card-body">
+        <canvas id="pieChartActionPoints" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+      </div>
+      <!-- /.card-body -->
+    </div>
+    <!-- /.card -->
   </div>
 
 </div>
 
+<?php
+/*
+  // Action Points Statistics
+  $dashboardStats = [
+    'totalActionPoints' => count($actionPoints),
+    'pendingActionPoints' => array_reduce($actionPoints, function ($carry, $item) {
+        return $carry + ($item->status === 'Pending' ? 1 : 0);
+    }, 0),
+    'overdueActionPoints' => array_reduce($actionPoints, function ($carry, $item) {
+        $dueDate = date_create($item->due_date . ' 23:59:59');
+        $today = date_create(date('Y-m-d G:i:s'));
+        return $carry + ($dueDate < $today ? 1 : 0);
+    }, 0),
+    // Add more dashboard statistics here
+    'averageCompletionTime' => calculateAverageCompletionTime($actionPoints),
+    'actionPointsByCategory' => countActionPointsByCategory($actionPoints),
+    // Add more dashboard statistics as needed
+];
+*/
+?>
+
+
+<!-- Add more dashboard sections to display additional statistics -->
+<!-- <div class="dashboard-section">
+    <h2>Dashboard</h2>
+    <div>Total Action Points: <?php echo $dashboardStats['totalActionPoints']; ?></div>
+    <div>Pending Action Points: <?php echo $dashboardStats['pendingActionPoints']; ?></div>
+    <div>Overdue Action Points: <?php echo $dashboardStats['overdueActionPoints']; ?></div>
+    <div>Average Completion Time: <?php echo $dashboardStats['averageCompletionTime']; ?></div>
+    <div>Action Points by Category: <?php echo json_encode($dashboardStats['actionPointsByCategory']); ?></div>
+    
+</div> -->
 
 <script>
   const startDateString = "<?php echo $startDate; ?>"
   const endDateString = "<?php echo $endDate; ?>"
-  const visits = JSON.parse('<?php echo $periodVisits ?>');
+  const visits = JSON.parse('<?php echo json_encode($periodVisits) ?>');
   const responses = JSON.parse('<?php echo json_encode($responses) ?>')
+  const teams = JSON.parse('<?php echo json_encode($teams) ?>')
+  const actionPoints = JSON.parse('<?php echo json_encode($actionPoints) ?>')
+
+  function selectProgramChanged() {
+    let selected = $("#selectProgram").val();
+    location.replace(`index?program_id=${selected}`);
+  }
 
   function drawResponseDonut() {
     let canvasResponse = $('#canvasResponse').get(0).getContext('2d')
@@ -261,6 +332,45 @@ $responses = DB::select("select r.visit_id, r.question_id, q.category, q.frequen
     })
   }
 
+  function drawActionPointsGraph() {
+    let currDate = new Date()
+    let data = [0,0,0]
+    actionPoints.forEach(actionPoint =>{
+      if(actionPoint.status === "Done"){
+        data[1]++
+      } else{
+        let apDue = new Date(actionPoint.due_date)
+        if(currDate.getTime() < apDue.getTime()){
+          data[2]++
+        } else data[0]++
+      }
+    })
+    let pieData = {
+      labels: [
+        'Pending',
+        'Done/Completed',
+        'Overdue'
+      ],
+      datasets: [{
+        data: data,
+        backgroundColor: ['#FFBF00', '#00FF00', '#FF0000'],
+      }]
+    }
+
+    let pieChartCanvas = $('#pieChartActionPoints').get(0).getContext('2d')
+    let pieOptions = {
+      maintainAspectRatio: false,
+      responsive: true,
+    }
+    //Create pie or douhnut chart
+    // You can switch between pie and douhnut using the method below.
+    new Chart(pieChartCanvas, {
+      type: 'pie',
+      data: pieData,
+      options: pieOptions
+    })
+  }
+
   function drawVisitsGraph() {
 
     console.log(visits);
@@ -269,6 +379,8 @@ $responses = DB::select("select r.visit_id, r.question_id, q.category, q.frequen
     let startDate = new Date(startDateString)
     let endDate = new Date(endDateString)
     let diff = (endDate - startDate) / (24 * 3600 * 1000)
+    let datasets = []
+    let teamsDatasets = []
 
     for (let i = 0; i <= diff; i++) {
       let mDate = new Date(startDate.getTime() + (i * (24 * 3600 * 1000)))
@@ -278,6 +390,29 @@ $responses = DB::select("select r.visit_id, r.question_id, q.category, q.frequen
         return visit.visit_date === DateFormatter.formatDate(mDate, 'yyyy-MM-DD')
       })
       values.push(dayVisits.length);
+      for (let j = 0; j < teams.length; j++) {
+        let team = teams[j]
+        if (i == 0) {
+          let c = "rgb(" + Math.floor(Math.random() * 255) + "," + Math.floor(Math.random() * 255) + "," + Math.floor(Math.random() * 255) + ")"
+          let teamDataset = {
+            name: team.name,
+            label: team.name,
+            type: 'line',
+            data: [],
+            backgroundColor: 'transparent',
+            borderColor: c,
+            pointBorderColor: c,
+            pointBackgroundColor: c,
+            fill: false
+          }
+          teamsDatasets.push(teamDataset)
+        }
+        let ds = teamsDatasets[j];
+        let teamDayVisits = visits.filter(visit => {
+          return visit.visit_date === DateFormatter.formatDate(mDate, 'yyyy-MM-DD') && visit.team_id === team.id
+        })
+        ds.data.push(teamDayVisits.length)
+      }
     }
 
     let ticksStyle = {
@@ -292,7 +427,7 @@ $responses = DB::select("select r.visit_id, r.question_id, q.category, q.frequen
       data: {
         labels: labels,
         datasets: [{
-          label: 'visits',
+          label: 'All visits',
           type: 'line',
           data: values,
           backgroundColor: 'transparent',
@@ -302,7 +437,7 @@ $responses = DB::select("select r.visit_id, r.question_id, q.category, q.frequen
           fill: false
           // pointHoverBackgroundColor: '#007bff',
           // pointHoverBorderColor    : '#007bff'
-        }]
+        }, ...teamsDatasets]
       },
       options: {
         maintainAspectRatio: false,
@@ -315,7 +450,7 @@ $responses = DB::select("select r.visit_id, r.question_id, q.category, q.frequen
           intersect: intersect
         },
         legend: {
-          display: false
+          display: true
         },
         scales: {
           yAxes: [{
@@ -350,6 +485,8 @@ $responses = DB::select("select r.visit_id, r.question_id, q.category, q.frequen
     })
   }
 
+
   drawVisitsGraph()
   drawResponseDonut()
+  drawActionPointsGraph()
 </script>

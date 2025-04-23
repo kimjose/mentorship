@@ -1,13 +1,15 @@
 <?php
 
 use Bramus\Router\Router;
-use Umb\Mentorship\Controllers\AnalyticsController;
+use Umb\Mentorship\Models\VisitSection;
 use Umb\Mentorship\Controllers\Controller;
+use Umb\Mentorship\Controllers\HssController;
+use Umb\Mentorship\Controllers\UsersController;
 use Umb\Mentorship\Controllers\QuestionsBuilder;
+use Umb\Mentorship\Controllers\ProgramsController;
+use Umb\Mentorship\Controllers\AnalyticsController;
 use Umb\Mentorship\Controllers\FacilitiesController;
 use Umb\Mentorship\Controllers\FacilityVisitsController;
-use Umb\Mentorship\Controllers\UsersController;
-use Umb\Mentorship\Models\VisitSection;
 
 require_once __DIR__ . "/vendor/autoload.php";
 
@@ -83,13 +85,11 @@ $router->post("/api/import_checklist", function () {
 });
 $router->post("/api/user", function () {
     $controller = new UsersController();
-    $data = json_decode(file_get_contents('php://input'), true);
-    $controller->createUser($data);
+    $controller->createUser($_POST);
 });
 $router->post("/api/user/{id}", function ($id) {
     $controller = new UsersController();
-    $data = json_decode(file_get_contents('php://input'), true);
-    $controller->updateUser($id, $data);
+    $controller->updateUser($id, $_POST);
 });
 $router->post("/api/user_profile_update/{id}", function($id){
     $controller = new UsersController();
@@ -164,6 +164,15 @@ $router->post('/api/remove_facility_from_team', function () {
     $data = json_decode(file_get_contents('php://input'), true);
     $controller = new FacilitiesController();
     $controller->removeFacilityFromTeam($data);
+});
+$router->post('/api/add_members_to_team', function () {
+    $controller = new UsersController();
+    $controller->addMembersToTeam($_POST);
+});
+$router->post('/api/remove_member_from_team', function () {
+    $data = json_decode(file_get_contents('php://input'), true);
+    $controller = new UsersController();
+    $controller->removeMemberFromTeam($data);
 });
 $router->get('/api/visits', function () {
     $controller = new FacilityVisitsController();
@@ -270,7 +279,35 @@ $router->mount('/api/analytics', function () use ($router) {
         $controller->deleteAnalyticRun($data);
     });
 });
+$router->mount('/api/program', function() use($router){
+    $router->get('/', function(){
+        $controller = new ProgramsController();
+        $controller->getPrograms();
+    });
+    //POST
+    $data = json_decode(file_get_contents('php://input'), true);
+    $router->post('/', function() use ($router, $data){
+        $controller = new ProgramsController();
+        $controller->createProgram($data);
+    });
+    $router->post('/{id}', function($id) use ($router, $data){
+        $controller = new ProgramsController();
+        $controller->updateProgram($id, $data);
+    });    
+});
 
+// HSS
+$router->mount('/api/hss_assessment', function() use ($router){
+    $data = json_decode(file_get_contents('php://input'), true);
+    $router->post('/', function() use ($data){
+        $controller = new HssController();
+        $controller->createAssessment($data);
+    });
+    $router->post('/submit/{id}', function($id) {
+        $controller = new HssController();
+        $controller->submitAssessment($id, $_POST);
+    });
+});
 
 $router->all('/logout', function () {
     session_start();

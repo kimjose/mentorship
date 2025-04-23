@@ -110,7 +110,7 @@
               </li>
             </ul>
           </li>
-          <?php if ($currUser->getCategory()->access_level === 'Program') : ?>
+          <?php if ($currUser->getCategory()->access_level === 'Program' || $currUser->getCategory()->access_level === 'System') : ?>
             <li class="nav-item">
               <a href="./index?page=facilities" class="nav-link nav-facilities">
                 <i class="nav-icon fa fa-building"></i>
@@ -153,7 +153,7 @@
             </li>
           <?php endif; ?>
 
-          <?php if (hasPermission(PERM_SYSTEM_ADMINISTRATION, $currUser) && $currUser->getCategory()->access_level === 'Program') : ?>
+          <?php if (hasPermission(PERM_SYSTEM_ADMINISTRATION, $currUser) && ($currUser->getCategory()->access_level === 'Program' || $currUser->getCategory()->access_level === 'System')) : ?>
             <li class="nav-item">
               <a href="#" class="nav-link nav-edit_user">
                 <i class="nav-icon fas fa-users"></i>
@@ -204,6 +204,24 @@
                 </a>
               </li>
             </ul>
+          </li>
+          <?php if ($currUser->getCategory()->access_level === 'Program' || $currUser->getCategory()->access_level === 'System') : ?>
+            <li class="nav-item">
+              <a href="./index?page=programs" class="nav-link nav-programs">
+                <i class="nav-icon fa fa-building"></i>
+                <p>
+                  Programs
+                </p>
+              </a>
+            </li>
+          <?php endif; ?>
+          <li class="nav-item">
+            <a href="./index?page=hss" class="nav-link nav-hss nav-hss-open">
+              <i class="nav-icon fas fa-clipboard-list"></i>
+              <p>
+                HSS Assessments
+              </p>
+            </a>
           </li>
         </ul>
       </nav>

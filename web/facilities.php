@@ -4,14 +4,35 @@
 ?>
 <?php
 
-use Illuminate\Database\Capsule\Manager as DB;
 use Umb\Mentorship\Models\Team;
+use Umb\Mentorship\Models\Program;
+use Umb\Mentorship\Models\Facility;
+use Illuminate\Database\Capsule\Manager as DB;
 
 /*** @var \Umb\EventsManager\Models\Facility[] $facilities */
-$facilities = DB::select("select f.*, c.name 'county', t.name 'team_name', (select count(fv.facility_id) from facility_visits fv where fv.facility_id = f.id group by fv.facility_id ) as visits from facilities f left join counties c on c.code = f.county_code left join teams t on t.id = f.team_id");
+$facilities = [];
 $activeBadge = "<span class='badge badge-primary rounded-pill'>Active</span>";
 $inActiveBadge = "<span class='badge badge-warning rounded-pill'>In Active</span>";
 $teams = Team::all();
+$programs =  [];
+if ($currUser->getCategory()->access_level == 'Facility') {
+    $facility = Facility::findOrFail($currUser->facility_id);
+    $programs = Program::where('id', $facility->program_id)->get();
+    $teams = Team::where('id', $facility->team_id)->get();
+    /*** @var \Umb\EventsManager\Models\Facility[] $facilities */
+    $facilities = DB::select("select f.*,p.name program, c.name 'county', t.name 'team_name', (select count(fv.facility_id) from facility_visits fv where fv.facility_id = f.id group by fv.facility_id ) as visits from facilities f left join counties c on c.code = f.county_code left join teams t on t.id = f.team_id left join programs p on p.id = f.program_id where p.id = " . $facility->program_id);
+  }elseif($currUser->getCategory()->access_level == 'Program'){
+    $programs = Program::where('id', explode(',', $currUser->program_ids))->get();
+    $teams = Team::whereIn('program_id', explode(',', $currUser->program_ids))->get();
+    /*** @var \Umb\EventsManager\Models\Facility[] $facilities */
+    $facilities = DB::select("select f.*,p.name program, c.name 'county', t.name 'team_name', (select count(fv.facility_id) from facility_visits fv where fv.facility_id = f.id group by fv.facility_id ) as visits from facilities f left join counties c on c.code = f.county_code left join teams t on t.id = f.team_id left join programs p on p.id = f.program_id where p.id in (" . ($currUser->program_ids == '' ? 0 : $currUser->program_ids) . ");");
+  }
+  else {
+    $programs = Program::all();
+    $teams = Team::all();
+    /*** @var \Umb\EventsManager\Models\Facility[] $facilities */
+    $facilities = DB::select("select f.*,p.name program, c.name 'county', t.name 'team_name', (select count(fv.facility_id) from facility_visits fv where fv.facility_id = f.id group by fv.facility_id ) as visits from facilities f left join counties c on c.code = f.county_code left join teams t on t.id = f.team_id left join programs p on p.id = f.program_id");
+  }
 ?>
 
 
@@ -39,6 +60,7 @@ $teams = Team::all();
                 <thead>
                     <tr>
                         <th>#</th>
+                        <th>Program</th>
                         <th>Name</th>
                         <th>MFL Code</th>
                         <th>County</th>
@@ -51,6 +73,7 @@ $teams = Team::all();
                 <tfoot>
                     <tr>
                         <th>#</th>
+                        <th>Program</th>
                         <th>Name</th>
                         <th>MFL Code</th>
                         <th>County</th>
@@ -67,6 +90,7 @@ $teams = Team::all();
                     ?>
                         <tr>
                             <td><?php echo $i ?></td>
+                            <td><?php echo $facility->program ?></td>
                             <td><?php echo $facility->name ?></td>
                             <td><?php echo $facility->mfl_code  ?></td>
                             <td><?php echo $facility->county ?></php>
@@ -108,7 +132,18 @@ $teams = Team::all();
             <form action="" method="POST" onsubmit="event.preventDefault();" id="formFacility">
 
                 <div class="modal-body">
-
+                    <div class="form-group">
+                        <label for="selectProgram">Program</label>
+                        <select name="program_id" id="selectProgram" class="form-control select2" required>
+                            <option value="" hidden selected>Select Program</option>
+                            <?php
+                            for ($j = 0; $j < sizeof($programs); $j++) :
+                                $program = $programs[$j];
+                            ?>
+                                <option value="<?php echo $program->id ?>"><?php echo $program->name; ?> </option>
+                            <?php endfor; ?>
+                        </select>
+                    </div>
                     <div class="form-group">
                         <label for="inputName">Facility Name</label>
                         <input type="text" class="form-control" id="inputName" name="name" placeholder="Enter facility name" required>
@@ -186,6 +221,7 @@ $teams = Team::all();
 <script type="text/javascript">
     const inputName = document.querySelector("#inputName");
     const inputMflCode = document.querySelector("#inputMflCode")
+    const selectProgram = document.querySelector("#selectProgram")
     const selectCounty = document.querySelector("#selectCounty")
     const selectTeam = document.querySelector("#selectTeam")
     const checkActive = document.querySelector("#checkActive")
@@ -203,6 +239,7 @@ $teams = Team::all();
         $("#modalFacility").on("hide.bs.modal", () => {
             editedId = ''
             document.querySelector("#formFacility").reset()
+            $('.select2').select2()
         });
     }
 
@@ -212,6 +249,7 @@ $teams = Team::all();
         inputMflCode.value = facility.mfl_code
         inputLat.value = facility.latitude
         inputLong.value = facility.longitude
+        $(selectProgram).val(facility.program_id)
         $(selectCounty).val(facility.county_code)
         $(selectTeam).val(facility.team_id)
         checkActive.checked = facility.active
@@ -221,6 +259,7 @@ $teams = Team::all();
 
     function saveFacility() {
         let btnSaveFacility = document.getElementById('btnSaveFacility')
+        let program = $(selectProgram).val()
         let name = inputName.value.trim();
         let mflCode = inputMflCode.value.trim();
         let county = $(selectCounty).val()
@@ -228,6 +267,10 @@ $teams = Team::all();
         let longitude = inputLong.value.trim()
         let active = checkActive.checked
         let team = $(selectTeam).val()
+        if (program === '') {
+            selectProgram.focus()
+            return;
+        }
         if (name === '') {
             inputUsername.focus()
             return
@@ -243,6 +286,7 @@ $teams = Team::all();
 
         //['username', 'email', 'phone_number', 'first_name', 'last_name', 'active', 'password']
         let data = {
+            program_id: program,
             name: name,
             county_code: county,
             mfl_code: mflCode,

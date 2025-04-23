@@ -2,12 +2,22 @@
 require_once __DIR__ . '/../../vendor/autoload.php';
 
 use Umb\Mentorship\Models\User;
+use Umb\Mentorship\Models\FacilityVisit;
 
 $questionId = $_GET['question_id'];
 $visitId = $_GET['visit_id'];
 $findingId = $_GET['finding_id'];
 $abstractionId = $_GET['abstraction_id'] ?? '';
-$users = User::all();
+$users = [];
+$visit = FacilityVisit::findOrFail($visitId);
+$facility = $visit->getFacility();
+$program = $facility->program();
+$facilityUsers = User::whereRaw("FIND_IN_SET(?, facility_ids)", [$facility->id])->get();
+$programUsers = User::whereRaw("FIND_IN_SET(?, program_ids)", [$program->id])->whereNull('facility_ids')->get();
+$users =  $facilityUsers->merge($programUsers);
+// print $users;
+// array_push($users, ...$programUsers);
+// $users = uniq($users);
 ?>
 <div class="container-fluid">
     <form action="" id="formActionPoint">

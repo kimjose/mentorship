@@ -11,8 +11,11 @@ if (!hasPermission(PERM_USER_MANAGEMENT, $currUser)) :
 
 $users = [];
 if ($currUser->getCategory()->access_level == 'Facility') {
+	/** @var User[] */
 	$users = User::where('facility_id', $currUser->facility_id)->get();
-} else {
+} elseif($currUser->getCategory()->access_level == 'Program'){
+	$users = User::whereIn('program_ids', explode(',', $currUser->program_ids))->get();
+}else {
 	$users = User::all();
 }
 ?>
@@ -29,9 +32,11 @@ if ($currUser->getCategory()->access_level == 'Facility') {
 					<thead>
 						<tr>
 							<th class="text-center">#</th>
+							<th>Programs</th>
 							<th>Name</th>
 							<th>Phone Number</th>
 							<th>User category</th>
+							<th>Facility(<small>s</small>)</th>
 							<th>Email</th>
 							<th>Actions</th>
 						</tr>
@@ -43,9 +48,11 @@ if ($currUser->getCategory()->access_level == 'Facility') {
 						?>
 							<tr>
 								<th class="text-center"><?php echo $i++ ?></th>
+								<td><b><?php echo implode(', ', $user->getProgramsNames()); ?></b></td>
 								<td><b><?php echo ucwords($user->first_name . ' ' . $user->last_name) ?></b></td>
 								<td><b><?php echo $user->phone_number ?></b></td>
 								<td><b><?php echo $user->getCategory()->name ?></b></td>
+								<td><b><?php echo implode(', ', $user->getFacilityNames()); ?></b></td>
 								<td><b><?php echo $user->email ?></b></td>
 								<td class="text-center">
 									<button type="button" class="btn btn-default btn-sm btn-flat border-info wave-effect text-info dropdown-toggle" data-toggle="dropdown" aria-expanded="true">

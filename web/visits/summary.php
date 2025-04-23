@@ -160,10 +160,7 @@ $checklists = DB::select("SELECT DISTINCT(c.id), c.title from responses r left j
 
                         <tbody>
                             <?php
-                            /** @var ActionPoint[] $aps */
-                            $aps = ActionPoint::where('visit_id', $visit->id)->get();
                             foreach ($users as $user) :
-                                $assigned = $ap->assignedTo();
                             ?>
                                 <tr>
                                     <td><?php echo $user->getNames(); ?></td>

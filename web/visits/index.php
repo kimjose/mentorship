@@ -2,13 +2,18 @@
 
 /** @var Umb\Mentorship\Models\User $currUser */
 
+use Umb\Mentorship\Models\Facility;
 use Umb\Mentorship\Models\FacilityVisit;
 
 
 $visits = [];
 if ($currUser->getCategory()->access_level == 'Facility') {
-    $visits = FacilityVisit::where('facility_id', $currUser->facility_id)->get();
-} else {
+    $visits = FacilityVisit::whereIn('facility_id', explode(',', $currUser->facility_ids))->orderBy('visit_date', 'desc')->get();
+}elseif($currUser->getCategory()->access_level == 'Program'){
+    $facilityIds = Facility::whereIn('program_id', explode(',', $currUser->program_ids))->get(['id'])->pluck('id')->toArray();
+    $visits = FacilityVisit::whereIn('facility_id', $facilityIds)->orderBy('visit_date', 'desc')->get();
+}
+ else {
     $visits = FacilityVisit::orderBy('id', 'desc')->get();
 }
 $todaysDate = date("Y-m-d")
@@ -41,6 +46,7 @@ $todaysDate = date("Y-m-d")
                     <tr>
                         <th>#</th>
                         <th>Facility</th>
+                        <th>Program</th>
                         <th>Date</th>
                         <th>Created By</th>
                         <th>Actions</th>
@@ -50,6 +56,7 @@ $todaysDate = date("Y-m-d")
                     <tr>
                         <th>#</th>
                         <th>Facility</th>
+                        <th>Program</th>
                         <th>Date</th>
                         <th>Created By</th>
                         <th>Actions</th>
@@ -64,6 +71,7 @@ $todaysDate = date("Y-m-d")
                         <tr>
                             <td><?php echo $i ?></td>
                             <td><?php echo $visit->getFacility()->name ?></td>
+                            <td><?php echo $visit->getFacility()->program()->name ?></td>
                             <td><?php echo $visit->visit_date  ?></td>
                             <td><?php echo $creator->first_name . ' ' . $creator->last_name ?></php>
                             </td>

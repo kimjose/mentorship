@@ -6,7 +6,9 @@ use Illuminate\Database\Capsule\Manager as DB;
 /** @var Checklist[] */
 $checklists = Checklist::where('status', 'published')->get();
 $questions = DB::select("select q.id, q.question, q.category, q.frequency_id, q.type, q.section_id, s.checklist_id  from questions q LEFT join sections s on s.id = q.section_id left join checklists c on c.id = s.checklist_id where c.status like 'published';");
-
+$questionString = json_encode($questions);
+$k = '@%&-_@';
+$questionString = str_replace("'", $k, $questionString);
 ?>
 
 <!-- Page Heading -->
@@ -55,7 +57,6 @@ $questions = DB::select("select q.id, q.question, q.category, q.frequency_id, q.
                 <div class="form-group">
                     <label for="">Select Response Type</label>
                     <select name="qn_type" id="selectQnType" class="form-control" onchange="selectQnTypeChanged()">
-                        <!-- TODO Update for editing -->
                         <option value="" hidden <?php echo !isset($id) ? 'selected' : '' ?>>Please Select here</option>
                         <option value="radio_opt" <?php echo (isset($id) &&  $question->type == 'radio_opt') ? 'selected' : ''  ?>>Single Answer/Radio Button</option>
                         <option value="check_opt" <?php echo (isset($id) &&  $question->type == 'check_opt') ? 'selected' : ''  ?>>Multiple Answer/Check Boxes</option>
@@ -79,7 +80,8 @@ $questions = DB::select("select q.id, q.question, q.category, q.frequency_id, q.
 </div>
 
 <script>
-    const questions = JSON.parse('<?php echo json_encode($questions) ?>')
+    const k = '<?php echo $k; ?>';
+    const questions = JSON.parse('<?php echo $questionString ?>')
     const formAnalytic = document.getElementById('formAnalytic')
     const inputName = document.getElementById('inputName')
     const inputDescription = document.getElementById('inputDescription')
@@ -113,10 +115,11 @@ $questions = DB::select("select q.id, q.question, q.category, q.frequency_id, q.
         filtered.forEach(question => {
             let listItem = document.createElement('li')
             let checkBoxId = `qn_${question.question}`
+            let v = question.question.replace(k, "'");
             listItem.innerHTML = `
                             <div class="form-group">
                                 <input type="checkbox" name="questions[]" id="${checkBoxId}" class="form-check-input" data-id="${question.id}">
-                                <label class="form-check-label" for="${checkBoxId}">${question.question}</label>
+                                <label class="form-check-label" for="${checkBoxId}">${v}</label>
                             </div>
             `
             listQuestions.appendChild(listItem)

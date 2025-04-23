@@ -5,7 +5,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class User extends Model{
 
-    protected $fillable = ['category_id', 'first_name', 'middle_name', 'last_name', 'email', 'phone_number', 'password', 'last_login', 'facility_id', 'active', 'created_by', 'program_id'];
+    protected $fillable = ['program_ids', 'category_id', 'first_name', 'middle_name', 'last_name', 'email', 'phone_number', 'password', 'last_login', 'facility_ids', 'active', 'created_by', 'program_id'];
 
     protected $hidden = ['password'];
 
@@ -16,5 +16,33 @@ class User extends Model{
 
     public function getCategory(){
         return UserCategory::find($this->category_id);
+    }
+
+    /**
+     * @return Program[]
+     */
+    public function getPrograms(){
+        return Program::whereIn('id', explode(',', $this->program_ids))->get();
+    }
+
+    /**
+     * @return array
+     */
+    public function getProgramsNames(){
+        return Program::whereIn('id', explode(',', $this->program_ids))->get(['name'])->pluck('name')->toArray();
+    }
+
+    /**
+     * @return Facility[]
+     */
+    public function getFacilities(){
+        return Facility::whereIn('id', explode(',', $this->facility_ids))->get();
+    }
+
+    /**
+     * @return  array
+     */
+    public function getFacilityNames(){
+        return Facility::whereIn('id', explode(',', $this->facility_ids))->get(['name'])->pluck('name')->toArray();
     }
 }

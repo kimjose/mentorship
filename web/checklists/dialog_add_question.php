@@ -46,7 +46,6 @@ $categories = ['individual', 'sdp', 'facility'];
                     <div class="form-group">
                         <label for="" class="control-label">Question Answer Type</label>
                         <select name="type" id="type" class="custom-select custom-select-sm">
-                            <!-- TODO: Add conditions -->
                             <option value="" hidden <?php echo !isset($id) ? 'selected' : '' ?>>Please Select here</option>
                             <option value="radio_opt" <?php echo (isset($id) &&  $question->type == 'radio_opt') ? 'selected' : ''  ?>>Single Answer/Radio Button</option>
                             <option value="check_opt" <?php echo (isset($id) &&  $question->type == 'check_opt') ? 'selected' : ''  ?>>Multiple Answer/Check Boxes</option>

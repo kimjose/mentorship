@@ -9,6 +9,8 @@ use Umb\Mentorship\Models\UserCategory;
 use Umb\Mentorship\Controllers\Controller;
 use Umb\Mentorship\Controllers\Utils\Utility;
 use Umb\Mentorship\Models\PasswordReset;
+use Umb\Mentorship\Models\TeamMember;
+use Illuminate\Database\Capsule\Manager as DB;
 
 class UsersController extends Controller
 {
@@ -17,7 +19,7 @@ class UsersController extends Controller
     {
         try {
             if (!hasPermission(PERM_USER_MANAGEMENT, $this->user)) throw new \Exception("Forbidden", 403);
-            $attributes = ['first_name', 'middle_name', 'last_name', 'email', 'phone_number', 'facility_id'];
+            $attributes = ['program_ids', 'first_name', 'middle_name', 'last_name', 'email', 'phone_number'];
             $missing = Utility::checkMissingAttributes($data, $attributes);
             throw_if(sizeof($missing) > 0, new \Exception("Missing parameters passed : " . json_encode($missing)));
             if ($data['password'] != '') {
@@ -26,7 +28,12 @@ class UsersController extends Controller
             $data['username'] = substr($data['first_name'], 0, 1) . $data['last_name'];
             $data['created_by'] = $this->user->id;
             $data['active'] = 1;
-            $data['facility_id'] = $data['facility_id'] == '' ? null : $data['facility_id'];
+            $programIds = implode(',', $data['program_ids']);
+            if(isset($data['facility_ids'])){
+                $facilityIds = implode(',', $data['facility_ids']);
+                $data['facility_ids'] = $facilityIds;
+            }
+            $data['program_ids'] = $programIds;
             User::create($data);
             self::response(SUCCESS_RESPONSE_CODE, "User created successfully.");
         } catch (\Throwable $th) {
@@ -39,14 +46,20 @@ class UsersController extends Controller
     {
         try {
             if (!hasPermission(PERM_USER_MANAGEMENT, $this->user)) throw new \Exception("Forbidden", 403);
-            $attributes = ['first_name', 'middle_name', 'last_name', 'email', 'phone_number', 'password', 'facility_id'];
+            $attributes = ['program_ids', 'first_name', 'middle_name', 'last_name', 'email', 'phone_number', 'password'];
             $missing = Utility::checkMissingAttributes($data, $attributes);
             throw_if(sizeof($missing) > 0, new \Exception("Missing parameters passed : " . json_encode($missing)));
             $u = User::findOrFail($id);
             if ($data['password'] != '') {
                 $data['password'] = md5($data['password']);
             } else unset($data['password']);
-            $data['facility_id'] = $data['facility_id'] == '' ? null : $data['facility_id'];
+            if(isset($data['facility_ids'])){
+                $facilityIds = implode(',', $data['facility_ids']);
+                $data['facility_ids'] = $facilityIds;
+            }
+
+            $programIds = implode(',', $data['program_ids']);
+            $data['program_ids'] = $programIds;
             $u->update($data);
             self::response(SUCCESS_RESPONSE_CODE, "User updated successfully.");
         } catch (\Throwable $th) {
@@ -198,4 +211,42 @@ class UsersController extends Controller
             self::response(PRECONDITION_FAILED_ERROR_CODE, $th->getMessage());
         }
     }
+
+    public function removeMemberFromTeam($data){
+        try {
+            if(!hasPermission(PERM_SYSTEM_ADMINISTRATION, $this->user)) throw new \Exception("Forbidden", 403);
+            $attributes = ['team_id', 'user_id'];
+            $missing = Utility::checkMissingAttributes($data, $attributes);
+            throw_if(sizeof($missing) > 0, new \Exception("Missing parameters passed : " . json_encode($missing)));
+            TeamMember::where('user_id', $data['user_id'])->where('team_id', $data['team_id'])->delete();
+            self::response(SUCCESS_RESPONSE_CODE, 'Member removed from team successfully.');
+        } catch (\Throwable $th){
+            Utility::logError($th->getCode(), $th->getMessage());
+            $this->response(PRECONDITION_FAILED_ERROR_CODE, $th->getMessage());
+        }
+    }
+
+    public function addMembersToTeam($data) {
+        try{
+            if(!hasPermission(PERM_SYSTEM_ADMINISTRATION, $this->user)) throw new \Exception("Forbidden", 403);
+            $user_ids = [];
+            $attributes = ['team_id'];
+            $missing = Utility::checkMissingAttributes($data, $attributes);
+            throw_if(sizeof($missing) > 0, new \Exception("Missing parameters passed : " . json_encode($missing)));
+            extract($data);
+            DB::beginTransaction();
+            foreach($user_ids as $userId){
+                TeamMember::create([
+                    'user_id' => $userId, 'team_id' => $team_id
+                ]);
+            }
+            DB::commit();
+            self::response(SUCCESS_RESPONSE_CODE, 'Member added to team.');
+        } catch (\Throwable $th){
+            DB::rollback();
+            Utility::logError($th->getCode(), $th->getMessage());
+            $this->response(PRECONDITION_FAILED_ERROR_CODE, $th->getMessage());
+        }
+    }
+
 }

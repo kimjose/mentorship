@@ -22,6 +22,7 @@ if (!hasPermission(PERM_USER_MANAGEMENT, $currUser)) :
 				<thead>
 					<tr>
 						<th class="text-center">#</th>
+						<th>Program</th>
 						<th>Name</th>
 						<th>Team Lead</th>
 						<th>Facilities</th>
@@ -35,6 +36,7 @@ if (!hasPermission(PERM_USER_MANAGEMENT, $currUser)) :
 					?>
 						<tr>
 							<th class="text-center"><?php echo $i++ ?></th>
+							<td><b><?php echo ucwords($team->program()->name) ?></b></td>
 							<td><b><?php echo ucwords($team->name) ?></b></td>
 							<td><b><?php echo ucwords($team->lead()->getNames())  ?></b></td>
 							<td><b><?php echo sizeof($team->facilities()) ?></b></td>

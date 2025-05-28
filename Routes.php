@@ -3,6 +3,7 @@
 use Bramus\Router\Router;
 use Umb\Mentorship\Models\VisitSection;
 use Umb\Mentorship\Controllers\Controller;
+use Umb\Mentorship\Controllers\HptController;
 use Umb\Mentorship\Controllers\HssController;
 use Umb\Mentorship\Controllers\UsersController;
 use Umb\Mentorship\Controllers\QuestionsBuilder;
@@ -306,6 +307,20 @@ $router->mount('/api/hss_assessment', function() use ($router){
     $router->post('/submit/{id}', function($id) {
         $controller = new HssController();
         $controller->submitAssessment($id, $_POST);
+    });
+});
+
+// HPT
+$router->mount('/api/hpt', function() use ($router){
+    $data = json_decode(file_get_contents('php://input'), true);
+    $router->get('/sections', function() {
+        $controller = new HptController();
+        $sections = $controller->getSections();
+        Controller::response(SUCCESS_RESPONSE_CODE, '', $sections);
+    });
+    $router->post('/section', function() use ($data) {
+        $controller = new HptController();
+        $controller->createSection($_POST);
     });
 });
 

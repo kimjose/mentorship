@@ -322,6 +322,22 @@ $router->mount('/api/hpt', function() use ($router){
         $controller = new HptController();
         $controller->createSection($_POST);
     });
+    $router->post('/add_question', function() use ($data) {
+        $controller = new HptController();
+        $controller->addQuestion($_POST);
+    });
+    $router->post('/update_question/{id}', function($id) use ($data) {
+        $controller = new HptController();
+        $controller->updateQuestion($id, $_POST);
+    });
+    $router->post('/import_questions', function() {
+        $controller = new HptController();
+        $controller->importQuestions();
+    });
+    $router->post('/delete_question', function() use ($data) {
+        $controller = new HptController();
+        $controller->deleteQuestion($data);
+    });
 });
 
 $router->all('/logout', function () {

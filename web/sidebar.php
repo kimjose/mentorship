@@ -223,6 +223,34 @@
               </p>
             </a>
           </li>
+
+          <!-- HPT -->
+          <li class="nav-item">
+            <a href="#" class="nav-link nav-hpt">
+              <i class="nav-icon fas fa-calendar-check"></i>
+              <p>
+                HPT
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <?php if ($currUser->getCategory()->access_level === 'System'): ?>
+                <li class="nav-item">
+                  <a href="./index?page=hpt-sections" class="nav-link nav-hpt-sections tree-item">
+                    <i class="fas fa-angle-right nav-icon"></i>
+                    <p>Sections </p>
+                  </a>
+                </li>
+              <?php endif; ?>
+              <li class="nav-item">
+                <a href="./index?page=hpt-assessments" class="nav-link nav-hpt-assessments tree-item">
+                  <i class="fas fa-angle-right nav-icon"></i>
+                  <p>Assessments</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+
         </ul>
       </nav>
     </div>

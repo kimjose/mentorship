@@ -42,7 +42,7 @@ $section = HptSection::find($sectionId);
             e.preventDefault();
             let formData = new FormData(formImportQuestions)
             $.ajax({
-                url: '../api/import_questions',
+                url: '../api/hpt/import_questions',
                 data: formData,
                 cache: false,
                 contentType: false,

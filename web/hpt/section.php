@@ -24,7 +24,7 @@ $questions = $section->questions;
             <a href="index">Home</a>
         </li>
         <li class="breadcrumb-item">
-            <a href="index?page=checklists">HPT Sections </a>
+            <a href="index?page=hpt-sections">HPT Sections </a>
         </li>
         <li class="breadcrumb-item active"> View ( <span class="text-info"><?php echo $section->name; ?></span> )</li>
     </ol>

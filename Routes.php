@@ -338,6 +338,16 @@ $router->mount('/api/hpt', function() use ($router){
         $controller = new HptController();
         $controller->deleteQuestion($data);
     });
+
+    $router->post('/create_assessment', function() {
+        $controller = new HptController();
+        $controller->createAssessment($_POST);
+    });
+    $router->post('/update_assessment/{id}', function($id) {
+        $controller = new HptController();
+        $controller->updateAssessment($id, $_POST);
+    });
+
 });
 
 $router->all('/logout', function () {

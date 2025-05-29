@@ -3,6 +3,7 @@ namespace Umb\Mentorship\Controllers;
 
 use Umb\Mentorship\Models\HptSection;
 use Umb\Mentorship\Models\HptQuestion;
+use Umb\Mentorship\Models\HptAssessment;
 use Umb\Mentorship\Controllers\Utils\Utility;
 use Illuminate\Database\Capsule\Manager as DB;
 use Box\Spout\Reader\Common\Creator\ReaderEntityFactory;
@@ -234,6 +235,91 @@ class HptController extends Controller
             DB::rollback();
             Utility::logError($th->getCode(), $th->getMessage());
             self::response(PRECONDITION_FAILED_ERROR_CODE, $th->getMessage());
+        }
+    }
+
+    /**
+     * Summary of getAssessments()
+     *
+     * Description of getAssessments()
+     * Retrieves all HPT assessments.
+     * @return array|\Illuminate\Database\Eloquent\Collection<int, HptAssessment>
+     */
+    public function getAssessments(){
+        try{
+            $assessments = HptAssessment::all();
+            return $assessments;
+        } catch(\Throwable $th){
+            Utility::logError($th->getCode(), $th->getMessage());
+            return [];
+        }
+    }
+
+    /**
+     * Summary of createAssessment()
+     *
+     * Description of createAssessment()
+     * Creates a new HPT assessment.
+     * @param mixed $data
+     * @throws \Exception
+     */
+    public function createAssessment($data){
+        try{
+            $attributes = ["facility_id", "date_of_interview", "sub_county", "ward", "facility_ownership", "keph_level", "review_period_start", "review_period_end"];
+            $missingAttributes = array_diff($attributes, array_keys($data));
+            if (!empty($missingAttributes)) {
+                throw new \Exception("Missing required attributes: " . implode(", ", $missingAttributes));
+            }
+            $assessment = new HptAssessment();
+            $assessment->facility_id = $data['facility_id'];
+            $assessment->date_of_interview = $data['date_of_interview'];
+            $assessment->interviewer_id = $this->user->id; // Assuming the current user is the interviewer
+            $assessment->sub_county = $data['sub_county'];
+            $assessment->ward = $data['ward'];
+            $assessment->facility_ownership = $data['facility_ownership'];
+            $assessment->keph_level = $data['keph_level'];
+            $assessment->review_period_start = $data['review_period_start'];
+            $assessment->review_period_end = $data['review_period_end'];
+            $assessment->save();
+            return self::response(SUCCESS_RESPONSE_CODE, "HPT Assessment created successfully.", $assessment);
+        } catch(\Throwable $th){
+            Utility::logError($th->getCode(), $th->getMessage());
+            return self::response(PRECONDITION_FAILED_ERROR_CODE, $th->getMessage());
+        }
+    }
+    /**
+     * Summary of updateAssessment()
+     *
+     * Description of updateAssessment()
+     * Updates an existing HPT assessment.
+     * 
+     * @param mixed $id
+     * @param mixed $data
+     * @throws \Exception
+     */
+    public function updateAssessment($id, $data){
+        try{
+            $assessment = HptAssessment::findOrFail($id);
+            $attributes = ["facility_id", "date_of_interview", "sub_county", "ward", "facility_ownership", "keph_level", "review_period_start", "review_period_end"];
+            // Ensure the required attributes are present in the data
+            $missingAttributes = array_diff($attributes, array_keys($data));
+            if (!empty($missingAttributes)) {
+                throw new \Exception("Missing required attributes: " . implode(", ", $missingAttributes));
+            }
+            $assessment->facility_id = $data['facility_id'];
+            $assessment->date_of_interview = $data['date_of_interview'];
+            $assessment->interviewer_id = $this->user->id; // Assuming the current user is the interviewer
+            $assessment->sub_county = $data['sub_county'];
+            $assessment->ward = $data['ward'];
+            $assessment->facility_ownership = $data['facility_ownership'];
+            $assessment->keph_level = $data['keph_level'];
+            $assessment->review_period_start = $data['review_period_start'];
+            $assessment->review_period_end = $data['review_period_end'];
+            $assessment->save();
+            return self::response(SUCCESS_RESPONSE_CODE, "HPT Assessment updated successfully.", $assessment);
+        } catch(\Throwable $th){
+            Utility::logError($th->getCode(), $th->getMessage());
+            return self::response(PRECONDITION_FAILED_ERROR_CODE, $th->getMessage());
         }
     }
 
